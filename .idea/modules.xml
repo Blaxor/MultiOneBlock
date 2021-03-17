@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ConnectionManager/ConnectionManager.iml" filepath="$PROJECT_DIR$/ConnectionManager/ConnectionManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OneBlock.iml" filepath="$PROJECT_DIR$/OneBlock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SchematicSave/schematicsave.iml" filepath="$PROJECT_DIR$/SchematicSave/schematicsave.iml" />
+    </modules>
+  </component>
+</project>

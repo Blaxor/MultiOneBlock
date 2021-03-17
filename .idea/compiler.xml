@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="schematicsave" />
+        <module name="OneBlock" />
+        <module name="ConnectionManager" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ConnectionManager" target="1.8" />
+      <module name="OneBlock" target="1.8" />
+      <module name="schematicsave" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,3 @@
+name: ConnectionManager
+version: ${project.version}
+main: ro.deiutzblaxo.bungee.connectionmanager.Main

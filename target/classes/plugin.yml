@@ -1,0 +1,7 @@
+name: OneBlock
+version: 1.0
+main: ro.deiutzblaxo.oneblock.OneBlock
+api-version: 1.16
+commands:
+  test:
+  island:
