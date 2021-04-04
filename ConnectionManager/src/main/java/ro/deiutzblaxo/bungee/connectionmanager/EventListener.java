@@ -13,17 +13,12 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPostJoin(PostLoginEvent e) {
         Main.getInstance().getServerManager().checkServers();
-        Main.getInstance().getProxy().getScheduler().schedule(Main.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ServerInfo server = Main.getInstance().getServerManager().getServerBestFit(e.getPlayer());
-                if(e.getPlayer().getServer() != null)
-                    if (!e.getPlayer().getServer().getInfo().equals(server))
-                        e.getPlayer().connect(server);
-                Main.getInstance().getProxy().broadcast(new TextComponent("Player send to " + server.getName()));
-            }
-        },500, TimeUnit.MILLISECONDS);
 
+        ServerInfo server = Main.getInstance().getServerManager().getServerBestFit(e.getPlayer());
+        if (e.getPlayer().getServer() != null)
+            if (!e.getPlayer().getServer().getInfo().equals(server))
+                e.getPlayer().connect(server);
+        Main.getInstance().getProxy().broadcast(new TextComponent("Player send to " + server.getName()));
 
 
     }

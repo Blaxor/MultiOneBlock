@@ -1,1 +1,7 @@
 server-name: 'oneblock1'
+hostname: hostname
+port: 3306
+database: database
+username: username
+password: password
+cooldown-confirmation: 10

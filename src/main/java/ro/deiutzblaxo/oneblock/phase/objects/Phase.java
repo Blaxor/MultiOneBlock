@@ -44,12 +44,14 @@ public class Phase {
     private int entityTotal = 0;
     private List<String> startCommands;//not implemented
     private List<String> endCommands;// not implemented
+    private boolean reset = false;
    //todo private List<Requirement> requirements;
 
-   public Phase(int blockNumber) {
+   public Phase(int blockNumber,PhaseObject firstBlock) {
        this.blockNumber = blockNumber;
        startCommands = new ArrayList<>();
        endCommands = new ArrayList<>();
+       this.firstBlock = firstBlock;
        //requirements = new ArrayList<>();
    }
     /**
@@ -108,6 +110,13 @@ public class Phase {
             temp = probMap2.firstEntry().getValue();
         }
         return new PhaseObject(temp);
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+    public void setReset(boolean bol){
+        reset = bol;
     }
 
     @Override

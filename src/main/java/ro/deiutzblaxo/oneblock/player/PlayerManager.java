@@ -5,8 +5,12 @@ import org.bukkit.Bukkit;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.player.events.PlayerLoadEvent;
 import ro.deiutzblaxo.oneblock.player.events.PlayerUnLoadEvent;
+import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
+import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.nexs.db.manager.exception.NoDataFoundException;
 
 
+import javax.swing.text.TabableView;
 import java.util.HashMap;
 
 import java.util.UUID;
@@ -24,9 +28,6 @@ public class PlayerManager {
     }
 
     public PlayerOB getPlayer(UUID player) {
-        if(!players.containsKey(player))
-            return new PlayerOB(player);
-
         return players.get(player);
     }
 
@@ -39,7 +40,21 @@ public class PlayerManager {
         return event.getPlayer();
     }
 
+    public String getUUIDByName(String name) throws PlayerNoExistException {
+        try {
+            return plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME",name,"UUID");
+        } catch (NoDataFoundException e) {
+            throw new PlayerNoExistException("Player " + name + " don`t exist in database!");
+        }
+    }
 
+    public String getServerByPlayerUUID(String uuid){
+        try {
+            return plugin.getDbManager().getString(TableType.PLAYERS.table,"SERVER","UUID",uuid);
+        } catch (NoDataFoundException e) {
+            return "none";
+        }
+    }
 
     public void unloadPlayer(UUID player) {
         if (!players.containsKey(player)) {

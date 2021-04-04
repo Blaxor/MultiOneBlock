@@ -49,9 +49,10 @@ public class BreakEvent implements Listener {
             return;
         }
         Location l = event.getLocation();
-        Location island = plugin.getIslandManager().getIsland(event.getLocation().getWorld().getName()).getMiddleBlock().getLocation();
-        if(island == null)
+        Island isl = plugin.getIslandManager().getIsland(event.getLocation().getWorld().getName());
+        if(isl == null)
             return;
+        Location island = isl.getMiddleBlock().getLocation();
         if(l.getBlockX() == island.getBlockX() && l.getBlockY() == island.getBlockY() && l.getBlockZ() == island.getBlockZ() ){
             event.setCancelled(true);
         }
@@ -59,6 +60,8 @@ public class BreakEvent implements Listener {
     @EventHandler(priority = EventPriority.NORMAL,ignoreCancelled = true)
     public void onDecay(LeavesDecayEvent event){
         Island island = plugin.getIslandManager().getIsland(event.getBlock().getLocation().getWorld().getName());
+        if(island == null)
+            return;
         if(!island.getMiddleBlock().getLocation().equals(event.getBlock().getLocation()) || island == null){
             return;
         }
@@ -66,7 +69,7 @@ public class BreakEvent implements Listener {
     }
 
     public void process(Island island, Block block) {
-        island.setCount(island.getCount()+1);
+        island.getMeta().setCount(island.getMeta().getCount()+1);
 
         if (plugin.getPhaseManager().isReady(island))
         Bukkit.getPluginManager().callEvent(new ChangePhaseEvent(plugin,island));

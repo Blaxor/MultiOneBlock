@@ -1,15 +1,22 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
+import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.island.IslandMeta;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerManager;
+import ro.deiutzblaxo.oneblock.player.PlayerOB;
+import ro.deiutzblaxo.oneblock.player.RANK;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class IslandTeleportCommand implements SubCommand {
 
@@ -17,22 +24,40 @@ public class IslandTeleportCommand implements SubCommand {
     String permission;
     HashMap<String, SubCommand> subCommands = new HashMap<>();
     Command parent;
+    OneBlock plugin;
 
-    public IslandTeleportCommand(String aliases[],String permission,Command parent){
+    public IslandTeleportCommand(OneBlock plugin , String aliases[], String permission, Command parent) {
         this.aliases = aliases;
-        this.permission = parent.getPermission()+"."+permission;
+        this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
-        Block data;
+        this.plugin = plugin;
+
+        for (String aliase : aliases)
+            this.parent.addSubCommand(aliase, this);
 
     }
 
     @Override
     public void execute(CommandSender sender, List<String> args) {
 
-        if(sender instanceof Player) {
-            Player player = (Player) sender;
-            player.teleport(OneBlock.getInstance().getPlayerManager().getPlayer(player.getUniqueId()).getOverworld(false).getSpawnLocation());
-            sender.sendMessage("YEEEE SUB COMANDA MERGEEEEEEE!!!!!!!!!!!!!");
+        if (sender instanceof Player) {
+
+
+                Player player = (Player) sender;
+                PlayerOB playerOB = plugin.getPlayerManager().getPlayer(player.getUniqueId());
+                Island island = plugin.getIslandManager().getIsland(playerOB.getIsland());
+                if (island == null) {
+                    island= plugin.getIslandManager().loadIsland(playerOB.getIsland() == null ? "WORLD_"+playerOB.getPlayer(): playerOB.getIsland());
+                    IslandMeta meta = island.getMeta();
+                    if(!meta.getMembers().containsKey(player.getUniqueId())){
+                        meta.getMembers().put(player.getUniqueId(), RANK.OWNER);
+                        island.setMeta(meta);
+                    }
+                }
+
+                playerOB.setIsland(island.getUuidIsland());
+                island.teleportHere(((Player) sender).getPlayer());
+                sender.sendMessage(plugin.getLangManager().get(MESSAGE.TELEPORTED_TO_ISLAND));
         }
 
     }
@@ -49,7 +74,12 @@ public class IslandTeleportCommand implements SubCommand {
 
     @Override
     public void addSubCommand(String command, SubCommand subCommand) {
-        subCommands.put(command,subCommand);
+        subCommands.put(command, subCommand);
+    }
+
+    @Override
+    public OneBlock getPlugin() {
+        return plugin;
     }
 
     @Override

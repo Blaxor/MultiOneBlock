@@ -1,7 +1,13 @@
 name: OneBlock
 version: ${project.version}
 main: ro.deiutzblaxo.oneblock.OneBlock
+author: JDeiutz
 api-version: 1.16
 commands:
-  test:
   island:
+    aliases: [is]
+  test:
+  message:
+    aliases: [msg,pm]
+  global:
+

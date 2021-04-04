@@ -1,15 +1,12 @@
 package ro.deiutzblaxo.oneblock.player.events;
 
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import ro.deiutzblaxo.oneblock.island.events.IslandUnLoadEvent;
-import ro.deiutzblaxo.oneblock.island.Island;
-import ro.deiutzblaxo.oneblock.island.IslandType;
 import ro.deiutzblaxo.oneblock.OneBlock;
+import ro.deiutzblaxo.oneblock.communication.action.chat.global.ChatGlobalSender;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.deiutzblaxo.oneblock.player.eventlisteners.ChatListener;
 
 import java.util.UUID;
 import java.util.logging.Level;
@@ -23,25 +20,11 @@ public class PlayerUnLoadEvent extends Event {
     public PlayerUnLoadEvent(OneBlock plugin, UUID player_){
         player = plugin.getPlayerManager().getPlayer(player_);
         player.getAutosave().cancel();
-        Island island = player.getOverworld();
-        Bukkit.getPluginManager().callEvent(new IslandUnLoadEvent(plugin,island));
-        plugin.getDbManager().set(TableType.PLAYERS.table, IslandType.WORLD.name(), "UUID", island.getUuidIsland(), player.getPlayer().toString());
-        island = player.getNether();
-        if(island!= null) {
-            Bukkit.getPluginManager().callEvent(new IslandUnLoadEvent(plugin,island));
-            plugin.getDbManager().set(TableType.PLAYERS.table, IslandType.NETHER.name(), "UUID", island.getUuidIsland(), player.getPlayer().toString());
-        }
-
-        island = player.getThe_end();
-        if(island!= null) {
-            Bukkit.getPluginManager().callEvent(new IslandUnLoadEvent(plugin,island));
-            plugin.getDbManager().set(TableType.PLAYERS.table, IslandType.END.name(), "UUID", island.getUuidIsland(), player.getPlayer().toString());
-        }
+        player.setServer("none");
         player.save();
-        plugin.getPlayerManager().getPlayers().remove(player);
-        plugin.getLogger().log(Level.WARNING, "The player" + player.toString() + "(" + player + ") unloaded");
-
-
+        plugin.getPlayerManager().getPlayers().remove(player_);
+        ChatListener.globalRecipients.remove(player);
+        plugin.getLogger().log(Level.INFO, "The player" + player.toString() + " (" + player + ") unloaded");
     }
 
 

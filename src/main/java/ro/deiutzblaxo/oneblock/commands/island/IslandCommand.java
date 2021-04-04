@@ -1,6 +1,5 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
-import com.google.common.base.Suppliers;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -8,31 +7,34 @@ import org.bukkit.command.TabCompleter;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
-import ro.deiutzblaxo.oneblock.player.PlayerOB;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class IslandCommand implements Command, CommandExecutor, TabCompleter {
 
-    String[] aliases;
-    String permission;
-    HashMap<String, SubCommand> subCommands = new HashMap<>();
+    protected String[] aliases;
+    protected String permission;
+    protected HashMap<String, SubCommand> subCommands = new HashMap<>();
+    protected OneBlock plugin;
 
-    public IslandCommand(OneBlock plugin ,String aliases[], String permission){
+    public IslandCommand(OneBlock plugin, String aliases[], String permission) {
         this.aliases = aliases;
-        this.permission = permission;
+        this.permission = "oneblock." + permission;
         PluginCommand command = plugin.getCommand("island");
         command.setExecutor(this);
         command.setAliases(Arrays.asList(this.aliases.clone()));
         command.setTabCompleter(this);
-        subCommands.put("teleport",new IslandTeleportCommand(new String[]{""},"teleport",this));
-
+        subCommands.put("teleport", new IslandTeleportCommand(plugin, new String[]{"tp", "go"}, "teleport", this));
+        subCommands.put("phases", new IslandPhase(plugin, new String[]{"p", "phase", "etapa"}, "phases", this));
+        subCommands.put("team", new IslandTeam(plugin, new String[]{"t", "echipa"}, "team", this));
+        subCommands.put("kick", new IslandKick(plugin, new String[]{}, "kick", this));
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
-        if(!doCommand(sender,new ArrayList<>(Arrays.asList(args))))
+
+        if (!doCommand(sender, new ArrayList<>(Arrays.asList(args))))
             return false;
         //what command can do ->
         sender.sendMessage("this is the island command");
@@ -51,12 +53,18 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
 
     @Override
     public void addSubCommand(String command, SubCommand subCommand) {
-        subCommand.addSubCommand(command.toLowerCase(Locale.ROOT),subCommand);
+        subCommands.put(command.toLowerCase(Locale.ROOT), subCommand);
     }
-    public HashMap<String, SubCommand> getSubCommands(){
+
+    public HashMap<String, SubCommand> getSubCommands() {
+
         return subCommands;
     }
 
+    @Override
+    public OneBlock getPlugin() {
+        return plugin;
+    }
 
     /**
      * Requests a list of possible completions for a command argument.
@@ -73,6 +81,6 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command command, String alias, String[] args) {
-        return null;
+        return doTabComplete(sender, new ArrayList<>(Arrays.asList(args)));
     }
 }

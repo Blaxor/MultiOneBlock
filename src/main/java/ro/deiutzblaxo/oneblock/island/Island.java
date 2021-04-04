@@ -3,22 +3,22 @@ package ro.deiutzblaxo.oneblock.island;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.*;
-import org.bukkit.block.Biome;
+import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import ro.deiutzblaxo.oneblock.OneBlock;
-import ro.deiutzblaxo.oneblock.island.events.IslandDeleteEvent;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
 import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
 import ro.deiutzblaxo.oneblock.utils.TableType;
-import ro.deiutzblaxo.oneblock.utils.UTILS;
-import ro.nexs.db.manager.exception.NoDataFoundException;
 
-import java.util.HashMap;
+import java.sql.Blob;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -26,94 +26,71 @@ import java.util.logging.Level;
 @Setter
 public class Island {
 
-
-
-    private HashMap<UUID, RANK> members;
+    private OneBlock plugin;
     private String uuidIsland;
-    private IslandType type;
+    private String server;
     private SlimeWorld world;
-    private String server;//TODO
-    private Location spawnLocation;
     private World bukkitWorld;
-    private int count;
-    private Phase phase;
+    private IslandMeta meta;
     private BukkitTask autosave;
+    private Phase phase;
 
-    public void setPhase(Phase phase) {
-        OneBlock.getInstance().getLogger().log(Level.INFO,phase.getPhaseName()+","+phase.getBlockNumber());
-        this.phase = phase;
+
+    public Island(OneBlock plugin, String uuid, IslandMeta meta) {
+        this.meta = meta;
+        this.plugin = plugin;
+        this.uuidIsland = uuid;
+        this.server = OneBlock.SERVER;
+        setPhase(plugin.getPhaseManager().getPhase(meta.getCount()));
+
+        autosave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            plugin.getLogger().log(Level.INFO, "Auto-Saving island ", uuidIsland);
+            save(false);
+        }, 20 * 60 * 5, 20 * 60 * 5);
     }
 
-    public Island(HashMap<UUID, RANK> members, String uuidIsland, IslandType type, int count) {
-        this.members = members;
-        this.uuidIsland = uuidIsland;
-        this.type = type;
-        this.count = count;
-        autosave =Bukkit.getScheduler().runTaskTimerAsynchronously(OneBlock.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                OneBlock.getInstance().getLogger().log(Level.INFO,"Auto-Saving island " , uuidIsland );
-                save();
+
+    public void save(boolean unload) {
+        try {
+            plugin.getLogger().log(Level.INFO, "Saving island " + uuidIsland);
+            Blob blob = plugin.getDbConnection().getConnection().createBlob();
+            byte[] seril = meta.serialize();
+            blob.setBytes(1, seril);
+            if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuidIsland)) {
+                plugin.getDbManager().setBlob(TableType.ISLANDS.table, "META", "UUID", (com.mysql.jdbc.Blob) blob, uuidIsland);
+                plugin.getDbManager().setString(TableType.ISLANDS.table, "SERVER", "UUID", server, uuidIsland);
+                WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
+                plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
+                return;
             }
-        },20*60*5,20*60*5);
-        setPhase(OneBlock.getInstance().getPhaseManager().getPhase(count));
+            plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, blob, server});
+            WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
+
+            plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadWorld() {
-        OneBlock.getInstance().getLogger().log(Level.INFO, "loading island " + world.getName());
-        if (Bukkit.getWorld(getWorld().getName()) == null)
-            OneBlock.getInstance().getSlimePlugin().generateWorld(world);
-        bukkitWorld = Bukkit.getWorld(getWorld().getName());
 
+        plugin.getLogger().log(Level.INFO, "Loading world" + world.getName());
+        plugin.getSlimePlugin().generateWorld(world);
+
+        bukkitWorld = Bukkit.getWorld(world.getName());
         if (getMiddleBlock().getType() == Material.AIR) {
-            getMiddleBlock().setType(Material.GRASS_BLOCK);
+            getMiddleBlock().setType(getPhase().getFirstBlock().getMaterial());
         }
-        try {
-            setSpawnLocation(OneBlock.getInstance().getDbManager().get(TableType.ISLANDS.table, "SPAWNX", "UUID", uuidIsland, Double.class),
-                    OneBlock.getInstance().getDbManager().get(TableType.ISLANDS.table, "SPAWNY", "UUID", uuidIsland, Double.class),
-                    OneBlock.getInstance().getDbManager().get(TableType.ISLANDS.table, "SPAWNZ", "UUID", uuidIsland, Double.class));
-        } catch (NoDataFoundException e) {
-            e.printStackTrace();
-        }
-        switch (type){
-            case WORLD:
-                ChunkUtils.changeBiome(bukkitWorld,phase.getPhaseBiome(),200);
-                break;
-            case NETHER:
-                ChunkUtils.changeBiome(bukkitWorld, Biome.NETHER_WASTES,100);
-                break;
-            case END:
-                ChunkUtils.changeBiome(bukkitWorld,Biome.THE_END,50);
-                break;
-        }
+        setSpawnLocation(meta.getXSpawn(), meta.getYSpawn(), meta.getZSpawn());
+        changeBorder();
+        ChunkUtils.changeBiome(plugin, this);
 
     }
-    public void save(){
-        OneBlock plugin = OneBlock.getInstance();
-        Bukkit.getScheduler().runTaskLater(plugin,() -> {
-            if(this.getMembers().isEmpty()){
-                Bukkit.getPluginManager().callEvent(new IslandDeleteEvent(plugin,null,this));
-                return;
-            }
-            //TODO TEST ^^^^^^^^^^^^^^^
-            //TODO DELETE ISLAND ON ELSE
-            WorldUtil.saveSlimeWorld(this.getWorld(), false);
-            plugin.getDbManager().set(TableType.ISLANDS.table, "MEMBERS", "UUID", UTILS.fromHashMapToString(this.getMembers()), this.getUuidIsland());
-            plugin.getDbManager().set(TableType.ISLANDS.table, "SERVER", "UUID", "nothing", this.getUuidIsland());
-            Location loc = this.getSpawnLocation();
-            plugin.getDbManager().set(TableType.ISLANDS.table, "SPAWNX", "UUID", loc.getX(), this.getUuidIsland());
-            plugin.getDbManager().set(TableType.ISLANDS.table, "SPAWNY", "UUID", loc.getY(), this.getUuidIsland());
-            plugin.getDbManager().set(TableType.ISLANDS.table, "SPAWNZ", "UUID", loc.getZ(), this.getUuidIsland());
-            plugin.getDbManager().set(TableType.ISLANDS.table, "COUNT", "UUID", this.getCount(), this.getUuidIsland());
-            plugin.getLogger().log(Level.INFO, "Island " + this.getUuidIsland() + " saved");
-            plugin.getIslandManager().getIslands().remove(this.getUuidIsland());
-        },2);
 
-    }
-    public UUID getOwner(){
+    public UUID getOwner() {
         UUID uuidPlayer = null;
-        for(UUID uuid : members.keySet()){
-            if(members.get(uuid).equals(RANK.OWNER)){
+        for (UUID uuid : meta.getMembers().keySet()) {
+            if (meta.getMembers().get(uuid).equals(RANK.OWNER)) {
                 uuidPlayer = uuid;
                 break;
             }
@@ -122,16 +99,42 @@ public class Island {
     }
 
 
-    public void teleportHere(Player player){
-        player.teleport(getSpawnLocation());
-
-
+    public void teleportHere(Player player) {
+        player.teleport(new Location(bukkitWorld, meta.getXSpawn(), meta.getYSpawn(), meta.getZSpawn()));
     }
+
     public Block getMiddleBlock() {
         return bukkitWorld.getBlockAt(0, 81, 0);
     }
 
     public void setSpawnLocation(double x, double y, double z) {
-        spawnLocation = new Location(bukkitWorld, x, y, z);
+        meta.setXSpawn(x);
+        meta.setYSpawn(y);
+        meta.setZSpawn(z);
+    }
+
+    public boolean isLocked() {
+        return meta.isLocked();
+    }
+
+    public void setLocked(boolean locked) {
+        meta.setLocked(locked);
+    }
+
+    public void changeBorder() {
+        bukkitWorld.getWorldBorder().setSize(meta.getRadius() * 2);
+        bukkitWorld.getWorldBorder().setCenter(0, 0);
+
+    }
+
+    public void setPhase(Phase phase) {
+        plugin.getLogger().log(Level.INFO, "Changed the phase of island " + uuidIsland + " to " + phase.getPhaseName());
+        this.phase = phase;
+
+
+    }
+
+    public Location getSpawnLocation() {
+        return new Location(bukkitWorld, meta.getXSpawn(), meta.getYSpawn(), meta.getZSpawn());
     }
 }

@@ -22,7 +22,7 @@ public class ServerManager {
         String uuid = player.getUniqueId().toString();
         if (plugin.getDbManager().existString(TableTypes.PLAYERS.table, "UUID", uuid)) {
             try {
-                String uuidisland = plugin.getDbManager().getString(TableTypes.PLAYERS.table, "WORLD", "UUID", uuid);
+                String uuidisland = plugin.getDbManager().getString(TableTypes.PLAYERS.table, "ISLAND", "UUID", uuid);
                 String server = plugin.getDbManager().getString(TableTypes.ISLANDS.table, "SERVER", "UUID", uuidisland);
                 if (!server.equalsIgnoreCase("nothing")) {
                     ServerInfo[] info = (ServerInfo[]) onlineServers.stream().filter(serverInfo -> serverInfo.getName().equalsIgnoreCase(server)).toArray();
@@ -30,20 +30,25 @@ public class ServerManager {
                         return info[0];
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         onlineServers.sort(Collections.reverseOrder(Comparator.comparingInt(o -> o.getPlayers().size())));
 
-        return onlineServers.size() == 0 ? player.getServer().getInfo(): onlineServers.get(onlineServers.size()-1);
+        return onlineServers.size() == 0 ? player.getServer().getInfo() : onlineServers.get(onlineServers.size() - 1);
     }
 
     public void checkServers() {
         ProxyServer proxy = plugin.getProxy();
         Map<String, ServerInfo> allServers = proxy.getServers();
         allServers.values().forEach(server -> server.ping((result, error) -> {
-            if (error == null)
-                onlineServers.add(server);
-            else onlineServers.remove(server);
+            if (error == null) {
+                if (!onlineServers.contains(server)) {
+                    onlineServers.add(server);
+                }
+            } else {
+                onlineServers.remove(server);
+            }
 
         }));
     }

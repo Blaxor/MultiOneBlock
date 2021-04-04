@@ -9,7 +9,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.phase.gui.PhaseMenu;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
+import ro.deiutzblaxo.oneblock.phase.objects.PhaseObject;
 import ro.deiutzblaxo.oneblock.phase.objects.RARITY;
 import ro.deiutzblaxo.oneblock.utils.UTILS;
 
@@ -22,36 +24,47 @@ public class PhaseManager {
 
     @Getter
     private TreeMap<Integer, Phase> phaseHashMap = new TreeMap<Integer, Phase>();
+    private OneBlock plugin;
 
-    public void populatePhases(){
-        File file = new File(OneBlock.getInstance().getDataFolder() , "/phases/");
-        if(!file.exists()){
+    public PhaseManager(OneBlock plugin) {
+        this.plugin = plugin;
+    }
+
+
+    public void populatePhases() {
+        File file = new File(plugin.getDataFolder(), "/phases/");
+        if (!file.exists()) {
             return;
         }
         File[] files = file.listFiles();
-        OneBlock.getInstance().getLogger().log(Level.INFO,"before for for files");
-        for(File phaseFile : files){
+        plugin.getLogger().log(Level.INFO, "before for for files");
+        for (File phaseFile : files) {
 
             FileConfiguration phaseConfig = YamlConfiguration.loadConfiguration(phaseFile);
-            OneBlock.getInstance().getLogger().log(Level.INFO,file.getName());
+            plugin.getLogger().log(Level.INFO, file.getName());
             int count = phaseConfig.getInt("start");
-            Phase phase = new Phase(count);
-            OneBlock.getInstance().getLogger().log(Level.INFO,count+"");
-            phaseHashMap.put(count,phase);
-            for(String key : phaseConfig.getConfigurationSection("blocks").getKeys(false)){
-                phase.addBlock(Material.getMaterial(key),phaseConfig.getInt("blocks."+key));
-                OneBlock.getInstance().getLogger().log(Level.INFO,key);
+            PhaseObject firstBlock = new PhaseObject(Material.valueOf(phaseConfig.getString("firstblock")), 9999999);
+            Phase phase = new Phase(count, firstBlock);
+
+
+            phaseHashMap.put(count, phase);
+            for (String key : phaseConfig.getConfigurationSection("blocks").getKeys(false)) {
+                phase.addBlock(Material.getMaterial(key), phaseConfig.getInt("blocks." + key));
+
             }
-            if(phaseConfig.contains("mobs"))
-            for(String key : phaseConfig.getConfigurationSection("mobs").getKeys(false)){
-                phase.addMob(EntityType.valueOf(key),phaseConfig.getInt("mobs."+key));
-            }
-            if(phaseConfig.contains("chest")){
-                for(String str : phaseConfig.getConfigurationSection("chest").getKeys(false)){//lista cu chesturi
+            if (phaseConfig.contains("reset"))
+                phase.setReset(phaseConfig.getBoolean("reset"));
+
+            if (phaseConfig.contains("mobs"))
+                for (String key : phaseConfig.getConfigurationSection("mobs").getKeys(false)) {
+                    phase.addMob(EntityType.valueOf(key), phaseConfig.getInt("mobs." + key));
+                }
+            if (phaseConfig.contains("chest")) {
+                for (String str : phaseConfig.getConfigurationSection("chest").getKeys(false)) {//lista cu chesturi
                     HashMap<Integer, ItemStack> items = new HashMap<>();
-                    for(String nr : phaseConfig.getConfigurationSection("chest."+str+".items.").getKeys(false)) // lista cu iteme
-                    items.put(Integer.valueOf(nr),UTILS.deserial(phaseConfig.getString("chest."+str+".items."+nr)));
-                    phase.addChest(items,RARITY.COMMON);
+                    for (String nr : phaseConfig.getConfigurationSection("chest." + str + ".items.").getKeys(false)) // lista cu iteme
+                        items.put(Integer.valueOf(nr), UTILS.deserial(phaseConfig.getString("chest." + str + ".items." + nr)));
+                    phase.addChest(items, RARITY.COMMON);
                 }
 
             }
@@ -59,18 +72,21 @@ public class PhaseManager {
             phase.setPhaseBiome(Biome.valueOf(phaseConfig.getString("biome")));
         }
     }
-    public Phase getPhase(Integer block){
+
+    public Phase getPhase(Integer block) {
         return phaseHashMap.floorEntry(block).getValue();
-        }
-    public Phase getNexsPhase(Phase phase){
-        return phaseHashMap.higherEntry(phase.getBlockNumber()).getValue();
     }
-    public boolean isReady(Island island){
-        if(getPhase(island.getCount()) != island.getPhase()){
-            return true;
-        }else {
-            return false;
-        }
+
+    public Phase getNextPhase(Phase phase) {
+        Phase phaseNext = phaseHashMap.higherEntry(phase.getBlockNumber()).getValue();
+        if (phaseNext.isReset())
+            return getPhase(0);
+        else return phaseNext;
+    }
+
+    public boolean isReady(Island island) {
+        return getPhase(island.getMeta().getCount()) != island.getPhase() && !island.isLocked();
+
 
     }
 

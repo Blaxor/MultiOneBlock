@@ -1,11 +1,11 @@
 package ro.deiutzblaxo.oneblock.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import ro.deiutzblaxo.oneblock.OneBlock;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public interface Command {
@@ -16,36 +16,46 @@ public interface Command {
 
     void addSubCommand(String command, SubCommand subCommand);
 
-    default void noPermission(CommandSender sender){
+    OneBlock getPlugin();
+
+    default void noPermission(CommandSender sender) {
         sender.sendMessage("You don`t have perm");
     }
-    default void invalidArguments(CommandSender sender){
+
+    default void invalidArguments(CommandSender sender) {
         sender.sendMessage("Invalid Arguments");
     }
 
     HashMap<String, SubCommand> getSubCommands();
 
-    default boolean doCommand(CommandSender sender, List<String> args){
+    default boolean doCommand(CommandSender sender, List<String> args) {
 
-        if(args.size() > 0)
-            if(getSubCommands().containsKey(args.get(0))){
-                getSubCommands().get(args.get(0)).execute(sender,args.stream().skip(1).collect(Collectors.toList()));
+        if (args.size() > 0)
+            if (getSubCommands().containsKey(args.get(0))) {
+                getSubCommands().get(args.get(0)).execute(sender, args.stream().skip(1).collect(Collectors.toList()));
                 return false;
-            }else{
+            } else {
                 invalidArguments(sender);
                 return false;
             }
-        if(!sender.hasPermission(getPermission())) {
-            noPermission(sender);
-            return false;
-        }
+//        if (!sender.hasPermission(getPermission())) {
+//            noPermission(sender);
+//            return false; TODO ADD PERMISSION
+//        }
         return true;
 
     }
-    default List<String> doTabComplete(CommandSender sender, List<String> args){
-        if(args.size() > 0){
 
+    default List<String> doTabComplete(CommandSender sender, List<String> args) {
+        if (args.size() > 0)
+            if (getSubCommands().containsKey(args.get(0))) {
+                return getSubCommands().get(args.get(0)).doTabComplete(sender, args.stream().skip(1).collect(Collectors.toList()));
+
+            }
+        if (!sender.hasPermission(getPermission())) {
+            return new ArrayList<>();
         }
-        return (List<String>) getSubCommands().keySet();
+
+        return getSubCommands().keySet().stream().filter(s -> s.startsWith(args.size() == 0 ? "" : args.get(0))).collect(Collectors.toList());
     }
 }

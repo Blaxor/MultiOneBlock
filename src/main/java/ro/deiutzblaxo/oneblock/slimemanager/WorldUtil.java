@@ -4,17 +4,17 @@ import com.grinderwolf.swm.api.exceptions.*;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
-import com.grinderwolf.swm.api.world.properties.SlimeProperty;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import com.grinderwolf.swm.nms.CraftSlimeWorld;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import ro.deiutzblaxo.oneblock.OneBlock;
-import ro.deiutzblaxo.oneblock.island.IslandType;
+import ro.deiutzblaxo.oneblock.island.Island;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.logging.Level;
 
 public class WorldUtil {
@@ -70,34 +70,33 @@ public class WorldUtil {
     }
 
 
-    public static void saveSlimeWorld(SlimeWorld world, boolean unload) {
-        SlimeLoader loader = OneBlock.getInstance().getSlimePlugin().getLoader("mysql");
-        OneBlock.getInstance().getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
+    public static void saveSlimeWorld(OneBlock plugin, SlimeWorld world, boolean unload) {
+        SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
+        plugin.getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
         try {
             loader.saveWorld(world.getName(), convertToByte(world), true);
             if (unload) {
-                Bukkit.getScheduler().runTaskLater(OneBlock.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm unload " + world.getName());
-                    }
-                }, 3);
+                unloadSlimeWorld(plugin,world);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void deleteSlimeWorld(SlimeWorld world) {
-        SlimeLoader loader = OneBlock.getInstance().getSlimePlugin().getLoader("mysql");
-        OneBlock.getInstance().getLogger().log(Level.INFO, "deleting THE SLIME WORLD : " + world.getName());
+    public static void deleteSlimeWorld(OneBlock plugin, SlimeWorld world) {
+        SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
+        plugin.getLogger().log(Level.INFO, "deleting THE SLIME WORLD : " + world.getName());
 
-        Bukkit.getScheduler().runTaskLater(OneBlock.getInstance(), new Runnable() {
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm delete " + world.getName());
             }
         }, 3);
+    }
+    public static void unloadSlimeWorld(OneBlock plugin , SlimeWorld world){
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm unload " + world.getName()), 3);
     }
 
     /**
@@ -106,11 +105,11 @@ public class WorldUtil {
      * @param name UUID world
      * @return the slime world
      */
-    public static SlimeWorld loadSlimeWorld(String name,IslandType type) {
+    public static SlimeWorld loadSlimeWorld(OneBlock plugin, String name, Island island) {
         try {
 
-            SlimeWorld world = OneBlock.getInstance().getSlimePlugin().loadWorld(OneBlock.getInstance().getLoader(), name, true, getSlimePropertyMap(type));
-            OneBlock.getInstance().getSlimePlugin().generateWorld(world);
+            SlimeWorld world = plugin.getSlimePlugin().loadWorld(plugin.getLoader(), name, true, getSlimePropertyMap(island));
+            plugin.getSlimePlugin().generateWorld(world);
             return world;
         } catch (UnknownWorldException exception) {
             exception.printStackTrace();
@@ -133,7 +132,7 @@ public class WorldUtil {
      *
      * @return {@link SlimePropertyMap}
      */
-    public static SlimePropertyMap getSlimePropertyMap(IslandType type) {
+    public static SlimePropertyMap getSlimePropertyMap(Island island) {
         SlimePropertyMap slimePropertyMap = new SlimePropertyMap();
         slimePropertyMap.setBoolean(SlimeProperties.ALLOW_MONSTERS, true);
         slimePropertyMap.setBoolean(SlimeProperties.ALLOW_ANIMALS, true);
@@ -142,18 +141,11 @@ public class WorldUtil {
         slimePropertyMap.setInt(SlimeProperties.SPAWN_X, 0);
         slimePropertyMap.setInt(SlimeProperties.SPAWN_Z, 0);
         slimePropertyMap.setInt(SlimeProperties.SPAWN_Y, 82);
-        switch (type) {
-            case WORLD:
-                slimePropertyMap.setString(SlimeProperties.ENVIRONMENT, "normal");
-                break;
-            case NETHER:
-                slimePropertyMap.setString(SlimeProperties.ENVIRONMENT, "nether");
-                break;
-            case END:
-                slimePropertyMap.setString(SlimeProperties.ENVIRONMENT,"the_end");
-                break;
-                //env.equalsIgnoreCase("normal") || env.equalsIgnoreCase("nether") || env.equalsIgnoreCase("the_end");
-        }
+
+        slimePropertyMap.setString(SlimeProperties.ENVIRONMENT, "normal");
+        slimePropertyMap.setString(SlimeProperties.DEFAULT_BIOME, island.getPhase().getPhaseBiome().name().toLowerCase(Locale.ROOT));
+
+
         return slimePropertyMap;
     }
 

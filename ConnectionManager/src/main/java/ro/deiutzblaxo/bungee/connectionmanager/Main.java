@@ -2,6 +2,7 @@ package ro.deiutzblaxo.bungee.connectionmanager;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import ro.deiutzblaxo.bungee.connectionmanager.ServerManager.ServerManager;
+import ro.deiutzblaxo.bungee.connectionmanager.communication.PluginMessageListener;
 import ro.nexs.db.manager.connection.DBConnection;
 import ro.nexs.db.manager.manager.DBManager;
 
@@ -20,7 +21,12 @@ public final class Main extends Plugin {
         dbConnection = new DBConnection("localhost", 3306, "oneblock", "abc", "password");
         dbManager = new DBManager(dbConnection);
         manager = new ServerManager(this);
+        getProxy().registerChannel("oneblock:invite");
+        getProxy().registerChannel("oneblock:chat");
         getProxy().getPluginManager().registerListener(this, new EventListener());
+        getProxy().getPluginManager().registerListener(this, new PluginMessageListener());
+
+
 
     }
 

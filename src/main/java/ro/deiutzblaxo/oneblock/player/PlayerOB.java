@@ -2,103 +2,126 @@ package ro.deiutzblaxo.oneblock.player;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
-import ro.deiutzblaxo.oneblock.island.events.IslandLoadEvent;
+import ro.deiutzblaxo.oneblock.communication.action.invite.InviteResponses;
+import ro.deiutzblaxo.oneblock.communication.action.invite.RequestInvite;
+import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
+import ro.deiutzblaxo.oneblock.communication.action.invite.Invite;
 import ro.deiutzblaxo.oneblock.island.Island;
-import ro.deiutzblaxo.oneblock.island.IslandType;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.utils.TableType;
-import ro.nexs.db.manager.exception.DifferentArgLengthException;
-import ro.nexs.db.manager.manager.DBManager;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 @Getter
 
 public class PlayerOB {
 
-
+    private OneBlock plugin;
     private UUID player;
     @Setter
-    private Island overworld;
+    private String island;
     @Setter
-    private Island nether;
+    private String server;
     @Setter
-    private Island the_end;
+    private boolean globalChat = false;
+
     private BukkitTask autosave;
 
-    public PlayerOB(UUID player) {
+    private HashMap<SCOPE_CONFIRMATION, Integer> timers = new HashMap<>();
+    private HashMap<SCOPE_CONFIRMATION, List<Object>> participant = new HashMap<>();
+
+    //if is local invite , [0] - PlayerOB object of inviter , [1] - Island object of inviter
+    // if is multiserver , first object will be a RequestInvite object.
+
+
+    public PlayerOB(OneBlock plugin, UUID player) {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+
+            for (SCOPE_CONFIRMATION scope : timers.keySet()) {
+                if (timers.get(scope) <= 0) {
+                    timers.remove(scope);
+                    if (participant.containsKey(scope))
+                        switch (scope) {
+                            case INVITE:
+                                if (participant.get(scope).get(0) instanceof RequestInvite) {
+                                    RequestInvite invite = (RequestInvite) participant.get(scope).get(0);
+                                    Invite.sendResponse(plugin, Bukkit.getPlayer(player), new ResponseInvite(invite.invited, invite.inviter, InviteResponses.REJECT));
+                                    return;
+                                }
+                                PlayerOB inviter = (PlayerOB) participant.get(scope).get(0);
+                                Bukkit.getPlayer(inviter.getPlayer()).sendMessage("Player didn`t respond to your invite (PlayerOB.42)");
+                                Bukkit.getPlayer(player).sendMessage("The invitation expired!");
+                                break;
+
+
+                        }
+                    participant.remove(scope);
+                    return;
+                }
+                timers.put(scope, timers.get(scope) - 1);
+            }
+
+        }, 20, 20);
 
         this.player = player;
-        autosave = Bukkit.getScheduler().runTaskTimerAsynchronously(OneBlock.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                OneBlock.getInstance().getLogger().log(Level.INFO,"Auto-Saving island " , player.toString() );
-                save();
-            }
-        },20*60*5,20*60*5);
+        this.plugin = plugin;
+        this.server = OneBlock.SERVER;
+
+        autosave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            plugin.getLogger().log(Level.INFO, "Auto-Saving player ", player.toString());
+            save();
+        }, 20 * 60 * 5, 20 * 60 * 5);
 
     }
 
 
+    @SneakyThrows
     public void save() {
-        OneBlock.getInstance().getLogger().log(Level.INFO, "Saving player " + player.toString());
-        DBManager db = OneBlock.getInstance().getDbManager();
-        if (db.existString(TableType.PLAYERS.table, "UUID", player.toString())) {
+        plugin.getLogger().log(Level.INFO, "Saving player " + player.toString());
+        if (player != null) {
+            if (!plugin.getDbManager().existString(TableType.PLAYERS.table, "UUID", player.toString())) {
+                plugin.getDbManager().insert(TableType.PLAYERS.table, new String[]{"UUID", "SERVER"}, new Object[]{player.toString(), server});
 
-            db.setString(TableType.PLAYERS.table, IslandType.WORLD.name(), "UUID", overworld.getUuidIsland(), player.toString());
-            if (nether != null)
-                db.setString(TableType.PLAYERS.table, IslandType.NETHER.name(), "UUID", nether.getUuidIsland(), player.toString());
-            if (the_end != null)
-                db.setString(TableType.PLAYERS.table, IslandType.END.name(), "UUID", the_end.getUuidIsland(), player.toString());
-        } else {
-            try {
-                db.insert(TableType.PLAYERS.table, new String[]{"UUID"}//TODO ADDING ALL THE WORLDS
-                        , new String[]{player.toString()});
-                save();
-            } catch (DifferentArgLengthException e) {
-                e.printStackTrace();
+            } else {
+                plugin.getDbManager().set(TableType.PLAYERS.table, "SERVER", "UUID", server, player.toString());
+            }
+            if (island != null) {
+                plugin.getDbManager().set(TableType.PLAYERS.table, "ISLAND", "UUID", island.toString(), player.toString());
+            } else {
+                plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", player.toString(), "ISLAND");
             }
         }
-        OneBlock.getInstance().getLogger().log(Level.INFO, "Player " + player.toString() + " saved!");
+        plugin.getLogger().log(Level.INFO, "Player " + player.toString() + " saved!");
     }
 
-    public Island getOverworld(boolean forceLoad) {
+    public Island getIsland(boolean forceLoad) {
         if (forceLoad) {
-            Bukkit.getPluginManager().callEvent(new IslandLoadEvent(this, IslandType.WORLD));
+            plugin.getIslandManager().loadIsland(island);
         }
-        return overworld;
+        return plugin.getIslandManager().getIsland(island);
     }
 
-    public void setOverworld(Island overworld) {
-        this.overworld = overworld;
+    public boolean hasIsland() {
+        return island != null;
     }
 
-    public Island getNether(boolean forceLoad) {
-        if (forceLoad) {
-            Bukkit.getPluginManager().callEvent(new IslandLoadEvent(this, IslandType.NETHER));
+    public boolean isOnIsland() {
+        if (island == null)
+            return false;
+        if (Bukkit.getPlayer(player).getWorld().getName().equalsIgnoreCase(island)) {
+            return true;
         }
-        return nether;
+        return false;
+
     }
 
-    public void setNether(Island nether) {
-        this.nether = nether;
+    @Override
+    public String toString() {
+        return player.toString();
     }
-
-    public Island getThe_end(boolean forceLoad) {
-        if (forceLoad) {
-            Bukkit.getPluginManager().callEvent(new IslandLoadEvent(this, IslandType.END));
-        }
-        return the_end;
-    }
-
-
-    public void setThe_end(Island the_end) {
-        this.the_end = the_end;
-    }
-
-
 }

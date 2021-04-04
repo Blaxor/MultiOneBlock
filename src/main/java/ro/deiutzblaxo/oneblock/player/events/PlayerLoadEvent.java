@@ -1,9 +1,10 @@
 package ro.deiutzblaxo.oneblock.player.events;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import ro.deiutzblaxo.oneblock.island.IslandType;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.utils.TableType;
@@ -17,25 +18,20 @@ public class PlayerLoadEvent extends Event {
     @Getter
     private PlayerOB player;
 
+
+    @SneakyThrows
     public PlayerLoadEvent(OneBlock plugin, UUID player_) {
-        player = plugin.getPlayerManager().getPlayer(player_);
-        if (!plugin.getDbManager().exists(TableType.PLAYERS.table, "UUID", player_.toString())){
+        player = new PlayerOB(plugin, player_);
+        try {
+            player.setIsland(plugin.getDbManager().getString(TableType.PLAYERS.table, "ISLAND", "UUID", player_.toString()));
+        } catch (NoDataFoundException e) {
 
-            plugin.getPlayerManager().getPlayers().put(player_, player);
-            return;
         }
-
-
-            String islandUUID = IslandType.WORLD.name() + "_" + player_.toString();
-            try {
-                islandUUID = plugin.getDbManager().getString(TableType.PLAYERS.table, IslandType.WORLD.name(), "UUID", player.toString());
-            } catch (NoDataFoundException e) {
-            } finally {
-                player.setOverworld(plugin.getIslandManager().getIsland(player_, islandUUID, IslandType.WORLD));
-            }
-            plugin.getPlayerManager().getPlayers().put(player_, player);
-
-
+        player.setServer(OneBlock.SERVER);
+        player.save();
+        plugin.getPlayerManager().getPlayers().put(player_, player);
+        if (!plugin.getDbManager().existString(TableType.NAME.table, "UUID", player_.toString()))
+            plugin.getDbManager().insert(TableType.NAME.table, new String[]{"UUID", "NAME"}, new Object[]{player_.toString(), Bukkit.getPlayer(player_).getName()});
 
     }
 
