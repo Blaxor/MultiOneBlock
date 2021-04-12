@@ -28,6 +28,8 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
         subCommands.put("phases", new IslandPhase(plugin, new String[]{"p", "phase", "etapa"}, "phases", this));
         subCommands.put("team", new IslandTeam(plugin, new String[]{"t", "echipa"}, "team", this));
         subCommands.put("kick", new IslandKick(plugin, new String[]{}, "kick", this));
+        subCommands.put("tier", new IslandTier(plugin, new String[]{}, "tier", this));
+        subCommands.put("level", new IslandLevel(plugin, new String[]{"nivel"}, "level", this));
         this.plugin = plugin;
     }
 

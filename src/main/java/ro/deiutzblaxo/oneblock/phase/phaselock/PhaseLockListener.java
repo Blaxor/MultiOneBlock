@@ -2,7 +2,6 @@ package ro.deiutzblaxo.oneblock.phase.phaselock;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -42,7 +41,7 @@ public class PhaseLockListener implements Listener {
         if (event.getItemInHand() != null) {
             ItemStack item = event.getItemInHand();
             if (item.hasItemMeta()) {
-                if (item.containsEnchantment(Enchantment.getByName("look"))) {
+                if (item.containsEnchantment(Enchantment.getByName("lock"))) {
                     event.setCancelled(true);
                     event.getPlayer().openInventory(PhaseLock.openInventory(plugin));
                 }

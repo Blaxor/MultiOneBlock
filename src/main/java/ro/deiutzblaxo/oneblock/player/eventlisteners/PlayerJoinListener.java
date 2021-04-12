@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.IslandMeta;
+import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.RANK;
 
@@ -19,22 +20,23 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin,() -> {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             PlayerOB playerOB = plugin.getPlayerManager().loadPlayer(event.getPlayer().getUniqueId());
             Island island = plugin.getIslandManager().getIsland(playerOB.getIsland());
             if (island == null) {
-                island= plugin.getIslandManager().loadIsland(playerOB.getIsland() == null ? "WORLD_"+playerOB.getPlayer(): playerOB.getIsland());
+                island = plugin.getIslandManager().loadIsland(playerOB.getIsland() == null ? "WORLD_" + playerOB.getPlayer() : playerOB.getIsland());
                 IslandMeta meta = island.getMeta();
-                if(!meta.getMembers().containsKey(playerOB.getPlayer())){
+                if (!meta.getMembers().containsKey(playerOB.getPlayer())) {
                     meta.getMembers().put(playerOB.getPlayer(), RANK.OWNER);
                     island.setMeta(meta);
                 }
 
             }
-
+            island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
             playerOB.setIsland(island.getUuidIsland());
+            island.changeBorder();
 
-        },5);
+        }, 5);
 
     }
 }

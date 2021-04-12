@@ -3,7 +3,6 @@ package ro.deiutzblaxo.oneblock.island;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import ro.deiutzblaxo.oneblock.OneBlock;
+import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
@@ -43,10 +43,12 @@ public class Island {
         this.server = OneBlock.SERVER;
         setPhase(plugin.getPhaseManager().getPhase(meta.getCount()));
 
+
         autosave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             plugin.getLogger().log(Level.INFO, "Auto-Saving island ", uuidIsland);
             save(false);
         }, 20 * 60 * 5, 20 * 60 * 5);
+
     }
 
 
@@ -111,6 +113,7 @@ public class Island {
         meta.setXSpawn(x);
         meta.setYSpawn(y);
         meta.setZSpawn(z);
+        
     }
 
     public boolean isLocked() {
@@ -122,7 +125,7 @@ public class Island {
     }
 
     public void changeBorder() {
-        bukkitWorld.getWorldBorder().setSize(meta.getRadius() * 2);
+        bukkitWorld.getWorldBorder().setSize(BorderHandler.getRadius(this.getMeta().getRadiusType(), this.getMeta().getRadiusTire()) * 2);
         bukkitWorld.getWorldBorder().setCenter(0, 0);
 
     }

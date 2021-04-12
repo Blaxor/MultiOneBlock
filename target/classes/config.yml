@@ -5,3 +5,11 @@ database: database
 username: username
 password: password
 cooldown-confirmation: 10
+
+radius:
+  member:
+    tiers: '25,50,75,100'
+    permission: 'oneblock.radius.member'
+  noble:
+    tiers: '30,55,80,105'
+    permission: 'oneblock.radius.noble'

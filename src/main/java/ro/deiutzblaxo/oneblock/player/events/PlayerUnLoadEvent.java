@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import ro.deiutzblaxo.oneblock.OneBlock;
-import ro.deiutzblaxo.oneblock.communication.action.chat.global.ChatGlobalSender;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.ChatListener;
 

@@ -7,7 +7,6 @@ import ro.deiutzblaxo.oneblock.customenchants.enchants.GlowEnchant;
 import ro.deiutzblaxo.oneblock.customenchants.enchants.LockEnchant;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EnchantsManager {
@@ -20,6 +19,7 @@ public class EnchantsManager {
         registerEnchantment(new LockEnchant(plugin, "lock"));
 
 
+
     }
 
     public static ItemStack addGlow(ItemStack item) {
@@ -28,7 +28,7 @@ public class EnchantsManager {
     }
 
 
-    private static void registerEnchantment(Enchantment enchantment) {
+    public static void registerEnchantment(Enchantment enchantment) {
         boolean registered = true;
         try {
             Field f = Enchantment.class.getDeclaredField("acceptingNew");

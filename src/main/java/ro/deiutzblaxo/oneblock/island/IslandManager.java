@@ -64,6 +64,7 @@ public class IslandManager {
             island.save(false);
 
         islands.remove(island.getUuidIsland());
+        plugin.getIslandLevelManager().cancelCalculation(island);
         island.getAutosave().cancel();
         WorldUtil.unloadSlimeWorld(plugin, island.getWorld());
     }

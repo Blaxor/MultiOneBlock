@@ -19,9 +19,11 @@ public class IslandMeta implements Serializable {
     private double YBlock = 81;
     private double ZBlock = 0;
     private int count = 0;
-    private int radius = 25;//TODO implementation per rank
+    private String radiusType = "member";
+    private int radiusTire = 1;
     private boolean locked = false;
-    
+    private long levelPoints = 0;
+
     protected static IslandMeta deserialize(InputStream stream) throws Exception {
         ObjectInputStream ois = new ObjectInputStream(stream);
         try {
@@ -39,19 +41,5 @@ public class IslandMeta implements Serializable {
         return baos.toByteArray();
     }
 
-    @Override
-    public String toString() {
-        return "IslandMeta{" +
-                "members=" + members +
-                ", XSpawn=" + XSpawn +
-                ", YSpawn=" + YSpawn +
-                ", ZSpawn=" + ZSpawn +
-                ", XBlock=" + XBlock +
-                ", YBlock=" + YBlock +
-                ", ZBlock=" + ZBlock +
-                ", count=" + count +
-                ", radius=" + radius +
-                ", locked=" + locked +
-                '}';
-    }
+
 }
