@@ -2,6 +2,7 @@ package ro.deiutzblaxo.oneblock;
 
 import com.grinderwolf.swm.api.SlimePlugin;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ro.deiutzblaxo.oneblock.commands.chat.GlobalCommand;
@@ -24,12 +25,13 @@ import ro.deiutzblaxo.oneblock.player.PlayerManager;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.ChatListener;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.PlayerJoinListener;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.PlayerQuitListener;
-import ro.deiutzblaxo.oneblock.utils.DBManager;
 import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.deiutzblaxo.oneblock.utils.database.DBManager;
 import ro.nexs.db.manager.connection.DBConnection;
 
 import java.util.logging.Level;
 
+@Getter
 public final class OneBlock extends JavaPlugin {
     private DBConnection dbConnection;
 
@@ -60,6 +62,7 @@ public final class OneBlock extends JavaPlugin {
         getDbManager().createTable(TableType.PLAYERS.table, new String[]{"UUID varchar(256)", "ISLAND varchar(256)", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.ISLANDS.table, new String[]{"UUID varchar(256)", "META BLOB", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.NAME.table, new String[]{"NAME varchar(256)", "UUID varchar(256)"});
+        getDbManager().createTable(TableType.LEVEL.table, new String[]{"UUID varchar(256)", "LEVEL INT"});
         this.playerManager = new PlayerManager(this);
         this.islandManager = new IslandManager(this);
         this.slimePlugin = (SlimePlugin) getServer().getPluginManager().getPlugin("SlimeWorldManager");
@@ -103,7 +106,7 @@ public final class OneBlock extends JavaPlugin {
             sender.sendMessage(" ");
             sender.sendMessage(" ");
             sender.sendMessage("Calculating island level");
-            islandLevelManager.addInQueue(island);
+            islandLevelManager.getIslandLevelCalculateManager().addInQueue(island);
             try {
                 player.getInventory().addItem(BorderHandler.getItemByTier(island.getMeta().getRadiusType(), island.getMeta().getRadiusTire() + 1));
             } catch (Exception e) {
@@ -152,7 +155,4 @@ public final class OneBlock extends JavaPlugin {
         return this.langManager;
     }
 
-    public IslandLevelManager getIslandLevelManager() {
-        return this.islandLevelManager;
-    }
 }

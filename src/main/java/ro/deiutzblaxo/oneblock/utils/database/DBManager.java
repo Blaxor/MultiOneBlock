@@ -1,19 +1,19 @@
-package ro.deiutzblaxo.oneblock.utils;
+package ro.deiutzblaxo.oneblock.utils.database;
+
 
 import ro.nexs.db.manager.connection.DBConnection;
 import ro.nexs.db.manager.exception.NoDataFoundException;
 
-import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
 public class DBManager extends ro.nexs.db.manager.manager.DBManager {
-    public DBManager(DBConnection con) {
-        super(con);
-
+    public DBManager(DBConnection connection) {
+        super(connection);
     }
+
 
     public void deleteRow(String table, String ByField, String field) {
         executeUpdate(getPreparedStatement("DELETE FROM " + table + " WHERE " + ByField + " = '" + field + "';"));
@@ -37,9 +37,8 @@ public class DBManager extends ro.nexs.db.manager.manager.DBManager {
     }
 
     public void setNull(String Table, String ByField, String search, String fieldToSet) {
-        PreparedStatement statement = getPreparedStatement("UPDATE " + Table + " SET " + fieldToSet + " = NULL WHERE" + ByField + " = '" + search + "'");
-
+        PreparedStatement statement = getPreparedStatement("UPDATE " + Table + " SET " + fieldToSet + " = NULL WHERE " + ByField + " = '" + search + "'");
+        execute(statement);
     }
-
 
 }

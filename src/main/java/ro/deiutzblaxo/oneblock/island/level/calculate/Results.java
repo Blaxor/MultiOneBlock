@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.island.level;
+package ro.deiutzblaxo.oneblock.island.level.calculate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,11 +25,11 @@ public class Results {
 
     }
 
-    public long getLevel() {
+    public int getLevel() {
         long p = points.get();
         System.out.println(points);
         long delta = 50 * (50 + 4 * p);
-        return (-50 + squareRoot(delta)) / 100;
+        return (int) ((-50 + squareRoot(delta, 0.1)) / 100);
     }
 
     public long getRemainPoints() {
@@ -37,16 +37,15 @@ public class Results {
         return (level * (level + 1) / 2 * 100) - points.get();
     }
 
-    public static long squareRoot(long number) {
-        long temp;
-
+    public static long squareRoot(long number, double eps) {
         long sr = number / 2;
-
-        do {
+        long temp;
+        double error = 1; ///eroarea e in cazul cel mai rau
+        while (error > eps) {
             temp = sr;
             sr = (temp + (number / temp)) / 2;
-        } while ((temp - sr) != 0);
-
+            error = (double) (temp - sr);
+        }
         return sr;
     }
 }

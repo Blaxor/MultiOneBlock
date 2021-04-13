@@ -1,6 +1,7 @@
 package ro.deiutzblaxo.oneblock.player;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.player.events.PlayerLoadEvent;
@@ -62,4 +63,10 @@ public class PlayerManager {
         Bukkit.getPluginManager().callEvent(new PlayerUnLoadEvent(plugin, player));
     }
 
+    @SneakyThrows
+    public String getNameByUUID(UUID uuid) {
+
+        return plugin.getDbManager().getLikeString(TableType.NAME.table, "UUID", uuid.toString(), "NAME");
+
+    }
 }

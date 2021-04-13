@@ -1,16 +1,16 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
-import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.player.RANK;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class IslandLevel implements SubCommand {
+public class IslandTop implements SubCommand {
 
     String[] aliases;
     String permission;
@@ -18,7 +18,7 @@ public class IslandLevel implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandLevel(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandTop(OneBlock plugin, String aliases[], String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -33,18 +33,22 @@ public class IslandLevel implements SubCommand {
     @Override
     public void execute(CommandSender sender, List<String> args) {
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
-            if (plugin.getIslandLevelManager().getIslandLevelCalculateManager().isAlreadyCalculating(island)) {
-                player.sendMessage("The level of your island is already calculating, please wait!");//TODO MESSAGE
-            } else {
-                plugin.getIslandLevelManager().getIslandLevelCalculateManager().addInQueue(island);
-                player.sendMessage("The level of your island will be calculated! Please wait.");//TODO MESSAGE
-            }
-        }
+        plugin.getIslandLevelManager().getTopIslands().forEach(triplet -> {
+            AtomicReference<String> abc = new AtomicReference<>("");
+            triplet.getLast().getMembers().forEach((uuid, rank) -> {
+                if (rank == RANK.OWNER) {
+                    abc.set(plugin.getPlayerManager().getNameByUUID(uuid));
+                    return;
+                }
+            });
+            abc.set(abc.get() + " level " + triplet.getMiddle());//TODO MESSAGE
+            sender.sendMessage(abc.get());
+        });
+
 
     }
+
+
 
     @Override
     public String[] getAliases() {

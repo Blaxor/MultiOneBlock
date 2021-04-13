@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.island.level;
+package ro.deiutzblaxo.oneblock.island.level.calculate;
 
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -21,7 +21,6 @@ public class CalculateRunnable implements Runnable {
         while (!calculator.get().getChunks().isEmpty()) {
             Chunk chunk = calculator.get().getChunks().poll();
             ChunkSnapshot chunkSnapshot = chunk.getChunkSnapshot();
-            //System.out.println("Calculating the chunk " + chunk.getX() + " " + chunk.getZ());
             int value = 0;
             for (int x = 0; x < 16; x++)
                 for (int z = 0; z < 16; z++) {
@@ -35,12 +34,15 @@ public class CalculateRunnable implements Runnable {
 
                     }
                 }
+
             if (value > 0)
                 calculator.get().getResults().get().add(value);
-            calculator.get().getThreadsStatus().put(Thread.currentThread(), 1);
-
         }
+
+        calculator.get().getThreadsStatus().put(Thread.currentThread(), 1);
+
     }
+
 
 //TODO DONE
 }

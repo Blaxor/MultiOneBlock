@@ -22,9 +22,9 @@ public class IslandMeta implements Serializable {
     private String radiusType = "member";
     private int radiusTire = 1;
     private boolean locked = false;
-    private long levelPoints = 0;
 
-    protected static IslandMeta deserialize(InputStream stream) throws Exception {
+
+    public static IslandMeta deserialize(InputStream stream) throws Exception {
         ObjectInputStream ois = new ObjectInputStream(stream);
         try {
             return (IslandMeta) ois.readObject();
@@ -33,7 +33,7 @@ public class IslandMeta implements Serializable {
         }
     }
 
-    protected byte[] serialize() throws IOException {
+    public byte[] serialize() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(this);

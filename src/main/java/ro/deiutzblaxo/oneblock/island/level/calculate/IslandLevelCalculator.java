@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.island.level;
+package ro.deiutzblaxo.oneblock.island.level.calculate;
 
 
 import lombok.Getter;
@@ -32,15 +32,11 @@ public class IslandLevelCalculator {
         int radius = BorderHandler.getRadius(island.getMeta().getRadiusType(), island.getMeta().getRadiusTire());
         for (int i = ((radius / 16) + 2) * -1; i <= (radius / 16) + 2; i++) {
             for (int j = ((radius / 16) + 2) * -1; j <= (radius / 16) + 2; j++)
-                for (int t = 0; t < island.getWorld().getChunk(i, j).getSections().length; t++)
-                    if (island.getWorld().getChunk(i, j).getSections()[t] != null) {
-                        chunks.add(island.getBukkitWorld().getChunkAt(i, j));
-                        break;
-                    }
-        }
-        for (int i = 0; i < 4; i++) {
-            System.out.println("Thread number " + i + " started");
+                chunks.add(island.getBukkitWorld().getChunkAt(i, j));
 
+        }
+
+        for (int i = 0; i < 4; i++) {
             Thread thread = new Thread(new CalculateRunnable(this, i));
             threadsStatus.put(thread, 0);
             thread.start();
@@ -52,4 +48,5 @@ public class IslandLevelCalculator {
         return !threadsStatus.containsValue(0);
 
     }
+
 }

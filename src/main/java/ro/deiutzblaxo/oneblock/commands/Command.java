@@ -1,11 +1,11 @@
 package ro.deiutzblaxo.oneblock.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public interface Command {
@@ -31,8 +31,8 @@ public interface Command {
     default boolean doCommand(CommandSender sender, List<String> args) {
 
         if (args.size() > 0)
-            if (getSubCommands().containsKey(args.get(0))) {
-                getSubCommands().get(args.get(0)).execute(sender, args.stream().skip(1).collect(Collectors.toList()));
+            if (getSubCommands().containsKey(args.get(0).toLowerCase())) {
+                getSubCommands().get(args.get(0).toLowerCase()).execute(sender, args.stream().skip(1).collect(Collectors.toList()));
                 return false;
             } else {
                 invalidArguments(sender);

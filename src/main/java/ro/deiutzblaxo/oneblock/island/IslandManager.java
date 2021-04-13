@@ -25,10 +25,18 @@ public class IslandManager {
 
     @SneakyThrows
     public Island loadIsland(String uuid) {
+
         if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuid)) {
             Blob blob = plugin.getDbManager().getBlob(TableType.ISLANDS.table, "META", "UUID", uuid);
             IslandMeta meta = IslandMeta.deserialize(blob.getBinaryStream());
             Island island = new Island(plugin, uuid, meta);
+            if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
+                island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
+
+            } else
+                island.setLevel(0);
+
+
             island.setWorld(WorldUtil.loadSlimeWorld(plugin, uuid, island));
 
             island.setBukkitWorld(Bukkit.getWorld(uuid));//TODO MAYBE A BETTER WAY?
@@ -39,6 +47,12 @@ public class IslandManager {
             return island;
         }
         Island island = new Island(plugin, uuid, new IslandMeta());
+        if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
+            island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
+
+        } else
+            island.setLevel(0);
+
         island.setWorld(plugin.getSlimePlugin().createEmptyWorld(plugin.getLoader(), uuid, false, WorldUtil.getSlimePropertyMap(island)));
         island.loadWorld();
         island.save(false);
@@ -64,7 +78,7 @@ public class IslandManager {
             island.save(false);
 
         islands.remove(island.getUuidIsland());
-        plugin.getIslandLevelManager().cancelCalculation(island);
+        plugin.getIslandLevelManager().getIslandLevelCalculateManager().cancelCalculation(island);
         island.getAutosave().cancel();
         WorldUtil.unloadSlimeWorld(plugin, island.getWorld());
     }

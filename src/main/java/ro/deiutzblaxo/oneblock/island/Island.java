@@ -3,6 +3,7 @@ package ro.deiutzblaxo.oneblock.island;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,6 +35,7 @@ public class Island {
     private IslandMeta meta;
     private BukkitTask autosave;
     private Phase phase;
+    private int level;
 
 
     public Island(OneBlock plugin, String uuid, IslandMeta meta) {
@@ -61,17 +63,27 @@ public class Island {
             if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuidIsland)) {
                 plugin.getDbManager().setBlob(TableType.ISLANDS.table, "META", "UUID", (com.mysql.jdbc.Blob) blob, uuidIsland);
                 plugin.getDbManager().setString(TableType.ISLANDS.table, "SERVER", "UUID", server, uuidIsland);
+                saveLevel();
                 WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
                 plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
                 return;
             }
             plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, blob, server});
-            WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
 
+            saveLevel();
+            WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
             plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @SneakyThrows
+    public void saveLevel() {
+        if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuidIsland))
+            plugin.getDbManager().setInt(TableType.LEVEL.table, "LEVEL", "UUID", level, uuidIsland);
+        else
+            plugin.getDbManager().insert(TableType.LEVEL.table, new String[]{"UUID", "LEVEL"}, new Object[]{uuidIsland, level});
     }
 
     public void loadWorld() {
@@ -113,7 +125,7 @@ public class Island {
         meta.setXSpawn(x);
         meta.setYSpawn(y);
         meta.setZSpawn(z);
-        
+
     }
 
     public boolean isLocked() {

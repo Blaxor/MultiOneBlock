@@ -19,5 +19,12 @@ public class Triplet<F, M, L> {
         last = l;
     }
 
-
+    @Override
+    public String toString() {
+        return "Triplet{" +
+                "first=" + first +
+                ", middle=" + middle +
+                ", last=" + last +
+                '}';
+    }
 }
