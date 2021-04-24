@@ -1,12 +1,18 @@
 package ro.deiutzblaxo.oneblock.island.level;
 
 import lombok.Getter;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.IslandMeta;
 import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculateManager;
+import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculator;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 import ro.deiutzblaxo.oneblock.utils.Triplet;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -27,7 +33,9 @@ public class IslandLevelManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }, 15, 20 * 5 * 60);
+        updateBlockValue();
     }
 
     private void updateTOP() throws Exception {
@@ -38,10 +46,25 @@ public class IslandLevelManager {
         while (set.next()) {
             String uuid = set.getString("UUID");
             int level = set.getInt("LEVEL");
-            IslandMeta meta = IslandMeta.deserialize(plugin.getDbManager().getBlob(TableType.ISLANDS.table, "META", "UUID", uuid).getBinaryStream());
+            IslandMeta meta = IslandMeta.deserialize(plugin.getDbManager().getString(TableType.ISLANDS.table, "META", "UUID", uuid));
             topIslands.add(new Triplet(uuid, level, meta));
         }
         set.close();
+    }
+
+    private void updateBlockValue() {
+        File file = new File(plugin.getDataFolder(), "blockconfig.yml");
+        if (!file.exists()) {
+            plugin.saveResource("blockconfig.yml", true);
+            updateBlockValue();
+            return;
+
+        }
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        ConfigurationSection section = config.getConfigurationSection("blocks");
+        section.getKeys(true).forEach(s -> {
+            IslandLevelCalculator.blockValue.put(Material.matchMaterial(s), section.getInt(s));
+        });
     }
 
 

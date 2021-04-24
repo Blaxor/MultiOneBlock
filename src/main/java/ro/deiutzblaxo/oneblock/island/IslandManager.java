@@ -6,12 +6,13 @@ import org.bukkit.Bukkit;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandLoadedException;
+import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
 import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 
-import java.sql.Blob;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class IslandManager {
     OneBlock plugin;
@@ -27,36 +28,42 @@ public class IslandManager {
     public Island loadIsland(String uuid) {
 
         if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuid)) {
-            Blob blob = plugin.getDbManager().getBlob(TableType.ISLANDS.table, "META", "UUID", uuid);
-            IslandMeta meta = IslandMeta.deserialize(blob.getBinaryStream());
+            String data = plugin.getDbManager().getString(TableType.ISLANDS.table, "META", "UUID", uuid);
+            IslandMeta meta = IslandMeta.deserialize(data);
             Island island = new Island(plugin, uuid, meta);
             if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
                 island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
-
             } else
                 island.setLevel(0);
 
 
             island.setWorld(WorldUtil.loadSlimeWorld(plugin, uuid, island));
-
             island.setBukkitWorld(Bukkit.getWorld(uuid));//TODO MAYBE A BETTER WAY?
+            if (Bukkit.getPlayer(island.getOwner()) != null)
+                island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
             island.changeBorder();
             ChunkUtils.changeBiome(plugin, island);
             island.save(false);
             islands.put(uuid, island);
             return island;
         }
-        Island island = new Island(plugin, uuid, new IslandMeta());
+        Island island = new Island(plugin, uuid, new IslandMeta(plugin.getPlayerManager().getNameByUUID(UUID.fromString(uuid.split("_")[1]))));
+
+
         if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
             island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
-
         } else
             island.setLevel(0);
 
         island.setWorld(plugin.getSlimePlugin().createEmptyWorld(plugin.getLoader(), uuid, false, WorldUtil.getSlimePropertyMap(island)));
+
         island.loadWorld();
         island.save(false);
         islands.put(uuid, island);
+        if (Bukkit.getPlayer(island.getOwner()) != null)
+            island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
+        island.changeBorder();
+
 
         return island;
     }
@@ -67,13 +74,14 @@ public class IslandManager {
         }
         plugin.getDbManager().deleteRow(TableType.ISLANDS.table, "UUID", uuid);
         plugin.getDbManager().deleteRow("worlds", "name", uuid);
+        plugin.getDbManager().deleteRow(TableType.LEVEL.table, "UUID", uuid);
     }
 
     public void unloadIsland(Island island, boolean save) throws IslandHasPlayersOnlineException {
         if (!island.getBukkitWorld().getPlayers().isEmpty()) {
             throw new IslandHasPlayersOnlineException("There are players online and can't be unloaded!");
         }
-        island.setServer("nothing");
+        island.setServer(null);
         if (save)
             island.save(false);
 

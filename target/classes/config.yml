@@ -5,6 +5,7 @@ database: database
 username: username
 password: password
 cooldown-confirmation: 10
+spawn-world: world
 
 radius:
   member:

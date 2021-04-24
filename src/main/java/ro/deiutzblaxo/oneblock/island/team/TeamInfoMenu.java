@@ -2,7 +2,6 @@ package ro.deiutzblaxo.oneblock.island.team;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,7 +12,6 @@ import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNotHaveIsland;
 import ro.deiutzblaxo.oneblock.utils.UTILS;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class TeamInfoMenu {
@@ -37,7 +35,6 @@ public class TeamInfoMenu {
                 meta.setLore(lista);
                 item.setItemMeta(meta);
                 inv.addItem(item);
-
             });
             return inv;
     }

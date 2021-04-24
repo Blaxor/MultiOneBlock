@@ -17,7 +17,7 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
     protected HashMap<String, SubCommand> subCommands = new HashMap<>();
     protected OneBlock plugin;
 
-    public IslandCommand(OneBlock plugin, String aliases[], String permission) {
+    public IslandCommand(OneBlock plugin, String[] aliases, String permission) {
         this.aliases = aliases;
         this.permission = "oneblock." + permission;
         PluginCommand command = plugin.getCommand("island");
@@ -25,12 +25,23 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
         command.setAliases(Arrays.asList(this.aliases.clone()));
         command.setTabCompleter(this);
         subCommands.put("teleport", new IslandTeleportCommand(plugin, new String[]{"tp", "go"}, "teleport", this));
-        subCommands.put("phases", new IslandPhase(plugin, new String[]{"p", "phase", "etapa"}, "phases", this));
-        subCommands.put("team", new IslandTeam(plugin, new String[]{"t", "echipa"}, "team", this));
+        subCommands.put("phases", new IslandPhase(plugin, new String[]{"phase", "etapa"}, "phases", this));
+        subCommands.put("team", new IslandTeam(plugin, new String[]{"echipa"}, "team", this));
         subCommands.put("kick", new IslandKick(plugin, new String[]{}, "kick", this));
         subCommands.put("tier", new IslandTier(plugin, new String[]{}, "tier", this));
         subCommands.put("level", new IslandLevel(plugin, new String[]{"nivel"}, "level", this));
         subCommands.put("top", new IslandTop(plugin, new String[]{}, "top", this));
+        subCommands.put("leave", new IslandLeave(plugin, new String[]{"paraseste"}, "leave", this));
+        subCommands.put("reset", new IslandReset(plugin, new String[]{}, "reset", this));
+        subCommands.put("ban", new IslandBan(plugin, new String[]{}, "ban", this));
+        subCommands.put("unban", new IslandUnBan(plugin, new String[]{}, "unban", this));
+        subCommands.put("banlist", new IslandBanList(plugin, new String[]{}, "banlist", this));
+        subCommands.put("expel", new IslandExpel(plugin, new String[]{}, "expel", this));
+        subCommands.put("name", new IslandName(plugin, new String[]{}, "name", this));
+        subCommands.put("setname", new IslandSetName(plugin, new String[]{}, "setname", this));
+        subCommands.put("setspawn", new IslandSetSpawn(plugin, new String[]{}, "setspawn", this));
+        subCommands.put("count", new IslandCount(plugin, new String[]{}, "count", this));
+
         this.plugin = plugin;
     }
 

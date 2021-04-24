@@ -6,18 +6,17 @@ import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
+import ro.deiutzblaxo.oneblock.communication.action.invite.Invite;
 import ro.deiutzblaxo.oneblock.communication.action.invite.InviteResponses;
 import ro.deiutzblaxo.oneblock.communication.action.invite.RequestInvite;
 import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
-import ro.deiutzblaxo.oneblock.communication.action.invite.Invite;
 import ro.deiutzblaxo.oneblock.island.Island;
-import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
-import ro.deiutzblaxo.oneblock.island.exceptions.IslandLoadedException;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.SCOPE_CONFIRMATION;
-import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.deiutzblaxo.oneblock.player.events.PlayerJoinIslandEvent;
+import ro.deiutzblaxo.oneblock.player.events.PlayerLeaveIslandEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,34 +59,21 @@ public class IslandTeamConfirm implements SubCommand {
                     return;
                 }
                 plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().remove(invited);
-                invited.setIsland(requestInvite.islandInviter);
-                invited.save();
+
                 // send reponse
                 Invite.sendResponse(plugin, player, new ResponseInvite(requestInvite.invited, requestInvite.inviter, InviteResponses.ACCEPT));
                 //TODO TELEPORT TO THE ISLAND SERVER
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
+                    Bukkit.getPluginManager().callEvent(new PlayerLeaveIslandEvent(plugin, invited));
+                    invited.setIsland(requestInvite.islandInviter);
+                    invited.save();
                     Invite.sendPlayerToServer(plugin, player, plugin.getIslandManager().getServer(requestInvite.islandInviter));
 
-                    if (plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().size() == 1) {
-                        try {
-                            plugin.getIslandManager().unloadIsland(plugin.getIslandManager().getIsland(oldIsland), false);
-                        } catch (IslandHasPlayersOnlineException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            plugin.getIslandManager().deleteIsland(oldIsland);
-                        } catch (IslandLoadedException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
 
                 }, 1);
                 return;
             }
-
-
             player.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_ACCEPT));
             List<Object> data = invited.getParticipant().get(SCOPE_CONFIRMATION.INVITE);
             PlayerOB inviter = (PlayerOB) data.get(0);
@@ -100,26 +86,7 @@ public class IslandTeamConfirm implements SubCommand {
             invited.getTimers().remove(SCOPE_CONFIRMATION.INVITE);
             invited.getParticipant().remove(SCOPE_CONFIRMATION.INVITE);
 
-            String oldIsland = invited.getIsland();
-            plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().remove(invited.getPlayer());
-            invited.setIsland(inviter.getIsland());
-            invited.save();
-            inviterIsland.getMeta().getMembers().put(invited.getPlayer(), RANK.MEMBER);
-            inviterIsland.save(false);
-
-            Bukkit.getPlayer(invited.getPlayer()).teleport(plugin.getIslandManager().getIsland(inviter.getIsland()).getSpawnLocation());
-            if (plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().size() == 1) {
-                try {
-                    plugin.getIslandManager().unloadIsland(plugin.getIslandManager().getIsland(oldIsland), false);
-                } catch (IslandHasPlayersOnlineException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    plugin.getIslandManager().deleteIsland(oldIsland);
-                } catch (IslandLoadedException e) {
-                    e.printStackTrace();
-                }
-            }
+            Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(plugin, invited.getPlayer().toString(), inviter, inviterIsland, true, false));
         }
 
     }

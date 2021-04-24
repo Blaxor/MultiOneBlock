@@ -48,8 +48,6 @@ public class IslandTeamInvite implements SubCommand {
             if (Bukkit.getPlayer(args.get(0)) == null) {
                 try {
                     String uuidInvited = plugin.getPlayerManager().getUUIDByName(args.get(0));
-                    Bukkit.broadcastMessage(plugin.getPlayerManager().getUUIDByName(args.get(0)) + "   "
-                            + plugin.getPlayerManager().getServerByPlayerUUID(uuidInvited));
                     if (plugin.getPlayerManager().getServerByPlayerUUID(uuidInvited).equalsIgnoreCase("none")) {
                         sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_OFFLINE));
                         return;

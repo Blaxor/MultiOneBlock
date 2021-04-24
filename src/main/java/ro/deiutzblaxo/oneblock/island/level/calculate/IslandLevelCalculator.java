@@ -7,14 +7,14 @@ import org.bukkit.Material;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 public class IslandLevelCalculator {
-    protected static HashMap<Material, Integer> blockValue = new HashMap<>();
+    public static TreeMap<Material, Integer> blockValue = new TreeMap<>();
     private ConcurrentHashMap<Thread, Integer> threadsStatus = new ConcurrentHashMap<>();
     private ConcurrentLinkedQueue<Chunk> chunks = new ConcurrentLinkedQueue<>();
     private AtomicReference<Island> island = new AtomicReference<>();

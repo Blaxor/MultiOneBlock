@@ -9,7 +9,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
-import ro.deiutzblaxo.oneblock.phase.gui.PhaseMenu;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.phase.objects.PhaseObject;
 import ro.deiutzblaxo.oneblock.phase.objects.RARITY;
@@ -28,16 +27,17 @@ public class PhaseManager {
 
     public PhaseManager(OneBlock plugin) {
         this.plugin = plugin;
+
     }
 
 
     public void populatePhases() {
         File file = new File(plugin.getDataFolder(), "/phases/");
         if (!file.exists()) {
-            return;
+            plugin.saveResource("phases/", true);
+            plugin.saveResource("phases/plains0.yml", true);
         }
         File[] files = file.listFiles();
-        plugin.getLogger().log(Level.INFO, "before for for files");
         for (File phaseFile : files) {
 
             FileConfiguration phaseConfig = YamlConfiguration.loadConfiguration(phaseFile);
@@ -68,8 +68,10 @@ public class PhaseManager {
                 }
 
             }
+
             phase.setPhaseName(phaseConfig.getString("name"));
             phase.setPhaseBiome(Biome.valueOf(phaseConfig.getString("biome")));
+
         }
     }
 

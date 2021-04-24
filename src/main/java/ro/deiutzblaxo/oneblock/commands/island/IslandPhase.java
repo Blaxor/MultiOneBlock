@@ -1,13 +1,10 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
-import ro.deiutzblaxo.oneblock.island.IslandManager;
-import ro.deiutzblaxo.oneblock.phase.gui.PhaseMenu;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +24,8 @@ public class IslandPhase implements SubCommand {
         this.plugin = plugin;
 
 
-        for(String aliase : aliases)
-        this.parent.addSubCommand(aliase,this);
+        for (String aliase : aliases)
+            this.parent.addSubCommand(aliase, this);
 
     }
 
@@ -37,8 +34,7 @@ public class IslandPhase implements SubCommand {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            player.openInventory(PhaseMenu.getInventory(plugin,plugin.getIslandManager().getIsland(plugin.getPlayerManager()
-                    .getPlayer(player.getUniqueId()).getIsland()).getPhase()));
+            plugin.getMenuManager().openMenu(plugin.getMenuManager().getPhaseMenu(plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false)).getID(), player);
         }
 
     }

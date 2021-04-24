@@ -7,13 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import ro.deiutzblaxo.oneblock.OneBlock;
-import ro.deiutzblaxo.oneblock.communication.action.invite.RequestInvite;
-import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
-import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.SCOPE_CONFIRMATION;
+import ro.deiutzblaxo.oneblock.player.events.PlayerJoinIslandEvent;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 
 import java.util.ArrayList;
@@ -58,9 +55,8 @@ public class ChannelInviteListener implements PluginMessageListener {
                 PlayerOB inviterOB = plugin.getPlayerManager().getPlayer(inviter.getUniqueId());
                 switch (responseInvite.getError()) {
                     case ACCEPT:
-                        Island island = plugin.getIslandManager().getIsland(inviterOB.getIsland());
-                        island.getMeta().getMembers().put(UUID.fromString(responseInvite.getInvited()), RANK.MEMBER);
-                        island.save(false);
+                        Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(plugin, responseInvite.getInvited(),
+                                inviterOB, inviterOB.getIsland(false), false, true));
                         inviter.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
                                 plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())));
                         break;
@@ -73,35 +69,4 @@ public class ChannelInviteListener implements PluginMessageListener {
             }
         }
     }
-/*    @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if(channel.equalsIgnoreCase("oneblock:invite")){
-            ByteArrayDataInput in = ByteStreams.newDataInput(message);
-            String subC = in.readUTF();
-
-            if(subC.equalsIgnoreCase("request")) {
-                RequestInvite requestInvite = new RequestInvite(in.readUTF());
-                //persoana invitata din request
-                PlayerOB invited = OneBlock.getInstance().getPlayerManager().getPlayer(UUID.fromString(requestInvite.getInvited()));
-                invited.getTimers().put(SCOPE_CONFIRMATION.INVITED,10);//add in timer
-                invited.getParticipant().put(SCOPE_CONFIRMATION.INVITED, Arrays.asList(new Object[]{requestInvite}));//stocam requestul
-
-            }
-            if(subC.equalsIgnoreCase("response")){
-                ResponseInvite responseInvite = new ResponseInvite(in.readUTF());
-                if(responseInvite.getError().equals(InviteResponses.ACCEPT)) {
-
-                    PlayerOB inviter = OneBlock.getInstance().getPlayerManager().getPlayer(UUID.fromString(responseInvite.getInviter()));
-                    // update list of members
-                    HashMap<UUID, RANK> updatedMembers = inviter.getOverworld().getMembers();
-                    updatedMembers.put(UUID.fromString(responseInvite.getInvited()), RANK.MEMBER);
-                    inviter.getOverworld().setMembers(updatedMembers);
-
-
-                }
-            }
-
-
-        }
-    }*/
 }

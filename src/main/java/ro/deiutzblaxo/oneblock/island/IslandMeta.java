@@ -1,10 +1,16 @@
 package ro.deiutzblaxo.oneblock.island;
 
+
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
+import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
+import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.utils.Location;
 
-import java.io.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -12,34 +18,32 @@ import java.util.UUID;
 @Setter
 public class IslandMeta implements Serializable {
     private HashMap<UUID, RANK> members = new HashMap<>();
-    private double XSpawn = 0;
-    private double YSpawn = 82;
-    private double ZSpawn = 0;
-    private double XBlock = 0;
-    private double YBlock = 81;
-    private double ZBlock = 0;
+    private Location block = new Location(0, 81, 0);
+    private Location spawn = new Location(0, 82, 0);
     private int count = 0;
     private String radiusType = "member";
     private int radiusTire = 1;
     private boolean locked = false;
+    private ArrayList<UUID> banned = new ArrayList<>();
+    private HashMap<PERMISSIONS, RANK> permissions = new HashMap<>();
+    private HashMap<ISLANDSETTINGS, Boolean> settings = new HashMap<>();
+    private String name;
 
-
-    public static IslandMeta deserialize(InputStream stream) throws Exception {
-        ObjectInputStream ois = new ObjectInputStream(stream);
-        try {
-            return (IslandMeta) ois.readObject();
-        } finally {
-            ois.close();
-        }
+    public IslandMeta(String ownerName) {
+        name = ownerName + "'s island!";//TODO MESSAGE
     }
 
-    public byte[] serialize() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(this);
-        oos.close();
-        return baos.toByteArray();
+
+    public String serialize() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
+    public static IslandMeta deserialize(String json) {
+        Gson gson = new Gson();
+
+        return gson.fromJson(json, IslandMeta.class);
+
+    }
 
 }

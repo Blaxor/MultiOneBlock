@@ -9,13 +9,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="schematicsave" />
-        <module name="OneBlock" />
         <module name="ConnectionManager" />
+        <module name="OneBlock" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ConnectionManager" target="1.8" />
-      <module name="OneBlock" target="1.8" />
+      <module name="CustomEnderChest" target="1.8" />
+      <module name="OneBlock" target="9" />
       <module name="schematicsave" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -18,7 +18,7 @@ public final class Main extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
-        dbConnection = new DBConnection("localhost", 3306, "oneblock", "abc", "password");
+        dbConnection = new DBConnection("95.156.230.192", 3306, "nxs_oneblock", "nxs_oneblock", "deiutzcefacifrt");
         dbManager = new DBManager(dbConnection);
         manager = new ServerManager(this);
         getProxy().registerChannel("oneblock:invite");

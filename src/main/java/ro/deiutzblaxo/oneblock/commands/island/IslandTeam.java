@@ -1,15 +1,12 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
-import ro.deiutzblaxo.oneblock.island.team.TeamInfoMenu;
+import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
-import ro.deiutzblaxo.oneblock.player.PlayerOB;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,21 +37,11 @@ public class IslandTeam implements SubCommand {
         if (!doCommand(sender, args))
             return;
         Player player = (Player) sender;
-        if (plugin.getIslandManager().getIsland(plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland()) != null)
-            sendMembersList(player);
+        Island island = plugin.getIslandManager().getIsland(plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland());
+        if (island != null)
+            plugin.getMenuManager().openMenu(plugin.getMenuManager().getMembersMenu(island).getID(), player);
         else
             player.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
-    }
-
-    public void sendMembersList(Player player) {
-        PlayerOB playerOB = plugin.getPlayerManager().getPlayer(player.getUniqueId());
-        player.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_TEAM_MENU_TITLE));
-        plugin.getIslandManager().getIsland(playerOB.getIsland()).getMeta().getMembers().forEach((uuid, rank) -> {
-
-            player.sendMessage(ChatColor.GREEN + Bukkit.getOfflinePlayer(uuid).getName() + " - " + rank.name());
-
-
-        });
     }
 
     @Override

@@ -33,7 +33,9 @@ public class ChannelChatListener implements PluginMessageListener {
                     break;
 
                 case "global":
-                    in.readUTF();
+                    String server = in.readUTF();
+                    if (server == OneBlock.SERVER)
+                        return;
                     String msg = in.readUTF();
                     ChatListener.globalRecipients.forEach(player1 -> {
                         player1.sendMessage(msg);

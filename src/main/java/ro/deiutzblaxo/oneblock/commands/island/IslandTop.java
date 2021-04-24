@@ -5,6 +5,7 @@ import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,11 @@ public class IslandTop implements SubCommand {
             AtomicReference<String> abc = new AtomicReference<>("");
             triplet.getLast().getMembers().forEach((uuid, rank) -> {
                 if (rank == RANK.OWNER) {
-                    abc.set(plugin.getPlayerManager().getNameByUUID(uuid));
+                    try {
+                        abc.set(plugin.getPlayerManager().getNameByUUID(uuid));
+                    } catch (PlayerNoExistException e) {
+                        e.printStackTrace();
+                    }
                     return;
                 }
             });

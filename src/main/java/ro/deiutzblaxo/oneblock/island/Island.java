@@ -5,22 +5,27 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import ro.deiutzblaxo.oneblock.OneBlock;
+import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
+import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
+import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.events.PlayerBanIslandEvent;
+import ro.deiutzblaxo.oneblock.player.events.PlayerUnBanIslandEvent;
 import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
 import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
+import ro.deiutzblaxo.oneblock.utils.Location;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 
-import java.sql.Blob;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 @Getter
@@ -48,7 +53,15 @@ public class Island {
 
         autosave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             plugin.getLogger().log(Level.INFO, "Auto-Saving island ", uuidIsland);
-            save(false);
+            if (bukkitWorld.getPlayers().isEmpty()) {
+                try {
+                    plugin.getIslandManager().unloadIsland(this, true);
+                } catch (IslandHasPlayersOnlineException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+                save(false);
         }, 20 * 60 * 5, 20 * 60 * 5);
 
     }
@@ -57,18 +70,18 @@ public class Island {
     public void save(boolean unload) {
         try {
             plugin.getLogger().log(Level.INFO, "Saving island " + uuidIsland);
-            Blob blob = plugin.getDbConnection().getConnection().createBlob();
-            byte[] seril = meta.serialize();
-            blob.setBytes(1, seril);
+
+            String seril = meta.serialize();
+
             if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuidIsland)) {
-                plugin.getDbManager().setBlob(TableType.ISLANDS.table, "META", "UUID", (com.mysql.jdbc.Blob) blob, uuidIsland);
+                plugin.getDbManager().set(TableType.ISLANDS.table, "META", "UUID", seril, uuidIsland);
                 plugin.getDbManager().setString(TableType.ISLANDS.table, "SERVER", "UUID", server, uuidIsland);
                 saveLevel();
                 WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
                 plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
                 return;
             }
-            plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, blob, server});
+            plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, seril, server});
 
             saveLevel();
             WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
@@ -95,37 +108,42 @@ public class Island {
         if (getMiddleBlock().getType() == Material.AIR) {
             getMiddleBlock().setType(getPhase().getFirstBlock().getMaterial());
         }
-        setSpawnLocation(meta.getXSpawn(), meta.getYSpawn(), meta.getZSpawn());
+        setSpawnLocation(meta.getSpawn());
+        if (Bukkit.getPlayer(getOwner()) != null)
+            getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(getOwner())));
         changeBorder();
         ChunkUtils.changeBiome(plugin, this);
 
     }
 
     public UUID getOwner() {
-        UUID uuidPlayer = null;
-        for (UUID uuid : meta.getMembers().keySet()) {
-            if (meta.getMembers().get(uuid).equals(RANK.OWNER)) {
-                uuidPlayer = uuid;
-                break;
+        AtomicReference<UUID> owner = new AtomicReference<>();
+        getMeta().getMembers().forEach((uuid, rank) -> {
+            if (rank == RANK.OWNER) {
+                owner.set(uuid);
+                return;
             }
-        }
-        return uuidPlayer;
+
+        });
+        return owner.get();
     }
 
 
     public void teleportHere(Player player) {
-        player.teleport(new Location(bukkitWorld, meta.getXSpawn(), meta.getYSpawn(), meta.getZSpawn()));
+        if (Location.isSafeLocation(meta.getSpawn().toBukkitLocation(bukkitWorld)))
+            player.teleport(meta.getSpawn().toBukkitLocation(bukkitWorld));
+        else {
+            player.teleport(plugin.getSpawnLocation());
+            player.sendMessage("That location is not safe. you have been teleported to spawn!");//TODO MESSAGE
+        }
     }
 
     public Block getMiddleBlock() {
-        return bukkitWorld.getBlockAt(0, 81, 0);
+        return bukkitWorld.getBlockAt(meta.getBlock().toBukkitLocation(bukkitWorld));
     }
 
-    public void setSpawnLocation(double x, double y, double z) {
-        meta.setXSpawn(x);
-        meta.setYSpawn(y);
-        meta.setZSpawn(z);
-
+    public void setSpawnLocation(ro.deiutzblaxo.oneblock.utils.Location location) {
+        meta.setSpawn(location);
     }
 
     public boolean isLocked() {
@@ -149,7 +167,61 @@ public class Island {
 
     }
 
-    public Location getSpawnLocation() {
-        return new Location(bukkitWorld, meta.getXSpawn(), meta.getYSpawn(), meta.getZSpawn());
+    public org.bukkit.Location getSpawnLocation() {
+        return meta.getSpawn().toBukkitLocation(bukkitWorld);
+    }
+
+    public boolean isBanned(UUID uuid) {
+        return meta.getBanned().contains(uuid);
+    }
+
+    public boolean isBanned(Player player) {
+        return isBanned(player.getUniqueId());
+    }
+
+    public boolean ban(UUID uuid) {
+        if (isBanned(uuid)) {
+            return false;
+        }
+
+        Bukkit.getPluginManager().callEvent(new PlayerBanIslandEvent(plugin, uuid, this));
+        return true;
+    }
+
+    public boolean ban(Player player) {
+        return ban(player.getUniqueId());
+    }
+
+    public boolean unban(UUID uuid) {
+        if (!isBanned(uuid)) {
+            return false;
+        }
+        Bukkit.getPluginManager().callEvent(new PlayerUnBanIslandEvent(plugin, uuid, this));
+        return true;
+    }
+
+    public boolean isAllow(UUID uuid, PERMISSIONS permission) {
+        RANK target = meta.getMembers().get(uuid) == null ? RANK.GUEST : meta.getMembers().get(uuid);
+        RANK permissionlowest = meta.getPermissions().get(permission) == null ? permission.getLowestRankDefault() : meta.getPermissions().get(permission);
+        return PERMISSIONS.isAllow(target, permissionlowest);
+
+/*
+        if (meta.getMembers().get(uuid) == null)
+            return false;
+        RANK lowestRank = meta.getMembers().get(uuid) == null meta.getPermissions().get(permission);
+        if (lowestRank == null)
+            lowestRank = permission.getLowestRankDefault();
+        if (meta.getMembers().get(uuid).ordinal() >= lowestRank.ordinal()) {
+            return true;
+        }
+        return false;
+*/
+    }
+
+    public boolean getSetting(ISLANDSETTINGS setting) {
+        return meta.getSettings().getOrDefault(setting, setting.isAllowDefault());
+
     }
 }
+//199
+//200

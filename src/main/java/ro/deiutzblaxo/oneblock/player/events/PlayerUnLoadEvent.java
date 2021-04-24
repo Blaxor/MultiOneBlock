@@ -16,13 +16,15 @@ public class PlayerUnLoadEvent extends Event {
     @Getter
     private PlayerOB player;
 
-    public PlayerUnLoadEvent(OneBlock plugin, UUID player_){
+    public PlayerUnLoadEvent(OneBlock plugin, UUID player_) {
         player = plugin.getPlayerManager().getPlayer(player_);
         player.getAutosave().cancel();
         player.setServer("none");
         player.save();
         plugin.getPlayerManager().getPlayers().remove(player_);
         ChatListener.globalRecipients.remove(player);
+        player.getTimers().clear();
+        player.getParticipant().clear();
         plugin.getLogger().log(Level.INFO, "The player" + player.toString() + " (" + player + ") unloaded");
     }
 
