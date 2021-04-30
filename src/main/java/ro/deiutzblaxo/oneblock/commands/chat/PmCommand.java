@@ -27,7 +27,7 @@ public class PmCommand implements Command, CommandExecutor, TabCompleter {
     protected HashMap<String, SubCommand> subCommands = new HashMap<>();
     protected OneBlock plugin;
 
-    public PmCommand(OneBlock plugin, String aliases[], String permission) {
+    public PmCommand(OneBlock plugin, String[] aliases, String permission) {
         this.aliases = aliases;
         this.permission = "oneblock." + permission;
         PluginCommand command = plugin.getCommand("pm");
@@ -50,33 +50,33 @@ public class PmCommand implements Command, CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length == 1) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get(MESSAGE.PM_NO_MESSAGE)));//TODO message
+            sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.PM_NO_MESSAGE));
             return false;
         }
         if (args[0].equalsIgnoreCase(sender.getName())) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get(MESSAGE.PM_SELF)));
+            sender.sendMessage( plugin.getLangManager().get((Player) sender,MESSAGE.PM_SELF));
             return false;
         }
         if (Bukkit.getPlayer(args[0]) != null) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get(MESSAGE.PM_SEND).replace("{message}",
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get((Player) sender,MESSAGE.PM_SEND).replace("{message}",
                     Arrays.stream(args).skip(1).collect(Collectors.joining())).replace("{name}",
                     plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args[0], "NAME"))));
-            Bukkit.getPlayer(args[0]).sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get(MESSAGE.PM_RECEIVE)
+            Bukkit.getPlayer(args[0]).sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get((Player) sender,MESSAGE.PM_RECEIVE)
                     .replace("{message}", Arrays.stream(args).skip(1).collect(Collectors.joining(" "))).replace("{name}", sender.getName())));
             return true;
         }
         try {
 
-            PM pm = new PM(((Player) sender).getUniqueId().toString(), plugin.getPlayerManager().getUUIDByName(args[0]), ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get(MESSAGE.PM_RECEIVE)
+            PM pm = new PM(((Player) sender).getUniqueId().toString(), plugin.getPlayerManager().getUUIDByName(args[0]), ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get((Player) sender,MESSAGE.PM_RECEIVE)
                     .replace("{message}", Arrays.stream(args).skip(1).collect(Collectors.joining(" "))).replace("{name}", ((Player) sender).getDisplayName())));
             PMSender.sendMessage(plugin, (Player) sender, pm);
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get(MESSAGE.PM_SEND)
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get((Player) sender,MESSAGE.PM_SEND)
                     .replace("{message}", Arrays.stream(args).skip(1).collect(Collectors.joining(" "))).replace("{name}",
                             plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args[0], "NAME"))));
 
             return true;
         } catch (PlayerNoExistException e) {
-            sender.sendMessage(plugin.getLangManager().get(MESSAGE.PM_PLAYER_NO_EXISTS));
+            sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.PLAYER_NO_EXISTS));
             return false;
         }
 

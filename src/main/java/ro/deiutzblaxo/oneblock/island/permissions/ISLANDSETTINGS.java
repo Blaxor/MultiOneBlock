@@ -15,7 +15,7 @@ public enum ISLANDSETTINGS implements Listener {
     MOB_SPAWNING(true),
     IGNITE(true);
 
-    private boolean allowDefault;
+    private final boolean allowDefault;
 
     ISLANDSETTINGS(boolean allowDefault) {
         this.allowDefault = allowDefault;

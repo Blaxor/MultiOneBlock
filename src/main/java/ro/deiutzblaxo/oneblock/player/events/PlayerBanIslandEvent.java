@@ -16,11 +16,11 @@ public class PlayerBanIslandEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
     private boolean cancel;
     @Getter
-    private UUID playerOB;
+    private final UUID playerOB;
     @Getter
-    private Island island;
+    private final Island island;
     @Getter
-    private Player player;
+    private final Player player;
 
     public PlayerBanIslandEvent(OneBlock plugin, UUID playerOB, Island island) {
         this.playerOB = playerOB;

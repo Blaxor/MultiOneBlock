@@ -11,7 +11,7 @@ public class IslandLevelCalculatedEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
     @Getter
-    private Results results;
+    private final Results results;
 
     public IslandLevelCalculatedEvent(OneBlock plugin, Results results) {
         this.results = results;

@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.OneBlock;
 
 public class LockEnchant extends Enchantment {
-    private String name;
+    private final String name;
 
     public LockEnchant(OneBlock plugin, String name) {
         super(new NamespacedKey(plugin, name));

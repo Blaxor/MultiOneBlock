@@ -8,6 +8,7 @@ import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.langs.MESSAGELIST;
+import ro.deiutzblaxo.oneblock.langs.MessagesManager;
 import ro.deiutzblaxo.oneblock.menu.events.PlayerOpenMenuEvent;
 import ro.deiutzblaxo.oneblock.menu.objects.Button;
 import ro.deiutzblaxo.oneblock.menu.objects.Menu;
@@ -24,12 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class MenuManager {
-    private HashMap<String, Menu> menus = new HashMap<>();
-    private OneBlock plugin;
+    private final HashMap<String, Menu> menus = new HashMap<>();
+    private final OneBlock plugin;
 
     public MenuManager(OneBlock plugin) {
         this.plugin = plugin;
-        //TODO MESSAGE
+
         addMenu(new PrefabMenu("phase", "test", plugin.getLangManager().get(MESSAGE.GUI_TITLE_PHASES), 9));
         addMenu(new PrefabMenu("members", "test", plugin.getLangManager().get(MESSAGE.ISLAND_TEAM_MENU_TITLE), 9));
     }
@@ -54,15 +55,19 @@ public class MenuManager {
     public Menu getPhaseMenu(Island island) {
         Menu menu = getMenu("phase");
         menu.getButtons().clear();
+        menu.setSize(plugin.getPhaseManager().getPhaseHashMap().size());
         int pos = 0;
         Phase now = island.getPhase();
         for (Phase phase : plugin.getPhaseManager().getPhaseHashMap().values()) {
-
-            PrefabButton button = new PrefabButton(phase.getFirstBlock().getMaterial(), cc(phase.getPhaseName()), new ArrayList<>(), Action.CLOSE, null, menu);
+            if (phase.isReset())
+                continue;
+            PrefabButton button = new PrefabButton(phase.getFirstBlock().getMaterial(), cc(phase.getPhaseName()), MessagesManager.replace(plugin.getLangManager().getList(MESSAGELIST.PHASES_LORE), "{blocks}", phase.getBlockNumber() + ""), Action.CLOSE, null, menu);
             if (phase.equals(now)) {
                 button.setGlow(true);
-                button.setLore(plugin.getLangManager().getList(MESSAGELIST.PHASES_NOW_LORE));
+                button.setLore(MessagesManager.replace(plugin.getLangManager().getList(MESSAGELIST.PHASES_NOW_LORE), "{blocks}", phase.getBlockNumber() + ""));
             }
+
+
             menu.addButton(pos, button);
             pos++;
         }
@@ -72,6 +77,7 @@ public class MenuManager {
     public Menu getMembersMenu(Island island) {
         Menu menu = getMenu("members");
         menu.getButtons().clear();
+        menu.setSize(island.getMeta().getMembers().size());
         AtomicInteger i = new AtomicInteger();
         island.getMeta().getMembers().forEach((uuid, rank) -> {
             try {

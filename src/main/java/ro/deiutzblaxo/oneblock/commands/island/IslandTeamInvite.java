@@ -28,7 +28,7 @@ public class IslandTeamInvite implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandTeamInvite(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandTeamInvite(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -49,17 +49,17 @@ public class IslandTeamInvite implements SubCommand {
                 try {
                     String uuidInvited = plugin.getPlayerManager().getUUIDByName(args.get(0));
                     if (plugin.getPlayerManager().getServerByPlayerUUID(uuidInvited).equalsIgnoreCase("none")) {
-                        sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_OFFLINE));
+                        sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.ISLAND_INVITE_OFFLINE));
                         return;
                     } else {
                         RequestInvite invite = new RequestInvite(uuidInvited, player.getPlayer().toString(), player.getIsland());
                         Invite.sendInvite(plugin, ((Player) sender).getPlayer(), invite);
-                        sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_SENDER).
+                        sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.ISLAND_INVITE_SENDER).
                                 replace("{name}", plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args.get(0), "NAME")));
                         return;
                     }
                 } catch (PlayerNoExistException e) {
-                    sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_EXISTS));
+                    sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.ISLAND_INVITE_EXISTS));
                     return;
                 }
             }
@@ -73,9 +73,9 @@ public class IslandTeamInvite implements SubCommand {
             //add invite to timer
             invited.getParticipant().put(SCOPE_CONFIRMATION.INVITE, data);
             invited.getTimers().put(SCOPE_CONFIRMATION.INVITE, 10);
-            sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_SENDER).
+            sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.ISLAND_INVITE_SENDER).
                     replace("{name}", plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args.get(0), "NAME")));
-            invitedPlayer.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_RECIVER).replace("{name}", sender.getName()));
+            invitedPlayer.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.ISLAND_INVITE_RECEIVER).replace("{name}", sender.getName()));
 
 
         }

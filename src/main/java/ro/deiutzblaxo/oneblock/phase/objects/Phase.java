@@ -42,8 +42,8 @@ public class Phase {
 
     private int blockTotal = 0;
     private int entityTotal = 0;
-    private List<String> startCommands;//not implemented
-    private List<String> endCommands;// not implemented
+    private final List<String> startCommands;//not implemented
+    private final List<String> endCommands;// not implemented
     private boolean reset = false;
    //todo private List<Requirement> requirements;
 

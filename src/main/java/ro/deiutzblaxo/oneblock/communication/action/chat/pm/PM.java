@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public class PM {
 
-    private String sender;
-    private String reciver;
+    private final String sender;
+    private final String reciver;
     private String message ="";
 
 

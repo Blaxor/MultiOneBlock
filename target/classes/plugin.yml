@@ -5,9 +5,10 @@ author: JDeiutz
 api-version: 1.16
 commands:
   island:
-    aliases: [is]
+    aliases: [ is ]
   test:
   message:
-    aliases: [msg,pm]
+    aliases: [ msg,pm ]
   global:
+  islandadmin:
 

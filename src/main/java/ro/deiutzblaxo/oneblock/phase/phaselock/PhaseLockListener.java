@@ -2,6 +2,7 @@ package ro.deiutzblaxo.oneblock.phase.phaselock;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -15,7 +16,7 @@ import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 
 public class PhaseLockListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public PhaseLockListener(OneBlock plugin) {
         this.plugin = plugin;
@@ -30,7 +31,7 @@ public class PhaseLockListener implements Listener {
                     if (item.getEnchantments() != null && !item.getEnchantments().isEmpty())
                         if (item.containsEnchantment(Enchantment.getByName("lock"))) {
                             event.setCancelled(true);
-                            event.getPlayer().openInventory(PhaseLock.openInventory(plugin));
+                            event.getPlayer().openInventory(PhaseLock.openInventory(event.getPlayer(),plugin));
                         }
                 }
             }
@@ -43,7 +44,7 @@ public class PhaseLockListener implements Listener {
             if (item.hasItemMeta()) {
                 if (item.containsEnchantment(Enchantment.getByName("lock"))) {
                     event.setCancelled(true);
-                    event.getPlayer().openInventory(PhaseLock.openInventory(plugin));
+                    event.getPlayer().openInventory(PhaseLock.openInventory(event.getPlayer(),plugin));
                 }
             }
         }
@@ -51,22 +52,22 @@ public class PhaseLockListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-
-        if (event.getView().getTitle().equalsIgnoreCase(plugin.getLangManager().get(MESSAGE.PHASE_LOCK_MENU_TITLE))) {
+            Player player = (Player) event.getWhoClicked();
+        if (event.getView().getTitle().equalsIgnoreCase(plugin.getLangManager().get(player,MESSAGE.PHASE_LOCK_MENU_TITLE))) {
             event.setCancelled(true);
             if (event.getCurrentItem() != null)
                 if (event.getCurrentItem().hasItemMeta())
-                    if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getLangManager().get(MESSAGE.PHASE_LOCK_MENU_ITEM_LOCK_DISPLAY))) {
+                    if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getLangManager().get(player,MESSAGE.PHASE_LOCK_MENU_ITEM_LOCK_DISPLAY))) {
 
                         PlayerOB playerOB = plugin.getPlayerManager().getPlayer(event.getWhoClicked().getUniqueId());
                         Island island = playerOB.getIsland(false);
                         if (island == null) {
-                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
+                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
                             event.getWhoClicked().closeInventory();
                             return;
                         }
                         if (island.getMeta().isLocked()) {
-                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(MESSAGE.PHASES_ISLAND_ALREADY_LOCKED));
+                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(player,MESSAGE.PHASES_ISLAND_ALREADY_LOCKED));
                             event.getWhoClicked().closeInventory();
                             return;
                         }
@@ -74,20 +75,20 @@ public class PhaseLockListener implements Listener {
                         island.save(false);
                         event.getWhoClicked().getInventory().setItem(event.getWhoClicked().getInventory().first(Material.BARRIER), null);
                         event.getWhoClicked().closeInventory();
-                        event.getWhoClicked().sendMessage(plugin.getLangManager().get(MESSAGE.PHASES_LOCK_MENU_MESSAGE_LOCK));
+                        event.getWhoClicked().sendMessage(plugin.getLangManager().get(player,MESSAGE.PHASES_LOCK_MENU_MESSAGE_LOCK));
                         return;
-                    } else if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getLangManager().get(MESSAGE.PHASE_LOCK_MENU_ITEM_UNLOCK_DISPLAY))) {
+                    } else if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(plugin.getLangManager().get(player,MESSAGE.PHASE_LOCK_MENU_ITEM_UNLOCK_DISPLAY))) {
 
                         PlayerOB playerOB = plugin.getPlayerManager().getPlayer(event.getWhoClicked().getUniqueId());
                         Island island = playerOB.getIsland(false);
 
                         if (island == null) {
-                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
+                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
                             event.getWhoClicked().closeInventory();
                             return;
                         }
                         if (!island.getMeta().isLocked()) {
-                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(MESSAGE.PHASES_ISLAND_ALREADY_UNLOCKED));
+                            event.getWhoClicked().sendMessage(plugin.getLangManager().get(player,MESSAGE.PHASES_ISLAND_ALREADY_UNLOCKED));
                             event.getWhoClicked().closeInventory();
                             return;
                         }
@@ -95,7 +96,7 @@ public class PhaseLockListener implements Listener {
                         island.save(false);
                         event.getWhoClicked().getInventory().setItem(event.getWhoClicked().getInventory().first(Material.BARRIER), null);
                         event.getWhoClicked().closeInventory();
-                        event.getWhoClicked().sendMessage(plugin.getLangManager().get(MESSAGE.PHASES_LOCK_MENU_MESSAGE_UNLOCK));
+                        event.getWhoClicked().sendMessage(plugin.getLangManager().get(player,MESSAGE.PHASES_LOCK_MENU_MESSAGE_UNLOCK));
 
                     } else {
                         event.getWhoClicked().closeInventory();

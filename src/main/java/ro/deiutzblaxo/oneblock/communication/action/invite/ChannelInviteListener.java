@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class ChannelInviteListener implements PluginMessageListener {
 
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public ChannelInviteListener(OneBlock plugin) {
         this.plugin = plugin;
@@ -46,7 +46,7 @@ public class ChannelInviteListener implements PluginMessageListener {
                 ArrayList<Object> a = new ArrayList<>();
                 a.add(0, requestInvite);
                 invited.getParticipant().put(SCOPE_CONFIRMATION.INVITE, a);
-                Bukkit.getPlayer(invited.getPlayer()).sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_RECIVER).replace("{name}",
+                Bukkit.getPlayer(invited.getPlayer()).sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_RECEIVER).replace("{name}",
                         plugin.getDbManager().getLikeString(TableType.NAME.table, "UUID", requestInvite.inviter, "NAME")));
 
             } else if (subC.equalsIgnoreCase("response")) {
@@ -57,12 +57,12 @@ public class ChannelInviteListener implements PluginMessageListener {
                     case ACCEPT:
                         Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(plugin, responseInvite.getInvited(),
                                 inviterOB, inviterOB.getIsland(false), false, true));
-                        inviter.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
+                        inviter.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
                                 plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())));
                         break;
                     case REJECT:
                         responseInvite.getInvited();
-                        inviter.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_REJECT).replace("{name}",
+                        inviter.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_REJECT).replace("{name}",
                                 plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())));
                 }
 

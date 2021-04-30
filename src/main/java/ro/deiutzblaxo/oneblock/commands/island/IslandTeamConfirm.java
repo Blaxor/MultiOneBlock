@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
+import ro.deiutzblaxo.oneblock.communication.action.Responses;
 import ro.deiutzblaxo.oneblock.communication.action.invite.Invite;
-import ro.deiutzblaxo.oneblock.communication.action.invite.InviteResponses;
 import ro.deiutzblaxo.oneblock.communication.action.invite.RequestInvite;
 import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
 import ro.deiutzblaxo.oneblock.island.Island;
@@ -29,7 +29,7 @@ public class IslandTeamConfirm implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandTeamConfirm(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandTeamConfirm(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -55,14 +55,14 @@ public class IslandTeamConfirm implements SubCommand {
                 String oldIsland = invited.getIsland();
                 if (plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().get(invited.getPlayer()).equals(RANK.OWNER) && plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().size() > 1) {
 
-                    sender.sendMessage("You can`t accept the invite because there are other members on island . you need to remove then or change the ownership");//TODO MESSAGE
+                    sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_TEAM_CONFIRM));
                     return;
                 }
                 plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().remove(invited);
 
                 // send reponse
-                Invite.sendResponse(plugin, player, new ResponseInvite(requestInvite.invited, requestInvite.inviter, InviteResponses.ACCEPT));
-                //TODO TELEPORT TO THE ISLAND SERVER
+                Invite.sendResponse(plugin, player, new ResponseInvite(requestInvite.invited, requestInvite.inviter, Responses.ACCEPT));
+
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
                     Bukkit.getPluginManager().callEvent(new PlayerLeaveIslandEvent(plugin, invited));
@@ -74,11 +74,11 @@ public class IslandTeamConfirm implements SubCommand {
                 }, 1);
                 return;
             }
-            player.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_ACCEPT));
+            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_ACCEPT));
             List<Object> data = invited.getParticipant().get(SCOPE_CONFIRMATION.INVITE);
             PlayerOB inviter = (PlayerOB) data.get(0);
 
-            Bukkit.getPlayer(inviter.getPlayer()).sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
+            Bukkit.getPlayer(inviter.getPlayer()).sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
                     Bukkit.getPlayer(inviter.getPlayer()).getDisplayName()));
 
             Island inviterIsland = (Island) data.get(1);

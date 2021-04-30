@@ -6,9 +6,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 
 public class BlockPlaceListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public BlockPlaceListener(OneBlock plugin) {
         this.plugin = plugin;
@@ -20,7 +21,10 @@ public class BlockPlaceListener implements Listener {
             return;
         Island island = plugin.getIslandManager().getIsland(event.getBlock().getWorld().getName());
         if (island == null) return;
-        if (!island.isAllow(event.getPlayer().getUniqueId(), PERMISSIONS.PLACE)) event.setCancelled(true);
+        if (!island.isAllow(event.getPlayer().getUniqueId(), PERMISSIONS.PLACE)) {
+            event.getPlayer().sendMessage(plugin.getLangManager().get(event.getPlayer(), MESSAGE.ISLAND_PLACE_NOT_ALLOW));
+            event.setCancelled(true);
+        }
 
     }
 

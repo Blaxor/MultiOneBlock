@@ -6,8 +6,8 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import ro.deiutzblaxo.oneblock.OneBlock;
+import ro.deiutzblaxo.oneblock.communication.action.Responses;
 import ro.deiutzblaxo.oneblock.communication.action.invite.Invite;
-import ro.deiutzblaxo.oneblock.communication.action.invite.InviteResponses;
 import ro.deiutzblaxo.oneblock.communication.action.invite.RequestInvite;
 import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
 import ro.deiutzblaxo.oneblock.island.Island;
@@ -22,8 +22,8 @@ import java.util.logging.Level;
 
 public class PlayerOB {
 
-    private OneBlock plugin;
-    private UUID player;
+    private final OneBlock plugin;
+    private final UUID player;
     @Setter
     private String island;
     @Setter
@@ -31,10 +31,10 @@ public class PlayerOB {
     @Setter
     private boolean globalChat = false;
 
-    private BukkitTask autosave;
+    private final BukkitTask autosave;
 
-    private HashMap<SCOPE_CONFIRMATION, Integer> timers = new HashMap<>();
-    private HashMap<SCOPE_CONFIRMATION, List<Object>> participant = new HashMap<>();
+    private final HashMap<SCOPE_CONFIRMATION, Integer> timers = new HashMap<>();
+    private final HashMap<SCOPE_CONFIRMATION, List<Object>> participant = new HashMap<>();
 
     //if is local invite , [0] - PlayerOB object of inviter , [1] - Island object of inviter
     // if is multiserver , first object will be a RequestInvite object.
@@ -51,7 +51,7 @@ public class PlayerOB {
                             case INVITE:
                                 if (participant.get(scope).get(0) instanceof RequestInvite) {
                                     RequestInvite invite = (RequestInvite) participant.get(scope).get(0);
-                                    Invite.sendResponse(plugin, Bukkit.getPlayer(player), new ResponseInvite(invite.invited, invite.inviter, InviteResponses.REJECT));
+                                    Invite.sendResponse(plugin, Bukkit.getPlayer(player), new ResponseInvite(invite.invited, invite.inviter, Responses.REJECT));
                                     return;
                                 }
                                 PlayerOB inviter = (PlayerOB) participant.get(scope).get(0);
@@ -92,7 +92,7 @@ public class PlayerOB {
                 plugin.getDbManager().set(TableType.PLAYERS.table, "SERVER", "UUID", server, player.toString());
             }
             if (island != null) {
-                plugin.getDbManager().set(TableType.PLAYERS.table, "ISLAND", "UUID", island.toString(), player.toString());
+                plugin.getDbManager().set(TableType.PLAYERS.table, "ISLAND", "UUID", island, player.toString());
             } else {
                 plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", player.toString(), "ISLAND");
             }
@@ -114,10 +114,7 @@ public class PlayerOB {
     public boolean isOnIsland() {
         if (island == null)
             return false;
-        if (Bukkit.getPlayer(player).getWorld().getName().equalsIgnoreCase(island)) {
-            return true;
-        }
-        return false;
+        return Bukkit.getPlayer(player).getWorld().getName().equalsIgnoreCase(island);
 
     }
 

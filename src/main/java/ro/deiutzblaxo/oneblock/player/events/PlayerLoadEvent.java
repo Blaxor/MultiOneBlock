@@ -16,7 +16,7 @@ public class PlayerLoadEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
     @Getter
-    private PlayerOB player;
+    private final PlayerOB player;
 
 
     @SneakyThrows

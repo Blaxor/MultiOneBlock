@@ -15,10 +15,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @Getter
 public class IslandLevelCalculator {
     public static TreeMap<Material, Integer> blockValue = new TreeMap<>();
-    private ConcurrentHashMap<Thread, Integer> threadsStatus = new ConcurrentHashMap<>();
-    private ConcurrentLinkedQueue<Chunk> chunks = new ConcurrentLinkedQueue<>();
-    private AtomicReference<Island> island = new AtomicReference<>();
-    private AtomicReference<Results> results = new AtomicReference<>();
+    private final ConcurrentHashMap<Thread, Integer> threadsStatus = new ConcurrentHashMap<>();
+    private final ConcurrentLinkedQueue<Chunk> chunks = new ConcurrentLinkedQueue<>();
+    private final AtomicReference<Island> island = new AtomicReference<>();
+    private final AtomicReference<Results> results = new AtomicReference<>();
 
 
     public IslandLevelCalculator(Island island) {

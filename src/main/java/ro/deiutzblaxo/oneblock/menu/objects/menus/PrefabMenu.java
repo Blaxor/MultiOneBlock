@@ -1,5 +1,6 @@
 package ro.deiutzblaxo.oneblock.menu.objects.menus;
 
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import ro.deiutzblaxo.oneblock.menu.objects.Button;
@@ -7,19 +8,21 @@ import ro.deiutzblaxo.oneblock.menu.objects.Menu;
 
 import java.util.HashMap;
 
+@Data
 public class PrefabMenu implements Menu {
 
     private HashMap<Integer, Button> buttons = new HashMap<>();
-    private String id;
-    private String permission;
+    private final String id;
+    private final String permission;
     private String name;
-    private int size;
+    private int size = 0;
 
     public PrefabMenu(String id, String permission, String name, int size) {
         this.id = id;
         this.permission = permission;
         this.name = name;
-        this.size = size;
+        setSize(size);
+
     }
 
     @Override
@@ -35,6 +38,15 @@ public class PrefabMenu implements Menu {
     @Override
     public String getPermission() {
         return permission;
+    }
+
+    @Override
+    public void setSize(int size) {
+        if (size % 9 == 0) {
+            this.size = size;
+            return;
+        }
+        this.size = (((size / 9) + 1) * 9);
     }
 
     @Override

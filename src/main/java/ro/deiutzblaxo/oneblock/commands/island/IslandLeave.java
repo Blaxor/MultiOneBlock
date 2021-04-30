@@ -23,7 +23,7 @@ public class IslandLeave implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandLeave(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandLeave(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -38,24 +38,24 @@ public class IslandLeave implements SubCommand {
     public void execute(CommandSender sender, List<String> args) {
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("You are not a player!");//TODO MESSAGE
+            sender.sendMessage("You are not a player!");
             return;
         }
         Player player = (Player) sender;
         PlayerOB owner = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         Island island = owner.getIsland(false);
         if (island == null) {
-            sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
         if (island.getMeta().getMembers().get(player.getUniqueId()) == RANK.OWNER) {
             if (island.getMeta().getMembers().size() > 1) {
-                sender.sendMessage("You need to remove all the members first!");//TODO MESSAGE
+                sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_LEAVE));
                 return;
             }
         }
         Bukkit.getPluginManager().callEvent(new PlayerLeaveIslandEvent(plugin, owner, island));
-        sender.sendMessage("You leaved the island!");//TODO MESSAGE
+        sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_LEAVE));
 
 
     }

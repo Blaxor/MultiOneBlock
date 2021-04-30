@@ -24,7 +24,7 @@ public class IslandTeleportCommand implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandTeleportCommand(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandTeleportCommand(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -60,7 +60,7 @@ public class IslandTeleportCommand implements SubCommand {
 
             playerOB.setIsland(island.getUuidIsland());
             island.teleportHere(((Player) sender).getPlayer());
-            sender.sendMessage(plugin.getLangManager().get(MESSAGE.TELEPORTED_TO_ISLAND));
+            sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.TELEPORTED_TO_ISLAND));
         }
 
     }

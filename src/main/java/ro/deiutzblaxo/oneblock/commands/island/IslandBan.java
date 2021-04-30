@@ -8,6 +8,7 @@ import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
@@ -23,7 +24,7 @@ public class IslandBan implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandBan(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandBan(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -50,37 +51,37 @@ public class IslandBan implements SubCommand {
         Player player = (Player) sender;
         Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
         if (island == null) {
-            sender.sendMessage("Please use first /is go");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
         UUID uuid;
         try {
             uuid = UUID.fromString(plugin.getPlayerManager().getUUIDByName(args.get(0)));
         } catch (PlayerNoExistException e) {
-            sender.sendMessage("Player don`t exist!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.PLAYER_NO_EXISTS));
             return;
         }
         if (!island.isAllow(player.getUniqueId(), PERMISSIONS.BAN)) {
-            sender.sendMessage("You can`t ban someone!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BAN_NOT_ALLOW));
             return;
         }
         if (island.getMeta().getMembers().get(uuid) != null) {
             if (island.getMeta().getMembers().get(uuid).equals(RANK.OWNER)) {
-                sender.sendMessage("You can`t ban the owner!");//TODO MESSAGE
+                sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BAN_OWNER));
                 return;
             }
         }
         if (!island.ban(uuid)) {
-            sender.sendMessage("Is already banned!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_IS_BANNED));
             return;
         }
         try {
-            sender.sendMessage("You have banned " + plugin.getPlayerManager().getNameByUUID(uuid)); // TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BANNED_OTHER).replace("{name}", plugin.getPlayerManager().getNameByUUID(uuid)));
         } catch (PlayerNoExistException e) {
             e.printStackTrace();
         }
         if (Bukkit.getPlayer(uuid) != null) {
-            Bukkit.getPlayer(uuid).sendMessage("You have been banned from the island!");//TODO MESSAGE
+            Bukkit.getPlayer(uuid).sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BANNED));
         }
     }
 

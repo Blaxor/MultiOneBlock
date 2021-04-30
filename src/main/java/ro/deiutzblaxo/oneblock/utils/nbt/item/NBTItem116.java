@@ -35,16 +35,14 @@ public class NBTItem116 {
         NBTTagCompound tag = stack.getTag();
         if (tag == null) return false;
         if (!tag.hasKey(key)) return false;
-        if (tag.getString(key) != value) return false;
-        return true;
+        return tag.getString(key) == value;
     }
 
     public static boolean containtsKNBTTag(ItemStack item, String key) {
         net.minecraft.server.v1_16_R3.ItemStack stack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag = stack.getTag();
         if (tag == null) return false;
-        if (!tag.hasKey(key)) return false;
-        return true;
+        return tag.hasKey(key);
     }
 
     public static boolean containsVNBTTag(ItemStack item, String value) {

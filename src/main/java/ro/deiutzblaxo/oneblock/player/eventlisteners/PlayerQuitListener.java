@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 
 public class PlayerQuitListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public PlayerQuitListener(OneBlock plugin) {
         this.plugin = plugin;

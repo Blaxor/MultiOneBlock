@@ -78,7 +78,7 @@ public interface Button {
             item = EnchantsManager.addGlow(item);
         }
 
-        return NBTItem116.addNBTTag(item, "menu", getParent().getID()); // TODO USE THIS TO DETECT THE BUTTON IN LISTENER.
+        return NBTItem116.addNBTTag(item, "menu", getParent().getID());
 
 
     }

@@ -26,7 +26,7 @@ public class IslandKick implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandKick(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandKick(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -41,7 +41,7 @@ public class IslandKick implements SubCommand {
     public void execute(CommandSender sender, List<String> args) {
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("You are not a player!");//TODO MESSAGE
+            sender.sendMessage("You are not a player!");
             return;
         }
         if (args.size() != 1) {
@@ -52,33 +52,33 @@ public class IslandKick implements SubCommand {
         PlayerOB owner = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         Island island = owner.getIsland(false);
         if (island == null) {
-            sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
         if (!island.isAllow(player.getUniqueId(), PERMISSIONS.KICK)) {
-            sender.sendMessage("You can`t kick someone!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_KICK));
         }
         UUID kicked;
         try {
             kicked = UUID.fromString(plugin.getPlayerManager().getUUIDByName(args.get(0)));
         } catch (PlayerNoExistException e) {
-            sender.sendMessage(args.get(0) + " " + "don`t exist!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.PLAYER_NO_EXISTS));
             return;
         }
         HashMap<UUID, RANK> members = island.getMeta().getMembers();
 
         if (!members.containsKey(kicked)) {
-            sender.sendMessage("This player is not part of your island!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_KICK_PART).replace("{name}", args.get(0)));
             return;
         }
         if (args.get(0).equalsIgnoreCase(player.getName())) {
-            sender.sendMessage("YOu can`t kick yourself!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_KICK_SELF));
             return;
         }
         Bukkit.getPluginManager().callEvent(new PlayerKickIslandEvent(plugin, kicked, island));
-        sender.sendMessage("You kicked " + args.get(0) + " from your island!");
+        sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_KICK_OTHER));
         if (Bukkit.getPlayer(kicked) != null) {
-            Bukkit.getPlayer(kicked).sendMessage("You have been kicked from the island!");
+            Bukkit.getPlayer(kicked).sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_KICKED));
         }
 
 

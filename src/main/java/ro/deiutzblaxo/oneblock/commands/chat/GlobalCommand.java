@@ -22,7 +22,7 @@ public class GlobalCommand implements Command, CommandExecutor, TabCompleter {
     protected HashMap<String, SubCommand> subCommands = new HashMap<>();
     protected OneBlock plugin;
 
-    public GlobalCommand(OneBlock plugin, String aliases[], String permission) {
+    public GlobalCommand(OneBlock plugin, String[] aliases, String permission) {
         this.aliases = aliases;
         this.permission = "oneblock." + permission;
         PluginCommand command = plugin.getCommand("global");
@@ -42,7 +42,7 @@ public class GlobalCommand implements Command, CommandExecutor, TabCompleter {
         }*/
 
         PlayerOB player = plugin.getPlayerManager().getPlayer(((Player) sender).getUniqueId());
-        player.setGlobalChat(player.isGlobalChat() ? false :true);
+        player.setGlobalChat(!player.isGlobalChat());
         if(player.isGlobalChat())
             ChatListener.globalRecipients.add(((Player) sender));
         else

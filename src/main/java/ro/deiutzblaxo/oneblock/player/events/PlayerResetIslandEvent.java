@@ -32,7 +32,6 @@ public class PlayerResetIslandEvent extends Event implements Cancellable {
         if (isCancelled())
             return;
 
-        //TODO REMOVE FROM DB v
         player.getInventory().clear();
         player.closeInventory();
         player.getEnderChest().clear();
@@ -71,7 +70,6 @@ public class PlayerResetIslandEvent extends Event implements Cancellable {
         if (isCancelled())
             return;
 
-        //TODO REMOVE FROM DB v
         player.getInventory().clear();
         player.closeInventory();
         player.getEnderChest().clear();

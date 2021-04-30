@@ -14,7 +14,7 @@ import java.util.logging.Level;
 
 public class ChunkUtils {
 
-    private static List<World> changingWorlds = new ArrayList<>();
+    private static final List<World> changingWorlds = new ArrayList<>();
 
     public static void changeBiome(OneBlock plugin, World world, Biome biome, int radius_) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {

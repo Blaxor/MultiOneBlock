@@ -7,6 +7,7 @@ import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class IslandBanList implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandBanList(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandBanList(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -43,11 +44,11 @@ public class IslandBanList implements SubCommand {
         Player player = (Player) sender;
         Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
         if (island == null) {
-            sender.sendMessage("Please use first /is go");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
         if (!island.isAllow(player.getUniqueId(), PERMISSIONS.BANLIST)) {
-            sender.sendMessage("You can`t see this list !");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BANLIST_NOT_ALLOW));
             return;
         }
         StringBuilder builder = new StringBuilder();
@@ -58,7 +59,7 @@ public class IslandBanList implements SubCommand {
                 e.printStackTrace();
             }
         });
-        sender.sendMessage("The banned players are: " + builder);
+        sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BANLIST) + builder);
 
     }
 

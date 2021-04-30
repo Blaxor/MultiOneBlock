@@ -11,7 +11,7 @@ import ro.deiutzblaxo.oneblock.menu.objects.menus.InventoryTag;
 import ro.deiutzblaxo.oneblock.utils.nbt.item.NBTItem116;
 
 public class InventoryClickListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public InventoryClickListener(OneBlock plugin) {
         this.plugin = plugin;

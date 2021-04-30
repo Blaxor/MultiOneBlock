@@ -1,6 +1,7 @@
 package ro.deiutzblaxo.oneblock.communication.action.invite;
 
 import lombok.Getter;
+import ro.deiutzblaxo.oneblock.communication.action.Responses;
 
 import java.io.Serializable;
 
@@ -8,11 +9,11 @@ import java.io.Serializable;
 
 public class ResponseInvite implements Serializable {
 
-    private String invited;
-    private InviteResponses error;
-    private String inviter;
+    private final String invited;
+    private final Responses error;
+    private final String inviter;
 
-    public ResponseInvite(String invited, String inviter, InviteResponses error) {
+    public ResponseInvite(String invited, String inviter, Responses error) {
         this.invited = invited;
         this.error = error;
         this.inviter=inviter;
@@ -22,7 +23,7 @@ public class ResponseInvite implements Serializable {
         String[] splited = string.split(";");
         this.invited = splited[0];
         this.inviter = splited[1];
-        this.error = InviteResponses.valueOf(splited[2]);
+        this.error = Responses.valueOf(splited[2]);
     }
 
     @Override

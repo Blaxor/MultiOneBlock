@@ -15,6 +15,7 @@ import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException
 import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.events.PlayerBanIslandEvent;
@@ -59,8 +60,7 @@ public class Island {
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }
-            }
-            else
+            } else
                 save(false);
         }, 20 * 60 * 5, 20 * 60 * 5);
 
@@ -105,9 +105,13 @@ public class Island {
         plugin.getSlimePlugin().generateWorld(world);
 
         bukkitWorld = Bukkit.getWorld(world.getName());
-        if (getMiddleBlock().getType() == Material.AIR) {
-            getMiddleBlock().setType(getPhase().getFirstBlock().getMaterial());
-        }
+        meta.getBlock().forEach(location -> {
+            Block block = bukkitWorld.getBlockAt(location.toBukkitLocation(bukkitWorld));
+            if (block == null)
+                block.setType(getPhase().getFirstBlock().getMaterial());
+            if (block.getType() == Material.AIR)
+                block.setType(getPhase().getFirstBlock().getMaterial());
+        });
         setSpawnLocation(meta.getSpawn());
         if (Bukkit.getPlayer(getOwner()) != null)
             getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(getOwner())));
@@ -134,12 +138,14 @@ public class Island {
             player.teleport(meta.getSpawn().toBukkitLocation(bukkitWorld));
         else {
             player.teleport(plugin.getSpawnLocation());
-            player.sendMessage("That location is not safe. you have been teleported to spawn!");//TODO MESSAGE
+            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.LOCATION_NOT_SAFE));
         }
     }
 
-    public Block getMiddleBlock() {
-        return bukkitWorld.getBlockAt(meta.getBlock().toBukkitLocation(bukkitWorld));
+    public Block getBlock(org.bukkit.Location location) {
+        if (meta.getBlock().contains(new Location(location)))
+            return bukkitWorld.getBlockAt(location);
+        return null;
     }
 
     public void setSpawnLocation(ro.deiutzblaxo.oneblock.utils.Location location) {

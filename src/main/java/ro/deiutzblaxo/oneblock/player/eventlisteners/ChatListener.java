@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ChatListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public ChatListener(OneBlock plugin) {
         this.plugin = plugin;
@@ -31,15 +31,15 @@ public class ChatListener implements Listener {
         String message = event.getMessage();
         if (playerOB.isGlobalChat()) {
 
-            String msg = plugin.getLangManager().get(MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message;
+            String msg = plugin.getLangManager().get(player,MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message;
             event.setCancelled(true);
             globalRecipients.forEach(player1 -> {
-                player1.sendMessage(plugin.getLangManager().get(MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message);
+                player1.sendMessage(plugin.getLangManager().get(player,MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message);
             });
             ChatGlobalSender.sendMessage(plugin, player, msg);
 
         } else {
-            event.setFormat(plugin.getLangManager().get(MESSAGE.CHAT_SERVER_PREFIX).replace("{name}", player.getDisplayName()) + message);
+            event.setFormat(plugin.getLangManager().get(player,MESSAGE.CHAT_SERVER_PREFIX).replace("{name}", player.getDisplayName()) + message);
         }
 
 

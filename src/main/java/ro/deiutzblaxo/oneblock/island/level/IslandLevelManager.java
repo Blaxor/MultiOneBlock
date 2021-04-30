@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class IslandLevelManager {
     @Getter
-    private ArrayList<Triplet<String, Integer, IslandMeta>> topIslands = new ArrayList<>();
+    private final ArrayList<Triplet<String, Integer, IslandMeta>> topIslands = new ArrayList<>();
     @Getter
-    private IslandLevelCalculateManager islandLevelCalculateManager;
-    private OneBlock plugin;
+    private final IslandLevelCalculateManager islandLevelCalculateManager;
+    private final OneBlock plugin;
 
     public IslandLevelManager(OneBlock plugin) {
         this.plugin = plugin;

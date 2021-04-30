@@ -1,8 +1,11 @@
 package ro.deiutzblaxo.oneblock.langs;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 
 import java.io.File;
@@ -13,11 +16,11 @@ import java.util.List;
 
 public class MessagesManager {
 
-    private OneBlock plugin;
-    private File file;
+    private final OneBlock plugin;
+    private final File file;
     private FileConfiguration config;
-    private HashMap<MESSAGE, String> messageStringHashMap = new HashMap<>();
-    private HashMap<MESSAGELIST, List<String>> messagelistListHashMap = new HashMap<>();
+    private final HashMap<MESSAGE, String> messageStringHashMap = new HashMap<>();
+    private final HashMap<MESSAGELIST, List<String>> messagelistListHashMap = new HashMap<>();
 
 
     public MessagesManager(OneBlock plugin) {
@@ -44,19 +47,37 @@ public class MessagesManager {
 
     }
 
+    public String get(Player player, MESSAGE message) {
+        config = YamlConfiguration.loadConfiguration(file);
+
+        if (config.contains(message.path)) {
+            if (messageStringHashMap.containsKey(message))
+                if (Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI"))
+                    return ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, messageStringHashMap.get(message)));
+                else return ChatColor.translateAlternateColorCodes('&', messageStringHashMap.get(message));
+            else {
+                messageStringHashMap.put(message, config.getString(message.path));
+                return get(player, message);
+            }
+        } else {
+            setDefault(message);
+            return ChatColor.translateAlternateColorCodes('&', get(player, message));
+        }
+    }
+
     public String get(MESSAGE message) {
         config = YamlConfiguration.loadConfiguration(file);
 
         if (config.contains(message.path)) {
             if (messageStringHashMap.containsKey(message))
-                return ChatColor.translateAlternateColorCodes('&',messageStringHashMap.get(message));
+                return ChatColor.translateAlternateColorCodes('&', messageStringHashMap.get(message));
             else {
                 messageStringHashMap.put(message, config.getString(message.path));
-            return get(message);
+                return get(message);
             }
         } else {
             setDefault(message);
-            return ChatColor.translateAlternateColorCodes('&',get(message));
+            return ChatColor.translateAlternateColorCodes('&', get(message));
         }
     }
 
@@ -65,10 +86,10 @@ public class MessagesManager {
 
         if (config.contains(list.path)) {
             if (messagelistListHashMap.containsKey(list)) {
-               return translate(messagelistListHashMap.get(list));
+                return translate(messagelistListHashMap.get(list));
             } else
                 messagelistListHashMap.put(list, config.getStringList(list.path));
-                return getList(list);
+            return getList(list);
         } else {
             setDefaultList(list);
             return translate(getList(list));
@@ -96,10 +117,19 @@ public class MessagesManager {
     public static String translate(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
+
     public static List<String> translate(List<String> strings) {
         List<String> translated = new ArrayList<>();
         for (String str : strings) {
             translated.add(translate(str));
+        }
+        return translated;
+    }
+
+    public static List<String> replace(List<String> strings, String regex, String value) {
+        List<String> translated = new ArrayList<>();
+        for (String str : strings) {
+            translated.add(str.replace(regex, value));
         }
         return translated;
     }

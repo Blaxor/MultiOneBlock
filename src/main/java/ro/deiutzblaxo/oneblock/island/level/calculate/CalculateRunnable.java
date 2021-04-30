@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CalculateRunnable implements Runnable {
-    private AtomicReference<IslandLevelCalculator> calculator = new AtomicReference<>();
+    private final AtomicReference<IslandLevelCalculator> calculator = new AtomicReference<>();
     protected AtomicInteger id = new AtomicInteger();
 
     public CalculateRunnable(IslandLevelCalculator calculator, int i) {

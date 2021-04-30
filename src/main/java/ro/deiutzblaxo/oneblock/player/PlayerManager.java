@@ -17,10 +17,10 @@ import java.util.logging.Level;
 
 public class PlayerManager {
 
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     @Getter
-    private HashMap<UUID, PlayerOB> players = new HashMap<UUID, PlayerOB>();
+    private final HashMap<UUID, PlayerOB> players = new HashMap<UUID, PlayerOB>();
 
     public PlayerManager(OneBlock plugin) {
         this.plugin = plugin;

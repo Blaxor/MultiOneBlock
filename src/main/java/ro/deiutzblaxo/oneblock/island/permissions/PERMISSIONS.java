@@ -18,7 +18,7 @@ public enum PERMISSIONS {
     PVE(RANK.MEMBER),
     INTERACT(RANK.MEMBER);
     @Getter
-    private RANK lowestRankDefault;
+    private final RANK lowestRankDefault;
 
     PERMISSIONS(RANK lowestRankDefault) {
         this.lowestRankDefault = lowestRankDefault;

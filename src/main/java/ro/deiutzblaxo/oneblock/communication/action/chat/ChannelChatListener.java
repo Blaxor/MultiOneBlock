@@ -13,7 +13,7 @@ import ro.deiutzblaxo.oneblock.player.eventlisteners.ChatListener;
 import java.util.UUID;
 
 public class ChannelChatListener implements PluginMessageListener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public ChannelChatListener(OneBlock plugin) {
         this.plugin = plugin;

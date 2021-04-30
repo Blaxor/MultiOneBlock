@@ -1,12 +1,15 @@
 package ro.deiutzblaxo.oneblock.player.events;
 
 import lombok.Getter;
+import me.stefan923.playerdatastorage.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
@@ -36,17 +39,21 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         this.island = island;
         if (isCancelled())
             return;
-
-        //TODO REMOVE FROM DB v
-        player.getInventory().clear();
-        player.closeInventory();
-        player.getEnderChest().clear();
-        player.setLevel(0);
-        player.setExp(0);
+        if (player != null) {
+            player.getInventory().clear();
+            player.closeInventory();
+            player.getEnderChest().clear();
+            player.setLevel(0);
+            player.setExp(0);
+        }
         island.getMeta().getMembers().remove(playerOB);
-        if (this.playerOB == null)
+        if (this.playerOB == null) {
             plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", playerOBUUID.toString(), "ISLAND");
-        else {
+
+            PlayerData data = new PlayerData(new ItemStack[0], new ItemStack[0], new PotionEffect[0], 0);
+            data.setUuid(playerOBUUID);
+            plugin.getPlayerSaveStorage().savePlayerData(data);
+        } else {
             this.playerOB.setIsland(null);
             this.player.teleport(plugin.getSpawnLocation());
         }
@@ -83,7 +90,6 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         if (isCancelled())
             return;
 
-        //TODO REMOVE FROM DB v
         player.getInventory().clear();
         player.closeInventory();
         player.getEnderChest().clear();
@@ -132,7 +138,6 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         if (isCancelled())
             return;
 
-        //TODO REMOVE FROM DB v
         player.getInventory().clear();
         player.closeInventory();
         player.getEnderChest().clear();

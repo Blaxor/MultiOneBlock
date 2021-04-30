@@ -14,7 +14,7 @@ public class PlayerUnLoadEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
     @Getter
-    private PlayerOB player;
+    private final PlayerOB player;
 
     public PlayerUnLoadEvent(OneBlock plugin, UUID player_) {
         player = plugin.getPlayerManager().getPlayer(player_);

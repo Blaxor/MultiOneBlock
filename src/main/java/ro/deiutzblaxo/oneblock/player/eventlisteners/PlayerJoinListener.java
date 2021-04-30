@@ -17,7 +17,7 @@ import ro.deiutzblaxo.oneblock.player.RANK;
 import java.util.Arrays;
 
 public class PlayerJoinListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public PlayerJoinListener(OneBlock plugin) {
         this.plugin = plugin;

@@ -6,6 +6,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class Location {
@@ -69,6 +71,19 @@ public class Location {
             err.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location location = (Location) o;
+        return Double.compare(location.X, X) == 0 && Double.compare(location.Y, Y) == 0 && Double.compare(location.Z, Z) == 0 && Float.compare(location.pitch, pitch) == 0 && Float.compare(location.yaw, yaw) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(X, Y, Z, pitch, yaw);
     }
 
     @Override

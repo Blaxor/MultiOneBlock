@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.OneBlock;
 
 public class IslandTireEnchant extends Enchantment {
-    private String name;
-    private int max;
+    private final String name;
+    private final int max;
 
     public IslandTireEnchant(OneBlock plugin, String name, int max) {
         super(new NamespacedKey(plugin, name));

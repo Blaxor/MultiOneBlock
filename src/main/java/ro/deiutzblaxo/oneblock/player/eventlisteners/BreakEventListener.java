@@ -1,7 +1,6 @@
 package ro.deiutzblaxo.oneblock.player.eventlisteners;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -16,14 +15,17 @@ import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.phase.events.ChangePhaseEvent;
 import ro.deiutzblaxo.oneblock.phase.objects.PhaseObject;
+import ro.deiutzblaxo.oneblock.utils.UTILS;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class BreakEventListener implements Listener {
 
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public BreakEventListener(OneBlock plugin) {
         this.plugin = plugin;
@@ -31,17 +33,16 @@ public class BreakEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
-
         Island island = plugin.getIslandManager().getIsland(event.getBlock().getLocation().getWorld().getName());
         if (island == null) {
             return;
         }
         if (!island.isAllow(event.getPlayer().getUniqueId(), PERMISSIONS.BREAK) && !event.getPlayer().hasPermission("oneblock.bypass.break")) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage("You are not allowed to break on this island!");//TODO MESSAGE
+            event.getPlayer().sendMessage(plugin.getLangManager().get(event.getPlayer(),MESSAGE.ISLAND_BREAK_NOT_ALLOW));
             return;
         }
-        if (!island.getMiddleBlock().getLocation().equals(event.getBlock().getLocation())) {
+        if (island.getBlock(event.getBlock().getLocation()) == null) {
             return;
         }
         process(island, event);
@@ -53,14 +54,15 @@ public class BreakEventListener implements Listener {
         if (!event.getEntityType().equals(EntityType.FALLING_BLOCK)) {
             return;
         }
-        Location l = event.getLocation();
-        Island isl = plugin.getIslandManager().getIsland(event.getLocation().getWorld().getName());
-        if (isl == null)
+        Island island = plugin.getIslandManager().getIsland(event.getLocation().getWorld().getName());
+
+        if (island == null)
             return;
-        Location island = isl.getMiddleBlock().getLocation();
-        if (l.getBlockX() == island.getBlockX() && l.getBlockY() == island.getBlockY() && l.getBlockZ() == island.getBlockZ()) {
-            event.setCancelled(true);
+        if (island.getBlock(UTILS.roundLocation(event.getLocation())) == null) {
+            return;
         }
+        event.setCancelled(true);
+
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -68,9 +70,9 @@ public class BreakEventListener implements Listener {
         Island island = plugin.getIslandManager().getIsland(event.getBlock().getLocation().getWorld().getName());
         if (island == null)
             return;
-        if (!island.getMiddleBlock().getLocation().equals(event.getBlock().getLocation())) {
+        Block block = island.getBlock(event.getBlock().getLocation());
+        if (block == null)
             return;
-        }
         event.setCancelled(true);
     }
 
@@ -83,7 +85,13 @@ public class BreakEventListener implements Listener {
             Bukkit.getPluginManager().callEvent(new ChangePhaseEvent(plugin, island));
 
         Collection<ItemStack> list = event.getBlock().getDrops(event.getPlayer().getItemInHand());
+        if (event.getBlock().getType() == Material.CHEST) {
+            list.addAll(Arrays.asList(((Chest) event.getBlock().getState()).getBlockInventory().getContents()));
+            ((Chest) event.getBlock().getState()).getBlockInventory().clear();
+        }
         for (ItemStack itemStack : list) {
+            if (itemStack == null)
+                continue;
             if (itemStack.getType() == Material.AIR)
                 continue;
             block.getWorld().dropItem(block.getLocation().add(.5, 1, .5), itemStack);

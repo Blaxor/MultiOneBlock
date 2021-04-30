@@ -30,4 +30,8 @@ public interface Menu {
     }
 
     Inventory getInterface();
+
+    int getSize();
+
+    void setSize(int size);
 }

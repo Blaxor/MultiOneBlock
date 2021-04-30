@@ -8,6 +8,7 @@ import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class IslandUnBan implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandUnBan(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandUnBan(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -49,31 +50,31 @@ public class IslandUnBan implements SubCommand {
         Player player = (Player) sender;
         Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
         if (island == null) {
-            sender.sendMessage("Please use first /is go");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
         UUID uuid;
         try {
             uuid = UUID.fromString(plugin.getPlayerManager().getUUIDByName(args.get(0)));
         } catch (PlayerNoExistException e) {
-            sender.sendMessage("Player don`t exist!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.PLAYER_NO_EXISTS));
             return;
         }
         if (!island.isAllow(player.getUniqueId(), PERMISSIONS.UNBAN)) {
-            sender.sendMessage("You can`t unban someone!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_UNBAN_ALLOW));
             return;
         }
         if (!island.unban(uuid)) {
-            sender.sendMessage("Is not banned");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_UNBAN_BAN));
             return;
         }
         try {
-            sender.sendMessage("You have unbanned " + plugin.getPlayerManager().getNameByUUID(uuid)); // TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_UNBAN).replace("{name}", plugin.getPlayerManager().getNameByUUID(uuid)));
         } catch (PlayerNoExistException e) {
             e.printStackTrace();
         }
         if (Bukkit.getPlayer(uuid) != null) {
-            Bukkit.getPlayer(uuid).sendMessage("You have been unbanned from the island!");//TODO MESSAGE
+            Bukkit.getPlayer(uuid).sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_UNBANNED));
         }
     }
 

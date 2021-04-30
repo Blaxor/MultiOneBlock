@@ -11,8 +11,8 @@ import java.util.logging.Level;
 
 @Getter
 public class IslandLevelCalculateManager {
-    private OneBlock plugin;
-    private Queue<Island> queue_islands = new ConcurrentLinkedQueue<>();
+    private final OneBlock plugin;
+    private final Queue<Island> queue_islands = new ConcurrentLinkedQueue<>();
     private IslandLevelCalculator calculationNow;
 
     public IslandLevelCalculateManager(OneBlock plugin) {
@@ -66,10 +66,7 @@ public class IslandLevelCalculateManager {
         if (queue_islands.contains(island)) {
             return true;
         }
-        if (calculationNow.getIsland().get().equals(island)) {
-            return true;
-        }
-        return false;
+        return calculationNow.getIsland().get().equals(island);
     }
 
 

@@ -18,7 +18,9 @@ import java.util.UUID;
 @Setter
 public class IslandMeta implements Serializable {
     private HashMap<UUID, RANK> members = new HashMap<>();
-    private Location block = new Location(0, 81, 0);
+    private ArrayList<Location> block = new ArrayList<>() {{
+        add(new Location(0, 81, 0));
+    }};
     private Location spawn = new Location(0, 82, 0);
     private int count = 0;
     private String radiusType = "member";

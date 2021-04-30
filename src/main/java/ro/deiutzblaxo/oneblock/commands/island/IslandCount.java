@@ -1,12 +1,12 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +19,7 @@ public class IslandCount implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandCount(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandCount(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -35,11 +35,11 @@ public class IslandCount implements SubCommand {
     public void execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
         if (plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false) == null) {
-            player.sendMessage("Please use /is go first!");//TODO MESSAGE
+            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
         Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
-        sender.sendMessage("The block braked: " + ChatColor.translateAlternateColorCodes('&', "" + island.getMeta().getCount()));//TODO MESSAGE
+        sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_COUNT) + island.getMeta().getCount());
     }
 
 

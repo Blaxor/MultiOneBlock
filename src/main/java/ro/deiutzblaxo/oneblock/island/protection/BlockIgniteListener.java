@@ -9,7 +9,7 @@ import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
 
 public class BlockIgniteListener implements Listener {
 
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public BlockIgniteListener(OneBlock plugin) {
         this.plugin = plugin;
@@ -17,6 +17,8 @@ public class BlockIgniteListener implements Listener {
 
     @EventHandler
     public void onLight(BlockIgniteEvent event) {
+        if (event.getPlayer() == null)
+            return;
         if (event.getPlayer().hasPermission("oneblock.bypass.ignite"))
             return;
         if (event.getCause() != BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL || event.getCause() != BlockIgniteEvent.IgniteCause.ARROW)

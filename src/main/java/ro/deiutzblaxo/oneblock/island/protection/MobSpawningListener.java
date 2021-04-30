@@ -9,7 +9,7 @@ import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
 
 public class MobSpawningListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public MobSpawningListener(OneBlock plugin) {
         this.plugin = plugin;

@@ -8,7 +8,7 @@ import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
 
 public class DecayListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public DecayListener(OneBlock plugin) {
         this.plugin = plugin;

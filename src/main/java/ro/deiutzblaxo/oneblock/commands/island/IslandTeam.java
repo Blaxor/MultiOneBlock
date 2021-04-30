@@ -19,7 +19,7 @@ public class IslandTeam implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandTeam(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandTeam(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -41,7 +41,7 @@ public class IslandTeam implements SubCommand {
         if (island != null)
             plugin.getMenuManager().openMenu(plugin.getMenuManager().getMembersMenu(island).getID(), player);
         else
-            player.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
+            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
     }
 
     @Override

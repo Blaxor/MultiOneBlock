@@ -18,7 +18,7 @@ public class IslandTier implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandTier(OneBlock plugin, String aliases[], String permission, Command parent) {
+    public IslandTier(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;

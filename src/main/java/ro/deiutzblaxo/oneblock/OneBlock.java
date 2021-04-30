@@ -6,9 +6,12 @@ import lombok.Getter;
 import me.stefan923.playerdatastorage.PlayerDataStorage;
 import me.stefan923.playerdatastorage.mysql.MySQLConnection;
 import me.stefan923.playerdatastorage.mysql.MySQLPlayerDataStorage;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import ro.deiutzblaxo.oneblock.addons.PAPIAddon;
+import ro.deiutzblaxo.oneblock.commands.admin.AdminCommand;
 import ro.deiutzblaxo.oneblock.commands.chat.GlobalCommand;
 import ro.deiutzblaxo.oneblock.commands.chat.PmCommand;
 import ro.deiutzblaxo.oneblock.commands.island.IslandCommand;
@@ -84,8 +87,9 @@ public final class OneBlock extends JavaPlugin {
         registerListeners();
 
         new IslandCommand(this, new String[]{"is"}, "oneblock.island");
-        new PmCommand(this, new String[]{"message"}, "oneblock");
-        new GlobalCommand(this, new String[]{"global"}, "oneblock");
+        new PmCommand(this, new String[]{"message"}, "pm");
+        new GlobalCommand(this, new String[]{"global"}, "global");
+        new AdminCommand(this, new String[]{"isa"}, "oneblock.admin");
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "oneblock:invite", new ChannelInviteListener(this));
@@ -110,10 +114,12 @@ public final class OneBlock extends JavaPlugin {
                 player.getInventory().addItem(BorderHandler.getItemByTier(island.getMeta().getRadiusType(), island.getMeta().getRadiusTire()));
             }*/
             Island island = playerManager.getPlayer(player.getUniqueId()).getIsland(false);
-            player.getInventory().addItem(BorderHandler.getItemByTier(island.getMeta().getRadiusType(), island.getMeta().getRadiusTire()));
+
+            player.getInventory().addItem(BorderHandler.getItemByTier(island.getMeta().getRadiusType(), island.getMeta().getRadiusTire() + 1));
 
             return false;
         });
+        registerAddons();
     }
 
     public void onDisable() {
@@ -178,6 +184,13 @@ public final class OneBlock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PVEListener(this), this);
         getServer().getPluginManager().registerEvents(new PVPListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
+    }
+
+    private void registerAddons() {
+        if (getServer().getPluginManager().isPluginEnabled("PlaceHolderAPI")) {
+            new PAPIAddon(this).register();
+            getLogger().log(Level.INFO, ChatColor.GREEN + "PlaceHolderAPI have been hooked!");
+        }
     }
 
 }

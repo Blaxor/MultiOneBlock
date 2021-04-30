@@ -1,19 +1,23 @@
 package ro.deiutzblaxo.oneblock.island.protection;
 
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 
 public class PVEListener implements Listener {
-    private OneBlock plugin;
+    private final OneBlock plugin;
 
     public PVEListener(OneBlock plugin) {
         this.plugin = plugin;
     }
 
+    @EventHandler
     public void onPVE(EntityDamageByEntityEvent event) {
         if (event.getDamager().hasPermission("oneblock.bypass.pve"))
             return;
@@ -23,6 +27,7 @@ public class PVEListener implements Listener {
         if (island == null) return;
         if (!island.isAllow(event.getDamager().getUniqueId(), PERMISSIONS.PVE)) {
             event.setCancelled(true);
+            event.getDamager().sendMessage(plugin.getLangManager().get((Player) event.getDamager(),MESSAGE.ISLAND_PVE_NOT_ALLOW));
         }
     }
 }
