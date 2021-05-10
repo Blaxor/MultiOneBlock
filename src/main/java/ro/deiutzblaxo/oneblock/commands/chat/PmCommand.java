@@ -59,7 +59,7 @@ public class PmCommand implements Command, CommandExecutor, TabCompleter {
         }
         if (Bukkit.getPlayer(args[0]) != null) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get((Player) sender,MESSAGE.PM_SEND).replace("{message}",
-                    Arrays.stream(args).skip(1).collect(Collectors.joining())).replace("{name}",
+                    Arrays.stream(args).skip(1).collect(Collectors.joining(" "))).replace("{name}",
                     plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args[0], "NAME"))));
             Bukkit.getPlayer(args[0]).sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getLangManager().get((Player) sender,MESSAGE.PM_RECEIVE)
                     .replace("{message}", Arrays.stream(args).skip(1).collect(Collectors.joining(" "))).replace("{name}", sender.getName())));

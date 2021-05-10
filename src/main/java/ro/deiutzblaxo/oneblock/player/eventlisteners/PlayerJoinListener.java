@@ -46,7 +46,7 @@ public class PlayerJoinListener implements Listener {
             PlayerData playerData = plugin.getPlayerSaveStorage().getPlayerData(player.getUniqueId());
             if (playerData != null) {
                 player.getInventory().setContents(playerData.getInventoryContent());
-                player.getEnderChest().setContents(playerData.getEnderChestContent());
+                /*player.getEnderChest().setContents(playerData.getEnderChestContent());*/
                 player.addPotionEffects(Arrays.asList(playerData.getPotionEffects()));
                 ExperienceUtil.setTotalExperience(player, playerData.getTotalExperience());
             }

@@ -45,7 +45,7 @@ public class PlayerQuitListener implements Listener {
             PlayerData playerData = new PlayerData(
                     player.getUniqueId(),
                     player.getInventory().getContents(),
-                    player.getEnderChest().getContents(),
+             /*       player.getEnderChest().getContents(),*/
                     potionEffects.toArray(new PotionEffect[0]),
                     ExperienceUtil.getTotalExperience(player.getLevel(), player.getExp())
             );

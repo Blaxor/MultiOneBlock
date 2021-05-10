@@ -8,10 +8,12 @@ public enum MESSAGE {
     ISLAND_TEAM_MENU_TITLE("team.menu.title", "&e&lTEAM MENU"),
     ISLAND_INVITE_ALREADY_IN_ISLAND("team.invite.isInIsland", "&cThis player is already in your island!"),
     ISLAND_INVITE_SENDER("team.invite.sender", "&7You invited {name} in your island!"),
-    ISLAND_INVITE_RECEIVER("team.invite.receiver", "&7You have been invited {name}'s island. \\nYou have 10 seconds to accept invite using /is team accept"),
+    ISLAND_INVITE_RECEIVER("team.invite.receiver", "anbc"),
     ISLAND_INVITE_ACCEPT("team.invite.accept", "&e{name} &7accepted your invite!"),
+    ISLAND_INVITE_ACCEPTED("team.invite.accepted", "&eYou accepted the invitation!"),
     ISLAND_INVITE_REJECT("team.invite.reject", "&e{name} &7rejected your invitation!"),
     ISLAND_INVITE_REJECTED("team.invite.rejected", "&eYou rejected the invitation!"),
+    ISLAND_INVITE_SAME_PLAYER("team.invite.same", "&cYou can`t invite yourself!"),
     ISLAND_NOT_LOADED("island.not_loaded", "&7Please use '/is go' firstly!"),
     ISLAND_INVITE_OFFLINE("team.invite.offline", "&cPlayer is offline!"),
     ISLAND_INVITE_EXISTS("team.invite.noExist", "&cPlayer don`t exist!"),
@@ -60,6 +62,7 @@ public enum MESSAGE {
     ISLAND_LEAVE("leave", "&eYou leaved the island!"),
     ISLAND_LEVEL_ALREADY_CALCULATE("error.island.level.already", "&eThe level of your island is already calculating. Please wait!"),
     ISLAND_LEVEL_CALCULATING("island.level.calculating", "&eThe level of your island will be calculated! Please wait!"),
+    ISLAND_LEVEL_RESULT("island.level.result", "&eThe level of the island is {level} ({points-left} points left for next level)"),
     ISLAND_NAME_INFO("island.name.info", "&eThe name of island is: "),
     ISLAND_RESET("island.reset", "&eYou reseted your island!"),
     ISLAND_ERROR_NAME_ALLOW("error.island.name.allow", "&eYou can`t change the name of the island!"),
@@ -75,7 +78,9 @@ public enum MESSAGE {
     ISLAND_ERROR_UNBAN_BAN("error.island.unban.ban", "&eThis player is not banned!"),
     ISLAND_UNBAN("unban", "&eYou have unbanned {name}"),
     ISLAND_UNBANNED("unbanned", "&eYou have been unbanned!"),
-    LOCATION_NOT_SAFE("error.location_not_safe", "That location is not safe. You have been teleported to spawn!");
+    LOCATION_NOT_SAFE("error.location_not_safe", "That location is not safe. You have been teleported to spawn!"),
+    ISLAND_TOP_MENU("top.title", "&eTOP ISLANDS"),
+    INVITE_MAX_TEAM("error.island.invite.max_members", "&eYou have reach max members.You can`t invite anymore!");
     String path, Default;
 
     MESSAGE(String _path, String _default) {

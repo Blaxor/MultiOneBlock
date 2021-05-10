@@ -26,10 +26,10 @@ public class NBTPlayerData implements IPlayerData {
         return NBTUtil.nbtTagListToItemStackArray((NBTTagList) nbtTagCompound.get(INVENTORY_NBT_TAG));
     }
 
-    @Override
+/*    @Override
     public ItemStack[] getEnderChestContent() {
         return NBTUtil.nbtTagListToItemStackArray((NBTTagList) nbtTagCompound.get(ENDERCHEST_NBT_TAG));
-    }
+    }*/
 
     @Override
     public PotionEffect[] getPotionEffects() {

@@ -1,5 +1,6 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,6 +42,7 @@ public class IslandTeamConfirm implements SubCommand {
 
     }
 
+    @SneakyThrows
     @Override
     public void execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
@@ -55,7 +57,7 @@ public class IslandTeamConfirm implements SubCommand {
                 String oldIsland = invited.getIsland();
                 if (plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().get(invited.getPlayer()).equals(RANK.OWNER) && plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().size() > 1) {
 
-                    sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_TEAM_CONFIRM));
+                    sender.sendMessage(plugin.getLangManager().get(player, MESSAGE.ISLAND_ERROR_TEAM_CONFIRM));
                     return;
                 }
                 plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().remove(invited);
@@ -74,19 +76,19 @@ public class IslandTeamConfirm implements SubCommand {
                 }, 1);
                 return;
             }
-            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_ACCEPT));
+
             List<Object> data = invited.getParticipant().get(SCOPE_CONFIRMATION.INVITE);
             PlayerOB inviter = (PlayerOB) data.get(0);
-
-            Bukkit.getPlayer(inviter.getPlayer()).sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
-                    Bukkit.getPlayer(inviter.getPlayer()).getDisplayName()));
+            player.sendMessage(plugin.getLangManager().get(player, MESSAGE.ISLAND_INVITE_ACCEPTED));
+            Bukkit.getPlayer(inviter.getPlayer()).sendMessage(plugin.getLangManager().get(player, MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
+                    plugin.getPlayerManager().getNameByUUID(inviter.getPlayer())));
 
             Island inviterIsland = (Island) data.get(1);
 
             invited.getTimers().remove(SCOPE_CONFIRMATION.INVITE);
             invited.getParticipant().remove(SCOPE_CONFIRMATION.INVITE);
 
-            Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(plugin, invited.getPlayer().toString(), inviter, inviterIsland, true, false));
+            Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(plugin, invited.getPlayer().toString(), inviter, inviterIsland, invited.getIsland() != null, false));
         }
 
     }

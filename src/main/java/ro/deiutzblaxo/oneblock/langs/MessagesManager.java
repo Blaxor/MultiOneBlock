@@ -1,5 +1,6 @@
 package ro.deiutzblaxo.oneblock.langs;
 
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +20,9 @@ public class MessagesManager {
     private final OneBlock plugin;
     private final File file;
     private FileConfiguration config;
+    @Getter
     private final HashMap<MESSAGE, String> messageStringHashMap = new HashMap<>();
+    @Getter
     private final HashMap<MESSAGELIST, List<String>> messagelistListHashMap = new HashMap<>();
 
 
@@ -61,7 +64,7 @@ public class MessagesManager {
             }
         } else {
             setDefault(message);
-            return ChatColor.translateAlternateColorCodes('&', get(player, message));
+            return get(player, message);
         }
     }
 

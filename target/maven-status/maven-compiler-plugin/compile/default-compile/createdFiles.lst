@@ -1,7 +1,9 @@
 ro\deiutzblaxo\oneblock\menu\objects\Button.class
 ro\deiutzblaxo\oneblock\island\IslandMeta$1.class
 ro\deiutzblaxo\oneblock\island\protection\MobSpawningListener.class
+ro\deiutzblaxo\oneblock\communication\action\chat\ChannelChatListenerPluginMessage.class
 ro\deiutzblaxo\oneblock\island\protection\BlockBurnListener.class
+ro\deiutzblaxo\oneblock\communication\action\tpa\TeleportRequest.class
 ro\deiutzblaxo\oneblock\player\expcetions\PlayerAleardyMemberException.class
 ro\deiutzblaxo\oneblock\communication\action\Responses.class
 ro\deiutzblaxo\oneblock\island\exceptions\IslandHasPlayersOnlineException.class
@@ -50,9 +52,11 @@ ro\deiutzblaxo\oneblock\island\protection\BlockIgniteListener.class
 ro\deiutzblaxo\oneblock\commands\island\IslandPhase.class
 ro\deiutzblaxo\oneblock\menu\objects\menus\InventoryTag.class
 ro\deiutzblaxo\oneblock\commands\island\IslandCommand.class
+ro\deiutzblaxo\oneblock\commands\admin\SaveCommand.class
 ro\deiutzblaxo\oneblock\customenchants\enchants\IslandTireEnchant.class
 ro\deiutzblaxo\oneblock\menu\objects\buttons\Action.class
 ro\deiutzblaxo\oneblock\communication\action\chat\global\ChatGlobalSender.class
+ro\deiutzblaxo\oneblock\utils\Pair.class
 me\stefan923\playerdatastorage\mysql\MySQLPlayerDataStorage.class
 ro\deiutzblaxo\oneblock\phase\objects\RARITY.class
 ro\deiutzblaxo\oneblock\commands\island\IslandName.class
@@ -67,7 +71,6 @@ ro\deiutzblaxo\oneblock\island\permissions\ISLANDSETTINGS.class
 ro\deiutzblaxo\oneblock\island\team\TeamInfoMenu.class
 ro\deiutzblaxo\oneblock\island\protection\PVPListener.class
 ro\deiutzblaxo\oneblock\player\eventlisteners\BreakEventListener.class
-ro\deiutzblaxo\oneblock\communication\action\chat\ChannelChatListener.class
 ro\deiutzblaxo\oneblock\player\events\PlayerLeaveIslandEvent.class
 ro\deiutzblaxo\oneblock\communication\action\chat\pm\PMSender.class
 ro\deiutzblaxo\oneblock\player\eventlisteners\PlayerChangeWorldListener.class
@@ -77,12 +80,14 @@ ro\deiutzblaxo\oneblock\player\PlayerOB.class
 me\stefan923\playerdatastorage\playerdata\NBTPlayerData.class
 ro\deiutzblaxo\oneblock\communication\action\invite\Invite.class
 ro\deiutzblaxo\oneblock\player\events\PlayerBanIslandEvent.class
+ro\deiutzblaxo\oneblock\commands\admin\ReloadCommand.class
 ro\deiutzblaxo\oneblock\island\radius\BorderHandler.class
 ro\deiutzblaxo\oneblock\commands\island\IslandTeamConfirm.class
 ro\deiutzblaxo\oneblock\player\expcetions\PlayerNotHaveIsland.class
 ro\deiutzblaxo\oneblock\utils\Triplet.class
 ro\deiutzblaxo\oneblock\island\exceptions\IslandNoExistException.class
 ro\deiutzblaxo\oneblock\player\eventlisteners\PlayerJoinListener.class
+ro\deiutzblaxo\oneblock\island\IslandManager$loadIslandCallback.class
 ro\deiutzblaxo\oneblock\island\IslandMeta.class
 ro\deiutzblaxo\oneblock\player\expcetions\PlayerNoExistException.class
 ro\deiutzblaxo\oneblock\commands\Command.class
@@ -97,6 +102,7 @@ ro\deiutzblaxo\oneblock\player\SCOPE_CONFIRMATION.class
 ro\deiutzblaxo\oneblock\utils\database\DBManager.class
 ro\deiutzblaxo\oneblock\commands\island\IslandSetSpawn.class
 ro\deiutzblaxo\oneblock\commands\island\IslandTeleportCommand.class
+ro\deiutzblaxo\oneblock\communication\action\invite\ChannelInviteListenerRedis.class
 ro\deiutzblaxo\oneblock\island\protection\ExplosionListener.class
 ro\deiutzblaxo\oneblock\player\PlayerOB$1.class
 ro\deiutzblaxo\oneblock\utils\TableType.class
@@ -105,6 +111,8 @@ ro\deiutzblaxo\oneblock\commands\island\IslandTeam.class
 ro\deiutzblaxo\oneblock\langs\MessagesManager.class
 ro\deiutzblaxo\oneblock\commands\SubCommand.class
 ro\deiutzblaxo\oneblock\commands\island\IslandUnBan.class
+ro\deiutzblaxo\oneblock\commands\admin\GoToCommand.class
+ro\deiutzblaxo\oneblock\communication\redis\RedisManager.class
 ro\deiutzblaxo\oneblock\slimemanager\WorldUtil.class
 ro\deiutzblaxo\oneblock\langs\MESSAGELIST.class
 ro\deiutzblaxo\oneblock\commands\admin\AdminCommand.class
@@ -136,8 +144,10 @@ ro\deiutzblaxo\oneblock\island\level\calculate\Results.class
 ro\deiutzblaxo\oneblock\player\eventlisteners\ChatListener.class
 ro\deiutzblaxo\oneblock\menu\objects\menus\PrefabMenu.class
 ro\deiutzblaxo\oneblock\phase\objects\REQUIREMENTS.class
+ro\deiutzblaxo\oneblock\addons\Addon.class
 ro\deiutzblaxo\oneblock\commands\island\IslandDenyCommand.class
 ro\deiutzblaxo\oneblock\commands\island\IslandLevel.class
+ro\deiutzblaxo\oneblock\communication\action\invite\ChannelInviteListenerRedis$1.class
 ro\deiutzblaxo\oneblock\commands\island\IslandBan.class
 ro\deiutzblaxo\oneblock\commands\island\IslandCount.class
 ro\deiutzblaxo\oneblock\island\radius\BorderHandler$2.class

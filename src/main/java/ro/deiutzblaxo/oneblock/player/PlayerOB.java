@@ -11,6 +11,8 @@ import ro.deiutzblaxo.oneblock.communication.action.invite.Invite;
 import ro.deiutzblaxo.oneblock.communication.action.invite.RequestInvite;
 import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
 import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
+import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 
 import java.util.HashMap;
@@ -55,8 +57,11 @@ public class PlayerOB {
                                     return;
                                 }
                                 PlayerOB inviter = (PlayerOB) participant.get(scope).get(0);
-                                Bukkit.getPlayer(inviter.getPlayer()).sendMessage("Player didn`t respond to your invite (PlayerOB.42)");
-                                Bukkit.getPlayer(player).sendMessage("The invitation expired!");
+                                try {
+                                    Bukkit.getPlayer(player).sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_REJECTED).replace("{name}", plugin.getPlayerManager().getNameByUUID(player)));
+                                } catch (PlayerNoExistException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
 
 
@@ -116,6 +121,10 @@ public class PlayerOB {
             return false;
         return Bukkit.getPlayer(player).getWorld().getName().equalsIgnoreCase(island);
 
+    }
+
+    synchronized public void sendMessage(String message) {
+        Bukkit.getPlayer(player).sendMessage(message);
     }
 
     @Override

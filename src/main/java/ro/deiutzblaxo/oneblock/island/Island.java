@@ -24,6 +24,7 @@ import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
 import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
 import ro.deiutzblaxo.oneblock.utils.Location;
 import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.nexs.db.manager.exception.DifferentArgLengthException;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,7 +53,7 @@ public class Island {
         setPhase(plugin.getPhaseManager().getPhase(meta.getCount()));
 
 
-        autosave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        autosave = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             plugin.getLogger().log(Level.INFO, "Auto-Saving island ", uuidIsland);
             if (bukkitWorld.getPlayers().isEmpty()) {
                 try {
@@ -69,23 +70,34 @@ public class Island {
 
     public void save(boolean unload) {
         try {
-            plugin.getLogger().log(Level.INFO, "Saving island " + uuidIsland);
+            plugin.getGeneralPool().submit(() -> {
 
-            String seril = meta.serialize();
 
-            if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuidIsland)) {
-                plugin.getDbManager().set(TableType.ISLANDS.table, "META", "UUID", seril, uuidIsland);
-                plugin.getDbManager().setString(TableType.ISLANDS.table, "SERVER", "UUID", server, uuidIsland);
+                plugin.getLogger().log(Level.INFO, "Saving island " + uuidIsland);
+                meta.setTime(getBukkitWorld().getTime());
+                String seril = meta.serialize();
+
+                if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuidIsland)) {
+                    plugin.getDbManager().set(TableType.ISLANDS.table, "META", "UUID", seril, uuidIsland);
+                    plugin.getDbManager().setString(TableType.ISLANDS.table, "SERVER", "UUID", server, uuidIsland);
+                    saveLevel();
+                    WorldUtil.saveSlimeWorld(plugin, this.getWorld());
+                    plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
+                    return;
+                }
+                try {
+                    plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, seril, server});
+                } catch (DifferentArgLengthException e) {
+                    e.printStackTrace();
+                }
+
                 saveLevel();
-                WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
+                WorldUtil.saveSlimeWorld(plugin, this.getWorld());
+            });
+                if (unload)
+                    WorldUtil.unloadSlimeWorld(plugin, this.getWorld());
                 plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
-                return;
-            }
-            plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, seril, server});
 
-            saveLevel();
-            WorldUtil.saveSlimeWorld(plugin, this.getWorld(), unload);
-            plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,6 +129,7 @@ public class Island {
             getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(getOwner())));
         changeBorder();
         ChunkUtils.changeBiome(plugin, this);
+        bukkitWorld.setTime(meta.getTime());
 
     }
 
@@ -138,7 +151,7 @@ public class Island {
             player.teleport(meta.getSpawn().toBukkitLocation(bukkitWorld));
         else {
             player.teleport(plugin.getSpawnLocation());
-            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.LOCATION_NOT_SAFE));
+            player.sendMessage(plugin.getLangManager().get(player, MESSAGE.LOCATION_NOT_SAFE));
         }
     }
 

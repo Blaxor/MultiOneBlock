@@ -71,11 +71,12 @@ public class BorderHandler {
     }
 
     public static String getTypeByPermission(Player player) {
+        String realType = "member";
         for (String type : permission.keySet()) {
             if (player.hasPermission(permission.get(type)))
-                return type;
+                realType = type;
         }
-        return "member";
+        return realType;
     }
 
     public static int getMaxTier(String type) {

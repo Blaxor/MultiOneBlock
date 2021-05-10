@@ -43,9 +43,10 @@ public class PhaseManager {
         for (File phaseFile : files) {
 
             FileConfiguration phaseConfig = YamlConfiguration.loadConfiguration(phaseFile);
-            plugin.getLogger().log(Level.INFO, phaseFile.getName() + " loaded!");
+            plugin.getLogger().log(Level.INFO, phaseFile.getName() + " loading!");
             int count = phaseConfig.getInt("start");
-            PhaseObject firstBlock = new PhaseObject(Material.valueOf(phaseConfig.getString("firstblock")), 9999999);
+
+            PhaseObject firstBlock = new PhaseObject(Material.valueOf(phaseConfig.getString("firstblock").toUpperCase(Locale.ROOT)), 9999999);
             Phase phase = new Phase(count, firstBlock);
 
 
@@ -72,7 +73,7 @@ public class PhaseManager {
             }
 
             phase.setPhaseName(phaseConfig.getString("name"));
-            phase.setPhaseBiome(Biome.valueOf(phaseConfig.getString("biome")));
+            phase.setPhaseBiome(Biome.valueOf(phaseConfig.getString("biome").toUpperCase(Locale.ROOT)));
 
         }
     }

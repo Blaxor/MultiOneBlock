@@ -55,7 +55,7 @@ public class SaveChestCommand implements SubCommand {
         }
 
         Chest chest = (Chest) block.getState();
-        try {
+        try {//phase identfchest rarity
             plugin.getPhaseManager().saveChest(args.get(0), args.get(1), RARITY.valueOf(args.get(2).toUpperCase()), chest);
         } catch (Exception exception) {
             sender.sendMessage(ChatColor.RED + "Exception : " + exception.getMessage());

@@ -50,7 +50,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         if (this.playerOB == null) {
             plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", playerOBUUID.toString(), "ISLAND");
 
-            PlayerData data = new PlayerData(new ItemStack[0], new ItemStack[0], new PotionEffect[0], 0);
+            PlayerData data = new PlayerData(/*new ItemStack[0],*/ new ItemStack[0], new PotionEffect[0], 0);
             data.setUuid(playerOBUUID);
             plugin.getPlayerSaveStorage().savePlayerData(data);
         } else {

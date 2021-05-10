@@ -10,18 +10,21 @@ import java.io.IOException;
 public class ChatGlobalSender {
 
     public static void sendMessage(OneBlock plugin, Player sender, String message) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
-        try {
+        if (OneBlock.REDIS_ENABLED) {
+            plugin.getRedisManager().send("oneblock:global",  OneBlock.SERVER + ";" + message);
+        } else {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(stream);
+            try {
 
-            out.writeUTF("global");
-            out.writeUTF(OneBlock.SERVER);
-            out.writeUTF(message);
+                out.writeUTF("global");
+                out.writeUTF(OneBlock.SERVER);
+                out.writeUTF(message);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sender.sendPluginMessage(plugin, "oneblock:chat", stream.toByteArray());
         }
-        sender.sendPluginMessage(plugin, "oneblock:chat", stream.toByteArray());
     }
-
 }

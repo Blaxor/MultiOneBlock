@@ -1,5 +1,6 @@
 package ro.deiutzblaxo.oneblock.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import ro.deiutzblaxo.oneblock.OneBlock;
 
@@ -19,7 +20,7 @@ public interface Command {
     OneBlock getPlugin();
 
     default void noPermission(CommandSender sender) {
-        sender.sendMessage("You don`t have perm");
+        sender.sendMessage(ChatColor.RED + "Nu ai permisia");
     }
 
     default void invalidArguments(CommandSender sender) {
@@ -47,15 +48,13 @@ public interface Command {
     }
 
     default List<String> doTabComplete(CommandSender sender, List<String> args) {
-        if (args.size() > 0)
-            if (getSubCommands().containsKey(args.get(0))) {
-                return getSubCommands().get(args.get(0)).doTabComplete(sender, args.stream().skip(1).collect(Collectors.toList()));
-
-            }
         if (!sender.hasPermission(getPermission())) {
             return new ArrayList<>();
         }
-
+        if (args.size() > 0)
+            if (getSubCommands().containsKey(args.get(0))) {
+                return getSubCommands().get(args.get(0)).doTabComplete(sender, args.stream().skip(1).collect(Collectors.toList()));
+            }
         return getSubCommands().keySet().stream().filter(s -> s.startsWith(args.size() == 0 ? "" : args.get(0))).collect(Collectors.toList());
     }
 }

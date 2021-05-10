@@ -6,6 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 
 public class IslandLevelCalculatedEvent extends Event {
 
@@ -20,7 +21,7 @@ public class IslandLevelCalculatedEvent extends Event {
         island.saveLevel();
         island.getMeta().getMembers().forEach((uuid, rank) -> {
             if (Bukkit.getPlayer(uuid) != null) {
-                Bukkit.getPlayer(uuid).sendMessage("The level of island is: " + island.getLevel() + "(" + results.getRemainPoints() + ")");
+                Bukkit.getPlayer(uuid).sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_LEVEL_RESULT).replace("{level}", results.getLevel() + "").replace("{points-left}", results.getRemainPoints() + ""));
             }
         });
     }

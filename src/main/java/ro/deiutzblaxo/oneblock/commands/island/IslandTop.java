@@ -1,15 +1,13 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
-import ro.deiutzblaxo.oneblock.player.RANK;
-import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class IslandTop implements SubCommand {
 
@@ -34,26 +32,9 @@ public class IslandTop implements SubCommand {
     @Override
     public void execute(CommandSender sender, List<String> args) {
 
-        plugin.getIslandLevelManager().getTopIslands().forEach(triplet -> {
-            AtomicReference<String> abc = new AtomicReference<>("");
-            triplet.getLast().getMembers().forEach((uuid, rank) -> {
-                if (rank == RANK.OWNER) {
-                    try {
-                        abc.set(plugin.getPlayerManager().getNameByUUID(uuid));
-                    } catch (PlayerNoExistException e) {
-                        e.printStackTrace();
-                    }
-                    return;
-                }
-            });
-            abc.set(abc.get() + " level " + triplet.getMiddle());//TODO MESSAGE
-            sender.sendMessage(abc.get());
-        });
-
+        ((Player) sender).openInventory(plugin.getMenuManager().getTopMenu().getInterface());
 
     }
-
-
 
     @Override
     public String[] getAliases() {

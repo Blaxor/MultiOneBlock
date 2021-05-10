@@ -40,7 +40,7 @@ public class Migration {
             dataStorage.savePlayerData(new PlayerData(
                     UUID.fromString(fileName),
                     nbtPlayerData.getInventoryContent(),
-                    nbtPlayerData.getEnderChestContent(),
+                   /* nbtPlayerData.getEnderChestContent(),*/
                     nbtPlayerData.getPotionEffects(),
                     nbtPlayerData.getTotalExperience()
             ));

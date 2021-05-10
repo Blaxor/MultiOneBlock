@@ -8,21 +8,21 @@ import java.util.UUID;
 public class PlayerData implements IPlayerData {
 
     private final ItemStack[] inventoryContent;
-    private final ItemStack[] enderChestContent;
+/*    private final ItemStack[] enderChestContent;*/
     private final PotionEffect[] potionEffects;
     private final int totalExperience;
 
     private transient UUID uuid;
 
-    public PlayerData(ItemStack[] inventoryContent, ItemStack[] enderChestContent, PotionEffect[] potionEffects, int totalExperience) {
+    public PlayerData(ItemStack[] inventoryContent/*, ItemStack[] enderChestContent*/, PotionEffect[] potionEffects, int totalExperience) {
         this.inventoryContent = inventoryContent;
-        this.enderChestContent = enderChestContent;
+/*        this.enderChestContent = enderChestContent;*/
         this.potionEffects = potionEffects;
         this.totalExperience = totalExperience;
     }
 
-    public PlayerData(UUID uuid, ItemStack[] inventoryContent, ItemStack[] enderChestContent, PotionEffect[] potionEffects, int totalExperience) {
-        this(inventoryContent, enderChestContent, potionEffects, totalExperience);
+    public PlayerData(UUID uuid, ItemStack[] inventoryContent/*, ItemStack[] enderChestContent*/, PotionEffect[] potionEffects, int totalExperience) {
+        this(inventoryContent/*, enderChestContent*/, potionEffects, totalExperience);
         this.uuid = uuid;
     }
 
@@ -39,10 +39,10 @@ public class PlayerData implements IPlayerData {
         return inventoryContent;
     }
 
-    @Override
+/*    @Override
     public ItemStack[] getEnderChestContent() {
         return enderChestContent;
-    }
+    }*/
 
     @Override
     public PotionEffect[] getPotionEffects() {

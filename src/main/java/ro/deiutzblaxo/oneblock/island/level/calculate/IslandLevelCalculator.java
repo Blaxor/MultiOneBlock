@@ -4,6 +4,7 @@ package ro.deiutzblaxo.oneblock.island.level.calculate;
 import lombok.Getter;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 
@@ -22,12 +23,10 @@ public class IslandLevelCalculator {
 
 
     public IslandLevelCalculator(Island island) {
-        blockValue.put(Material.AIR, 0);
-        blockValue.put(Material.GRASS_BLOCK, 1);
-        blockValue.put(Material.DIRT, 1);
+
         this.island.set(island);
         results.set(new Results(island));
-
+        System.out.println("Started calculating with " + OneBlock.THREADS_NUMBER + " threads for island " + island.getUuidIsland());
         results.get().getIsland().set(island);
         int radius = BorderHandler.getRadius(island.getMeta().getRadiusType(), island.getMeta().getRadiusTire());
         for (int i = ((radius / 16) + 2) * -1; i <= (radius / 16) + 2; i++) {
@@ -36,7 +35,7 @@ public class IslandLevelCalculator {
 
         }
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < OneBlock.THREADS_NUMBER; i++) {
             Thread thread = new Thread(new CalculateRunnable(this, i));
             threadsStatus.put(thread, 0);
             thread.start();

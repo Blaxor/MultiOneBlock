@@ -6,7 +6,7 @@
 
     <groupId>ro.deiutzblaxo</groupId>
     <artifactId>OneBlock</artifactId>
-    <version>1.1</version>
+    <version>BETA-0.2.2</version>
     <packaging>jar</packaging>
 
     <name>OneBlock</name>
@@ -74,6 +74,7 @@
     </repositories>
 
     <dependencies>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -121,8 +122,8 @@
             <version>2.10.9</version>
         </dependency>
         <dependency>
-            <groupId>sbpl-aa</groupId>
-            <artifactId>sbpl</artifactId>
+            <groupId>spigot</groupId>
+            <artifactId>spigot</artifactId>
             <version>1</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/spigot-1.16.5.jar</systemPath>
@@ -132,6 +133,36 @@
             <artifactId>gson</artifactId>
             <version>2.8.6</version>
         </dependency>
+        <!-- QUESTS BY LMB -->
+        <dependency>
+            <groupId>quests</groupId>
+            <artifactId>quests</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Quests-2.14.jar</systemPath>
+        </dependency>
+        <!--Royal Economy-->
+        <dependency>
+            <groupId>RE</groupId>
+            <artifactId>RE</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/RoyaleEconomyAPI.jar</systemPath>
+        </dependency>
 
+        <!--ENDERCHEST CONTAINERS-->
+        <dependency>
+            <groupId>EC</groupId>
+            <artifactId>EC</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/EnderContainers-2.2.1.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.6.0</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,9 +1,11 @@
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\expcetions\PlayerNoExistException.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\utils\database\NameUUIDLocal.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\redis\RedisManager.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\invite\ChannelInviteListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\level\calculate\IslandLevelCalculatedEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\protection\MobSpawningListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\radius\exceptions\BorderLowestTireException.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\invite\ChannelInviteListenerRedis.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\IslandPhase.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\IslandDenyCommand.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\menu\objects\Button.java
@@ -25,6 +27,8 @@ E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\phase\PhaseManag
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\IslandExpel.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\utils\UTILS.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\protection\BlockIgniteListener.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\admin\SaveCommand.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\admin\ReloadCommand.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\exceptions\IslandLoadedException.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\radius\BorderItemListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\invite\RequestInvite.java
@@ -45,9 +49,11 @@ E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\admin\S
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\protection\BlockBurnListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\events\PlayerLeaveIslandEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\SCOPE_CONFIRMATION.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\addons\Addon.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\level\calculate\CalculateRunnable.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\events\PlayerUnLoadEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\IslandBanList.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\tpa\TeleportRequest.java
 E:\Java\IntelliJ\OneBlock\src\main\java\me\stefan923\playerdatastorage\playerdata\PlayerData.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\admin\SetCountCommand.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\phase\phaselock\PhaseLock.java
@@ -69,7 +75,6 @@ E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\events\PlayerJoinIslandEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\langs\MessagesManager.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\IslandTeamInvite.java
-E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\chat\ChannelChatListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\menu\events\PlayerOpenMenuEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\expcetions\PlayerNotHaveIsland.java
 E:\Java\IntelliJ\OneBlock\src\main\java\me\stefan923\playerdatastorage\util\ExperienceUtil.java
@@ -89,6 +94,7 @@ E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\SubComm
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\menu\MenuManager.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\IslandUnBan.java
 E:\Java\IntelliJ\OneBlock\src\main\java\me\stefan923\playerdatastorage\util\NBTUtil.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\utils\Pair.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\eventlisteners\BreakEventListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\protection\PVPListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\exceptions\IslandNoExistException.java
@@ -96,10 +102,12 @@ E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\island\
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\radius\exceptions\BorderHighestTireException.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\invite\Invite.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\invite\ResponseInvite.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\chat\ChannelChatListenerPluginMessage.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\events\PlayerResetIslandEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\permissions\ISLANDSETTINGS.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\protection\FireSpreadListener.java
 E:\Java\IntelliJ\OneBlock\src\main\java\me\stefan923\playerdatastorage\migration\Migration.java
+E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\admin\GoToCommand.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\events\PlayerUnBanIslandEvent.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\player\expcetions\PlayerAleardyMemberException.java
 E:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\langs\MESSAGELIST.java

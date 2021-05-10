@@ -4,13 +4,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 public interface IPlayerData extends Serializable {
 
     ItemStack[] getInventoryContent();
 
-    ItemStack[] getEnderChestContent();
+    //ItemStack[] getEnderChestContent();
 
     PotionEffect[] getPotionEffects();
 

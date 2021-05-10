@@ -1,6 +1,5 @@
 package ro.deiutzblaxo.oneblock.island.protection;
 
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,14 +18,15 @@ public class PVPListener implements Listener {
 
     @EventHandler
     public void onPVP(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) return;
         if (event.getDamager().hasPermission("oneblock.bypass.pvp"))
             return;
-        if (event.getEntity().getType() != EntityType.PLAYER) return;
+
         Island island = plugin.getIslandManager().getIsland(event.getEntity().getLocation().getWorld().getName());
         if (island == null) return;
         if (!island.getSetting(ISLANDSETTINGS.PVP)) {
             event.setCancelled(true);
-            event.getDamager().sendMessage(plugin.getLangManager().get((Player)event.getDamager(),MESSAGE.ISLAND_PVP_NOT_ALLOW));
+            event.getDamager().sendMessage(plugin.getLangManager().get((Player) event.getDamager(), MESSAGE.ISLAND_PVP_NOT_ALLOW));
         }
 
 

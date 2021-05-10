@@ -1,6 +1,9 @@
 package ro.deiutzblaxo.oneblock.slimemanager;
 
-import com.grinderwolf.swm.api.exceptions.*;
+import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
+import com.grinderwolf.swm.api.exceptions.NewerFormatException;
+import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
+import com.grinderwolf.swm.api.exceptions.WorldInUseException;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
@@ -25,6 +28,8 @@ public class WorldUtil {
      * @param source the original world which we have to copy
      * @param target the target destination to which files have to go
      */
+    /*private static ExecutorService pool = Executors.newCachedThreadPool();*/
+
     public static void copyFileStructure(File source, File target) {
         try {
             ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.lock"));
@@ -70,17 +75,17 @@ public class WorldUtil {
     }
 
 
-    public static void saveSlimeWorld(OneBlock plugin, SlimeWorld world, boolean unload) {
-        SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
-        plugin.getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
-        try {
-            loader.saveWorld(world.getName(), convertToByte(world), true);
-            if (unload) {
-                unloadSlimeWorld(plugin,world);
+    public static void saveSlimeWorld(OneBlock plugin, SlimeWorld world) {
+        /*pool.submit(() -> {*/
+            SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
+            plugin.getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
+            try {
+                loader.saveWorld(world.getName(), convertToByte(world), true);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        /*});*/
     }
 
     public static void deleteSlimeWorld(OneBlock plugin, SlimeWorld world) {
@@ -94,9 +99,10 @@ public class WorldUtil {
             }
         }, 3);
     }
-    public static void unloadSlimeWorld(OneBlock plugin , SlimeWorld world){
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm unload " + world.getName()), 3);
+    public static void unloadSlimeWorld(OneBlock plugin, SlimeWorld world) {
+
+      Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm unload " + world.getName());
     }
 
     /**

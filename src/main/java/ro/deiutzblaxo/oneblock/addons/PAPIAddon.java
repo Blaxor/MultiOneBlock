@@ -33,7 +33,7 @@ public class PAPIAddon extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("phase"))
             return ChatColor.translateAlternateColorCodes('&', island.getPhase().getPhaseName());
         if(params.equalsIgnoreCase("server"))
-            return OneBlock.SERVER;
+            return OneBlock.SERVER.replace("-"," ");
         return null;
     }
 

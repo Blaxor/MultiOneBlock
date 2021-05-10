@@ -26,6 +26,7 @@ public class IslandLevelManager {
 
     public IslandLevelManager(OneBlock plugin) {
         this.plugin = plugin;
+
         islandLevelCalculateManager = new IslandLevelCalculateManager(plugin);
         plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             try {

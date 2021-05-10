@@ -36,14 +36,15 @@ public class GlobalCommand implements Command, CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 
-/*        if (!sender.hasPermission(permission)) {
+        if (!sender.hasPermission(permission)) {
             noPermission(sender);
-            return false; TODO PERMISSION
-        }*/
+            return false;
+
+        }
 
         PlayerOB player = plugin.getPlayerManager().getPlayer(((Player) sender).getUniqueId());
         player.setGlobalChat(!player.isGlobalChat());
-        if(player.isGlobalChat())
+        if (player.isGlobalChat())
             ChatListener.globalRecipients.add(((Player) sender));
         else
             ChatListener.globalRecipients.remove(((Player) sender));

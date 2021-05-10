@@ -1,12 +1,17 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
+import ro.deiutzblaxo.oneblock.island.Island;
+import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
+import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 
 import java.util.*;
 
@@ -50,10 +55,42 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
 
         if (!doCommand(sender, new ArrayList<>(Arrays.asList(args))))
             return false;
-        //what command can do ->
-        sender.sendMessage("this is the island command");
+        Island island = plugin.getPlayerManager().getPlayer(((Player) sender).getUniqueId()).getIsland(false);
+        if (island == null) {
+            sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
+            return false;
+        }
+        UUID uuid = ((Player) sender).getUniqueId();
+        if (island.isAllow(uuid, PERMISSIONS.TELEPORT))
+            sender.sendMessage(cc("&f/is go &7- &ePentru a te teleporta la insula ta!"));
+        sender.sendMessage(cc("&f/is phases &7- &ePentru a vedea etapele si la ce etapa esti!"));
+        sender.sendMessage(cc("&f/is team &7- &ePentru a vedea membrii insulei!"));
+        if (island.isAllow(uuid, PERMISSIONS.KICK))
+            sender.sendMessage(cc("&f/is kick <jucator> &7- &ePentru a da afara un membru de pe insula."));
+        sender.sendMessage(cc("&f/is tier &7-&e Pentru a vedea ce tier si type este insula ta!"));
+        sender.sendMessage(cc("/is level &7-&e Pentru a actualiza nivelul insulei tale!"));
+        sender.sendMessage(cc("/is top &7-&e Pentru a vedea topul insulelor dupa nivel."));
+        sender.sendMessage(cc("/is leave &7-&e Pentru a iesi din echipa insulei , respectiv din insula"));
+        if (island.isAllow(uuid, PERMISSIONS.BAN))
+            sender.sendMessage(cc("/is ban <jucator> &7-&e Pentru a bloca pe cineva sa intre pe insula!"));
+        if (island.isAllow(uuid, PERMISSIONS.BANLIST))
+            sender.sendMessage(cc("/is banlist &7-&e Pentru a vedea lista celor blocati."));
+        if (island.isAllow(uuid, PERMISSIONS.EXPEL))
+            sender.sendMessage(cc("/is expel <jucator> &7- &e Pentru a scoate pe cineva de pe insula!"));
+        sender.sendMessage(cc("/is name &7- &ePentru a vedea numele insulei!"));
+        if (island.isAllow(uuid, PERMISSIONS.CHANGENAME))
+            sender.sendMessage(cc("/is setname &7- &ePentru a schimba numele insulei!"));
+        if (island.isAllow(uuid, PERMISSIONS.SETSPAWN))
+            sender.sendMessage(cc("/is setspawn &7- &ePentru a schimba locatia spawnului!"));
+        sender.sendMessage(cc("/is count &7-&e Pentru a vedea cate blocuri ai spart!"));
+
         return false;
     }
+
+    private String cc(String string) {
+        return ChatColor.translateAlternateColorCodes('&', string);
+    }
+
 
     @Override
     public String[] getAliases() {

@@ -17,6 +17,7 @@ public class Results {
 
     public Results(Island island) {
         this.island.set(island);
+
         start.set(System.currentTimeMillis());
     }
 

@@ -27,6 +27,9 @@ public class AdminCommand implements Command, CommandExecutor, TabCompleter {
         command.setTabCompleter(this);
         subCommands.put("savechest", new SaveChestCommand(plugin, new String[]{"sc"}, "savechest", this));
         subCommands.put("setcount", new SetCountCommand(plugin, new String[]{}, "setcount", this));
+        subCommands.put("goto", new GoToCommand(plugin, new String[]{"gt", "tp"}, "goto", this));
+        subCommands.put("save", new SaveCommand(plugin, new String[]{}, "save", this));
+        subCommands.put("reload", new ReloadCommand(plugin, new String[]{}, "reload", this));
         this.plugin = plugin;
     }
 
@@ -35,8 +38,10 @@ public class AdminCommand implements Command, CommandExecutor, TabCompleter {
 
         if (!doCommand(sender, new ArrayList<>(Arrays.asList(args))))
             return false;
-        if (!sender.hasPermission(permission))
+        if (!sender.hasPermission(permission)) {
             noPermission(sender);
+            return false;
+        }
         sender.sendMessage(plugin.getPlayerManager().getPlayer(((Player) sender).getUniqueId()).getIsland(false).getMeta().getBlock().toString());
         return false;
     }

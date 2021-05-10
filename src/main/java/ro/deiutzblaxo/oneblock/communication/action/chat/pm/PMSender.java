@@ -9,18 +9,21 @@ import java.io.IOException;
 
 public class PMSender {
 
-    public static void sendMessage(OneBlock plugin, Player sender, PM pm){
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
-        try {
-            out.writeUTF("pm");
-            out.writeUTF(pm.toString());
+    public static void sendMessage(OneBlock plugin, Player sender, PM pm) {
+        if (OneBlock.REDIS_ENABLED) {
+            plugin.getRedisManager().send("oneblock:pm", pm.toString());
+        } else {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(stream);
+            try {
+                out.writeUTF("pm");
+                out.writeUTF(pm.toString());
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sender.sendPluginMessage(plugin, "oneblock:chat", stream.toByteArray());
         }
-        sender.sendPluginMessage(plugin, "oneblock:chat", stream.toByteArray());
-
 
     }
 }

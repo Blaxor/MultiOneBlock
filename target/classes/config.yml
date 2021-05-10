@@ -6,6 +6,15 @@ username: username
 password: password
 cooldown-confirmation: 10
 spawn-world: world
+redis:
+  enabled: false
+  hostname: 192.168.1.102
+  port: 6379
+  password: password
+  log: false
+
+#How many threads are used to calculate the level of an island!
+threads_level: 4
 
 radius:
   member:

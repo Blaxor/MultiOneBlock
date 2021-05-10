@@ -23,23 +23,26 @@ public class ChatListener implements Listener {
 
     public static Set<Player> globalRecipients = new HashSet<>();
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
         PlayerOB playerOB = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         String message = event.getMessage();
         if (playerOB.isGlobalChat()) {
+            if(!event.isCancelled()) {
 
-            String msg = plugin.getLangManager().get(player,MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message;
-            event.setCancelled(true);
-            globalRecipients.forEach(player1 -> {
-                player1.sendMessage(plugin.getLangManager().get(player,MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message);
-            });
-            ChatGlobalSender.sendMessage(plugin, player, msg);
+                String msg = plugin.getLangManager().get(player, MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message;
 
+                globalRecipients.forEach(player1 -> {
+                    player1.sendMessage(plugin.getLangManager().get(player, MESSAGE.CHAT_GLOBAL_PREFIX).replace("{name}", player.getDisplayName()) + message);
+                });
+                ChatGlobalSender.sendMessage(plugin, player, msg);
+                event.setCancelled(true);
+            }
         } else {
-            event.setFormat(plugin.getLangManager().get(player,MESSAGE.CHAT_SERVER_PREFIX).replace("{name}", player.getDisplayName()) + message);
+            event.setFormat(plugin.getLangManager().get(player,MESSAGE.CHAT_SERVER_PREFIX).replace("{name}", player.getDisplayName()).concat( message).replaceAll("%","%%"));
+
         }
 
 

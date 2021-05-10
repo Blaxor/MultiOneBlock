@@ -9,13 +9,16 @@ import ro.deiutzblaxo.oneblock.island.exceptions.IslandLoadedException;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
 import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
+import ro.deiutzblaxo.oneblock.utils.Pair;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+
 
 public class IslandManager {
-    OneBlock plugin;
+    private OneBlock plugin;
 
     @Getter
     private final HashMap<String, Island> islands = new HashMap<>();
@@ -27,15 +30,9 @@ public class IslandManager {
     @SneakyThrows
     public Island loadIsland(String uuid) {
 
-        if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuid)) {
-            String data = plugin.getDbManager().getString(TableType.ISLANDS.table, "META", "UUID", uuid);
-            IslandMeta meta = IslandMeta.deserialize(data);
-            Island island = new Island(plugin, uuid, meta);
-            if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
-                island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
-            } else
-                island.setLevel(0);
-
+        Pair<Island, Boolean> pair = plugin.getGeneralPool().submit(new loadIslandCallback(uuid, plugin)).get();
+        Island island = pair.getFirst();
+        if (!pair.getLast()) {
 
             island.setWorld(WorldUtil.loadSlimeWorld(plugin, uuid, island));
             island.setBukkitWorld(Bukkit.getWorld(uuid));//TODO MAYBE A BETTER WAY?
@@ -43,32 +40,25 @@ public class IslandManager {
                 island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
             island.changeBorder();
             ChunkUtils.changeBiome(plugin, island);
+            island.getBukkitWorld().setTime(island.getMeta().getTime());
             island.save(false);
             islands.put(uuid, island);
-            return island;
+
+        } else {
+            island.setWorld(plugin.getSlimePlugin().createEmptyWorld(plugin.getLoader(), uuid, false, WorldUtil.getSlimePropertyMap(island)));
+            island.loadWorld();
+            island.save(false);
+            islands.put(uuid, island);
+            if (Bukkit.getPlayer(island.getOwner()) != null)
+                island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
+            island.changeBorder();
+
         }
-        Island island = new Island(plugin, uuid, new IslandMeta(plugin.getPlayerManager().getNameByUUID(UUID.fromString(uuid.split("_")[1]))));
-
-
-        if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
-            island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
-        } else
-            island.setLevel(0);
-
-        island.setWorld(plugin.getSlimePlugin().createEmptyWorld(plugin.getLoader(), uuid, false, WorldUtil.getSlimePropertyMap(island)));
-
-        island.loadWorld();
-        island.save(false);
-        islands.put(uuid, island);
-        if (Bukkit.getPlayer(island.getOwner()) != null)
-            island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
-        island.changeBorder();
-
-
         return island;
     }
 
     public void deleteIsland(String uuid) throws IslandLoadedException {
+
         if (islands.containsKey(uuid)) {
             throw new IslandLoadedException("Please unload the island first!");
         }
@@ -78,6 +68,7 @@ public class IslandManager {
     }
 
     public void unloadIsland(Island island, boolean save) throws IslandHasPlayersOnlineException {
+
         if (!island.getBukkitWorld().getPlayers().isEmpty()) {
             throw new IslandHasPlayersOnlineException("There are players online and can't be unloaded!");
         }
@@ -99,4 +90,44 @@ public class IslandManager {
     public String getServer(String island) {
         return getIsland(island) == null ? plugin.getDbManager().getString(TableType.ISLANDS.table, "SERVER", "UUID", island) : getIsland(island).getServer();
     }
+
+
+    private class loadIslandCallback implements Callable<Pair<Island, Boolean>> {
+        @Getter
+        private String uuid;
+
+        private OneBlock plugin;
+
+        loadIslandCallback(String uuid, OneBlock plugin) {
+            this.uuid = uuid;
+            this.plugin = plugin;
+        }
+
+        @SneakyThrows
+        @Override
+        public Pair<Island, Boolean> call() {
+
+            if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuid)) {
+                String data = plugin.getDbManager().getString(TableType.ISLANDS.table, "META", "UUID", uuid);
+                IslandMeta meta = IslandMeta.deserialize(data);
+                Island island = new Island(plugin, uuid, meta);
+                if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
+                    island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
+                } else
+                    island.setLevel(0);
+
+                return new Pair<>(island, false);
+            }
+
+            Island island = new Island(plugin, uuid, new IslandMeta(plugin.getPlayerManager().getNameByUUID(UUID.fromString(uuid.split("_")[1]))));
+            if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
+                island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
+            } else
+                island.setLevel(0);
+
+            return new Pair<>(island, true);
+        }
+    }
 }
+
+

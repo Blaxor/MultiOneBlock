@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 
+import java.util.Optional;
+
 public class BorderItemListener implements Listener {
     private final OneBlock plugin;
 
@@ -24,10 +26,12 @@ public class BorderItemListener implements Listener {
                 ItemStack item = event.getItem();
                 if (item.hasItemMeta()) {
                     if (item.getEnchantments() != null && !item.getEnchantments().isEmpty()) {
-                        Enchantment enchantment = item.getEnchantments().keySet().stream().filter(enchantment1 ->
-                                enchantment1.getName().split("_")[0].equalsIgnoreCase("tier")).findAny().get();
 
-                        if (enchantment != null) {
+                        Optional<Enchantment> enchantment = item.getEnchantments().keySet().stream().filter(enchantment1 ->
+                                enchantment1.getName().split("_")[0].equalsIgnoreCase("tier")).findAny();
+
+
+                        if (enchantment.isPresent()) {
                             event.setCancelled(true);
                             Island island = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId()).getIsland(false);
                             int tier = item.getEnchantments().get(enchantment);

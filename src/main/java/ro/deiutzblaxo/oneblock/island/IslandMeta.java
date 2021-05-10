@@ -30,6 +30,7 @@ public class IslandMeta implements Serializable {
     private HashMap<PERMISSIONS, RANK> permissions = new HashMap<>();
     private HashMap<ISLANDSETTINGS, Boolean> settings = new HashMap<>();
     private String name;
+    private long time = 0;
 
     public IslandMeta(String ownerName) {
         name = ownerName + "'s island!";//TODO MESSAGE
