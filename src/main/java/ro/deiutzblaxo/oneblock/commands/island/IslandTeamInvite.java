@@ -55,7 +55,7 @@ public class IslandTeamInvite implements SubCommand {
             sender.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
-        if (player.getIsland(false).getMeta().getMembers().size() >= 5) {
+        if (player.getIsland(false).getMeta().getMembers().size() >= player.getIsland(false).getMeta().getMaxMembers()) {
             sender.sendMessage(plugin.getLangManager().get(MESSAGE.INVITE_MAX_TEAM));
             return;
         }

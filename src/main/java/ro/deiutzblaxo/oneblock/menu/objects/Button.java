@@ -62,6 +62,7 @@ public interface Button {
     ButtonObject getButtonObject();
 
     Menu getParent();
+
     boolean isGlow();
 
     default ItemStack getItem() {

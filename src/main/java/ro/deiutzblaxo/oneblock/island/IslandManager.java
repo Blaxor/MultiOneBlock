@@ -116,7 +116,7 @@ public class IslandManager {
                 } else
                     island.setLevel(0);
 
-                return new Pair<>(island, false);
+                return new Pair<Island, Boolean>(island, false);
             }
 
             Island island = new Island(plugin, uuid, new IslandMeta(plugin.getPlayerManager().getNameByUUID(UUID.fromString(uuid.split("_")[1]))));

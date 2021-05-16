@@ -5,7 +5,6 @@ import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.oneblock.menu.objects.Menu;
 
 
-
 @Data
 public class ButtonObject {
 
@@ -13,7 +12,7 @@ public class ButtonObject {
     private String command;
     private Menu menu;
     private String message;
-    private Runnable runnable;
+
 
     public ButtonObject(ItemStack item) {
         this.item = item;
@@ -29,7 +28,7 @@ public class ButtonObject {
             return;
         }
         this.command = message;
-
     }
+
 
 }

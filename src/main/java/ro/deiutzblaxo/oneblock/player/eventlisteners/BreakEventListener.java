@@ -1,6 +1,7 @@
 package ro.deiutzblaxo.oneblock.player.eventlisteners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -158,12 +159,27 @@ public class BreakEventListener implements Listener {
             return;
         }
         if (object.isEntity()) {
+            destoryNear(block);
             block.getWorld().spawnEntity(block.getLocation().add(0, 1, 0), object.getEntityType());
             return;
         }
 
 
         event.setCancelled(true);
+
+    }
+
+    private void destoryNear(Block block) {
+        Location location = block.getLocation().add(0,1,0);
+        for (int x = -2; x <= 2; x++)
+            for (int z = -2; z <= 2; z++)
+                for (int y = 0; y <= 3; y++) {
+                    Location loc = location.clone();
+                    loc.add(x, y, z);
+                    if (loc.getBlock() != null)
+                        if (loc.getBlock().getType() != Material.AIR)
+                            loc.getBlock().breakNaturally();
+                }
 
     }
 

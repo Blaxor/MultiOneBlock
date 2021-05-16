@@ -56,6 +56,7 @@ ro\deiutzblaxo\oneblock\commands\admin\SaveCommand.class
 ro\deiutzblaxo\oneblock\customenchants\enchants\IslandTireEnchant.class
 ro\deiutzblaxo\oneblock\menu\objects\buttons\Action.class
 ro\deiutzblaxo\oneblock\communication\action\chat\global\ChatGlobalSender.class
+ro\deiutzblaxo\oneblock\menu\MenuManager$2.class
 ro\deiutzblaxo\oneblock\utils\Pair.class
 me\stefan923\playerdatastorage\mysql\MySQLPlayerDataStorage.class
 ro\deiutzblaxo\oneblock\phase\objects\RARITY.class
@@ -79,6 +80,7 @@ ro\deiutzblaxo\oneblock\player\RANK.class
 ro\deiutzblaxo\oneblock\player\PlayerOB.class
 me\stefan923\playerdatastorage\playerdata\NBTPlayerData.class
 ro\deiutzblaxo\oneblock\communication\action\invite\Invite.class
+ro\deiutzblaxo\oneblock\menu\MenuManager$3.class
 ro\deiutzblaxo\oneblock\player\events\PlayerBanIslandEvent.class
 ro\deiutzblaxo\oneblock\commands\admin\ReloadCommand.class
 ro\deiutzblaxo\oneblock\island\radius\BorderHandler.class
@@ -108,6 +110,7 @@ ro\deiutzblaxo\oneblock\player\PlayerOB$1.class
 ro\deiutzblaxo\oneblock\utils\TableType.class
 ro\deiutzblaxo\oneblock\island\level\calculate\IslandLevelCalculatedEvent.class
 ro\deiutzblaxo\oneblock\commands\island\IslandTeam.class
+ro\deiutzblaxo\oneblock\commands\island\IslandInfo.class
 ro\deiutzblaxo\oneblock\langs\MessagesManager.class
 ro\deiutzblaxo\oneblock\commands\SubCommand.class
 ro\deiutzblaxo\oneblock\commands\island\IslandUnBan.class

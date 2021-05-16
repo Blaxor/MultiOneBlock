@@ -4,8 +4,12 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionType;
 import ro.deiutzblaxo.oneblock.OneBlock;
+import ro.deiutzblaxo.oneblock.customenchants.EnchantsManager;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.IslandMeta;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
@@ -15,6 +19,7 @@ import ro.deiutzblaxo.oneblock.menu.events.PlayerOpenMenuEvent;
 import ro.deiutzblaxo.oneblock.menu.objects.Button;
 import ro.deiutzblaxo.oneblock.menu.objects.Menu;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
+import ro.deiutzblaxo.oneblock.menu.objects.buttons.ButtonObject;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.PrefabButton;
 import ro.deiutzblaxo.oneblock.menu.objects.menus.PrefabMenu;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
@@ -40,6 +45,8 @@ public class MenuManager {
         addMenu(new PrefabMenu("phase", "test", plugin.getLangManager().get(MESSAGE.GUI_TITLE_PHASES), 9));
         addMenu(new PrefabMenu("members", "test", plugin.getLangManager().get(MESSAGE.ISLAND_TEAM_MENU_TITLE), 9));
         addMenu(new PrefabMenu("top", "test", plugin.getLangManager().get(MESSAGE.ISLAND_TOP_MENU), 9));
+        addMenu(new PrefabMenu("info", "test", ChatColor.GREEN + "Info Island", 18));
+        addMenu(new PrefabMenu("banned", "test", ChatColor.RED + "Jucatorii banati!", 54));//TODO MESSAGE
     }
 
     public Menu getMenu(String id) {
@@ -59,7 +66,7 @@ public class MenuManager {
         menus.put(menu.getID(), menu);
     }
 
-    public Menu getPhaseMenu(Island island) {
+    public Menu getPhaseMenu(Island island, Menu previous) {
         Menu menu = getMenu("phase");
         menu.getButtons().clear();
         menu.setSize(plugin.getPhaseManager().getPhaseHashMap().size());
@@ -78,10 +85,15 @@ public class MenuManager {
             menu.addButton(pos, button);
             pos++;
         }
+        if (previous != null) {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
+        } else {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
+        }
         return menu;
     }
 
-    public Menu getMembersMenu(Island island) {
+    public Menu getMembersMenu(Island island, Menu previous) {
         Menu menu = getMenu("members");
         menu.getButtons().clear();
         menu.setSize(island.getMeta().getMembers().size());
@@ -97,15 +109,21 @@ public class MenuManager {
             }
             i.addAndGet(1);
         });
+        if (previous != null) {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
+        } else {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
+        }
 
         return menu;
     }
 
     @SneakyThrows
-    public Menu getTopMenu() {
+    public Menu getTopMenu(Menu previous) {
 
         ArrayList<Triplet<String, Integer, IslandMeta>> triplets = plugin.getIslandLevelManager().getTopIslands();
         Menu menu = getMenu("top");
+        menu.getButtons().clear();
         int i = 0;
         List<String> lore;
 
@@ -127,8 +145,72 @@ public class MenuManager {
                 return menu;
 
         }
+        if (previous != null) {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
+        } else {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
+        }
         return menu;
+    }
 
+    public Menu getInfoIslandMenu(Island island) {
+        Menu menu = getMenu("info");
+        menu.getButtons().clear();
+/*        UUID owner = null;
+        for (UUID uuid : island.getMeta().getMembers().keySet()) {
+            if (island.getMeta().getMembers().get(uuid).equals(RANK.OWNER)) {
+                owner = uuid;
+            }
+        }*/
+        Button members = new PrefabButton(UTILS.getEffectArrow(new ItemStack(Material.TIPPED_ARROW), PotionType.INSTANT_HEAL),
+                ChatColor.GREEN + "Membrii" + ChatColor.DARK_GRAY + "(" + ChatColor.GRAY + island.getMeta().getMembers().size() + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + island.getMeta().getMaxMembers() + ChatColor.DARK_GRAY + ")"
+                , new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(getMembersMenu(island, menu)), menu);
+
+        Button infinityBlocks = new PrefabButton(Material.COARSE_DIRT, ChatColor.YELLOW + "Blocurile Regenerabile", new ArrayList<>(), Action.SEND_MESSAGE,
+                new ButtonObject(ChatColor.RED + "In lucru...", true), menu);
+
+        Button spawn = new PrefabButton(Material.POLISHED_ANDESITE, ChatColor.AQUA + "Spawn-ul insulei", new ArrayList<String>() {{
+            add(ChatColor.GRAY + "La cordonatele: " + ChatColor.WHITE + (int) island.getMeta().getSpawn().getX() + " " + (int) island.getMeta().getSpawn().getY() + " " + (int) island.getMeta().getSpawn().getZ());
+        }}, Action.ISLAND_TP, null, menu);
+
+        Button phase = new PrefabButton(new ItemStack(Material.NETHERITE_PICKAXE, 1), ChatColor.YELLOW + "Etape", new ArrayList<>() {{
+            add(ChatColor.GRAY + "Blocuri sparte: " + ChatColor.WHITE + island.getMeta().getCount());
+        }}, Action.OPEN_MENU, new ButtonObject(getPhaseMenu(island, menu)), menu);
+
+        Button radius = new PrefabButton(EnchantsManager.addGlow(new ItemStack(Material.TRIPWIRE_HOOK)), ChatColor.GREEN + "Tier: " + island.getMeta().getRadiusTire(), new ArrayList<>(), Action.NONE, null, menu);
+
+        Button name = new PrefabButton(Material.NAME_TAG, island.getMeta().getName(), new ArrayList<>(), Action.NONE, null, menu);
+
+        Button banned = new PrefabButton(UTILS.getEffectArrow(new ItemStack(Material.TIPPED_ARROW), PotionType.INSTANT_DAMAGE), ChatColor.RED + "Banatii", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(getBannedMenu(island, menu)), menu);
+
+        menu.addButton(9, members);
+        menu.addButton(11, phase);
+        menu.addButton(12, spawn);
+        menu.addButton(4, name);
+        menu.addButton(14, radius);
+        menu.addButton(15, infinityBlocks);
+        menu.addButton(17, banned);
+        return menu;
+    }
+
+
+    @SneakyThrows
+    public Menu getBannedMenu(Island island, Menu previous) {
+        Menu menu = getMenu("banned");
+        menu.getButtons().clear();
+        int i = 0;
+        for (UUID uuid : island.getMeta().getBanned()) {
+            menu.addButton(i, new PrefabButton(UTILS.getSkull(uuid), ChatColor.RED + plugin.getPlayerManager().getNameByUUID(uuid), new ArrayList<>(), Action.CLOSE, null, menu));
+            i++;
+        }
+        if (previous != null) {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
+        } else {
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
+        }
+
+
+        return menu;
 
     }
 

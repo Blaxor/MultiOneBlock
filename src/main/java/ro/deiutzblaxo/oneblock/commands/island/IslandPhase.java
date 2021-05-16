@@ -41,7 +41,7 @@ public class IslandPhase implements SubCommand {
                 player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
                 return;
             }
-            plugin.getMenuManager().openMenu(plugin.getMenuManager().getPhaseMenu(island).getID(), player);
+            plugin.getMenuManager().openMenu(plugin.getMenuManager().getPhaseMenu(island,null).getID(), player);
         }
 
     }

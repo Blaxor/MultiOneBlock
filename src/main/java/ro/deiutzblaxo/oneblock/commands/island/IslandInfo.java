@@ -6,14 +6,12 @@ import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
-import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
-import ro.deiutzblaxo.oneblock.utils.Location;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class IslandSetSpawn implements SubCommand {
+public class IslandInfo implements SubCommand {
 
     String[] aliases;
     String permission;
@@ -21,7 +19,7 @@ public class IslandSetSpawn implements SubCommand {
     Command parent;
     OneBlock plugin;
 
-    public IslandSetSpawn(OneBlock plugin, String[] aliases, String permission, Command parent) {
+    public IslandInfo(OneBlock plugin, String[] aliases, String permission, Command parent) {
         this.aliases = aliases;
         this.permission = parent.getPermission() + "." + permission;
         this.parent = parent;
@@ -35,30 +33,20 @@ public class IslandSetSpawn implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
 
-        if (plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false) == null) {
-            sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
-            return;
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Island island = plugin.getIslandManager().getIsland(player.getWorld().getName());
+            if (island == null) {
+                sender.sendMessage(plugin.getLangManager().get(MESSAGE.INFO_NO_ISLAND));
+                return;
+            }
+            plugin.getMenuManager().openMenu(plugin.getMenuManager().getInfoIslandMenu(island).getID(), player);
+
+
         }
-        Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
-        if (!player.getWorld().getName().equals(island.getBukkitWorld().getName())) {
-            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_SETSPAWN_NOT_ISLAND));
-            return;
-        }
-        if (!island.isAllow(player.getUniqueId(), PERMISSIONS.SETSPAWN)) {
-            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_SETSPAWN_ALLOW));
-            return;
-        }
-        if (!Location.isSafeLocation(player.getLocation())) {
-            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_SETSPAWN_LOCATION_SAFE));
-            return;
-        }
-        island.setSpawnLocation(Location.toLocation(player.getLocation()));
-        player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_SETSPAWN_SUCCES));
 
     }
-
 
     @Override
     public String[] getAliases() {

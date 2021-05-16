@@ -31,11 +31,17 @@ public class IslandMeta implements Serializable {
     private HashMap<ISLANDSETTINGS, Boolean> settings = new HashMap<>();
     private String name;
     private long time = 0;
+    private byte maxMembers = 5;
 
     public IslandMeta(String ownerName) {
         name = ownerName + "'s island!";//TODO MESSAGE
     }
 
+    public byte getMaxMembers() {
+        if (maxMembers < 5)
+            return 5;
+        else return maxMembers;
+    }
 
     public String serialize() {
         Gson gson = new Gson();

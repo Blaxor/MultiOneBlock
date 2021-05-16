@@ -46,6 +46,7 @@ public class IslandCommand implements Command, CommandExecutor, TabCompleter {
         subCommands.put("setname", new IslandSetName(plugin, new String[]{}, "setname", this));
         subCommands.put("setspawn", new IslandSetSpawn(plugin, new String[]{}, "setspawn", this));
         subCommands.put("count", new IslandCount(plugin, new String[]{}, "count", this));
+        subCommands.put("info", new IslandInfo(plugin, new String[]{"i"}, "info", this));
 
         this.plugin = plugin;
     }

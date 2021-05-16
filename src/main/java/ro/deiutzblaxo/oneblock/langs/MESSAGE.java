@@ -80,7 +80,8 @@ public enum MESSAGE {
     ISLAND_UNBANNED("unbanned", "&eYou have been unbanned!"),
     LOCATION_NOT_SAFE("error.location_not_safe", "That location is not safe. You have been teleported to spawn!"),
     ISLAND_TOP_MENU("top.title", "&eTOP ISLANDS"),
-    INVITE_MAX_TEAM("error.island.invite.max_members", "&eYou have reach max members.You can`t invite anymore!");
+    INVITE_MAX_TEAM("error.island.invite.max_members", "&eYou have reach max members.You can`t invite anymore!"),
+    INFO_NO_ISLAND("error.island.info.invalid","&cYou need to be on a island to work!");
     String path, Default;
 
     MESSAGE(String _path, String _default) {

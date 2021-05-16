@@ -55,7 +55,7 @@ public class Island {
 
         autosave = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             plugin.getLogger().log(Level.INFO, "Auto-Saving island ", uuidIsland);
-            if (bukkitWorld.getPlayers().isEmpty()) {
+            if (bukkitWorld.getPlayers().isEmpty() && !Bukkit.getOnlinePlayers().stream().filter(player -> meta.getMembers().containsKey(player.getUniqueId())).findAny().isPresent()) {
                 try {
                     plugin.getIslandManager().unloadIsland(this, true);
                 } catch (IslandHasPlayersOnlineException e) {
@@ -94,9 +94,9 @@ public class Island {
                 saveLevel();
                 WorldUtil.saveSlimeWorld(plugin, this.getWorld());
             });
-                if (unload)
-                    WorldUtil.unloadSlimeWorld(plugin, this.getWorld());
-                plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
+            if (unload)
+                WorldUtil.unloadSlimeWorld(plugin, this.getWorld());
+            plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
 
         } catch (Exception e) {
             e.printStackTrace();

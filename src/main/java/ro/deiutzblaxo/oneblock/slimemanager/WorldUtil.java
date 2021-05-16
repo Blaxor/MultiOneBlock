@@ -144,9 +144,9 @@ public class WorldUtil {
         slimePropertyMap.setBoolean(SlimeProperties.ALLOW_ANIMALS, true);
         slimePropertyMap.setString(SlimeProperties.DIFFICULTY, "normal");
 
-        slimePropertyMap.setInt(SlimeProperties.SPAWN_X, 0);
-        slimePropertyMap.setInt(SlimeProperties.SPAWN_Z, 0);
-        slimePropertyMap.setInt(SlimeProperties.SPAWN_Y, 82);
+        slimePropertyMap.setInt(SlimeProperties.SPAWN_X, (int) island.getMeta().getSpawn().getX());
+        slimePropertyMap.setInt(SlimeProperties.SPAWN_Z, (int) island.getMeta().getSpawn().getY());
+        slimePropertyMap.setInt(SlimeProperties.SPAWN_Y, (int) island.getMeta().getSpawn().getZ());
 
         slimePropertyMap.setString(SlimeProperties.ENVIRONMENT, "normal");
         slimePropertyMap.setString(SlimeProperties.DEFAULT_BIOME, island.getPhase().getPhaseBiome().name().toLowerCase(Locale.ROOT));

@@ -50,6 +50,13 @@ public class PrefabMenu implements Menu {
     }
 
     @Override
+    public Button addButton(int slot, Button button) {
+        if (size < slot)
+            setSize(slot);
+        return Menu.super.addButton(slot, button);
+    }
+
+    @Override
     public Inventory getInterface() {
         InventoryHolderCustom invhold = new InventoryHolderCustom("menu");
         Inventory inv = Bukkit.createInventory(invhold, size, name);

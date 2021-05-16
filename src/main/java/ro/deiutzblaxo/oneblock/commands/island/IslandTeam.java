@@ -39,9 +39,9 @@ public class IslandTeam implements SubCommand {
         Player player = (Player) sender;
         Island island = plugin.getIslandManager().getIsland(plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland());
         if (island != null)
-            plugin.getMenuManager().openMenu(plugin.getMenuManager().getMembersMenu(island).getID(), player);
+            plugin.getMenuManager().openMenu(plugin.getMenuManager().getMembersMenu(island, null).getID(), player);
         else
-            player.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
+            player.sendMessage(plugin.getLangManager().get(player, MESSAGE.ISLAND_NOT_LOADED));
     }
 
     @Override

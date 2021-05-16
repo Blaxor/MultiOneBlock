@@ -8,7 +8,6 @@ import lombok.SneakyThrows;
 import me.stefan923.playerdatastorage.PlayerDataStorage;
 import me.stefan923.playerdatastorage.mysql.MySQLConnection;
 import me.stefan923.playerdatastorage.mysql.MySQLPlayerDataStorage;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,9 +22,7 @@ import ro.deiutzblaxo.oneblock.communication.action.invite.ChannelInviteListener
 import ro.deiutzblaxo.oneblock.communication.action.invite.ChannelInviteListenerRedis;
 import ro.deiutzblaxo.oneblock.communication.redis.RedisManager;
 import ro.deiutzblaxo.oneblock.customenchants.EnchantsManager;
-import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.IslandManager;
-import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
 import ro.deiutzblaxo.oneblock.island.level.IslandLevelManager;
 import ro.deiutzblaxo.oneblock.island.protection.*;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
@@ -34,7 +31,6 @@ import ro.deiutzblaxo.oneblock.menu.MenuManager;
 import ro.deiutzblaxo.oneblock.menu.listener.InventoryClickListener;
 import ro.deiutzblaxo.oneblock.phase.PhaseManager;
 import ro.deiutzblaxo.oneblock.player.PlayerManager;
-import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.*;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 import ro.deiutzblaxo.oneblock.utils.database.DBManager;
@@ -123,19 +119,12 @@ public final class OneBlock extends JavaPlugin {
 
     @SneakyThrows
     public void onDisable() {
-        getLogger().log(Level.INFO, "Unloading players");
-        for(PlayerOB playerOB : playerManager.getPlayers().values())
-            playerManager.unloadPlayer(playerOB.getPlayer());
-        Bukkit.getOnlinePlayers().forEach(player -> player.teleport(getSpawnLocation()));
-        for(Island island : islandManager.getIslands().values()){
-            try {
-                islandManager.unloadIsland(island, true);
-            } catch (IslandHasPlayersOnlineException e) {
-                island.save(true);
-            }
-        }
-        getLogger().log(Level.INFO, "Players unloaded");
-
+        islandManager.getIslands().forEach((s, island) -> {
+            island.save(true);
+        });
+        playerManager.getPlayers().forEach((uuid, playerOB) -> {
+            playerOB.save();
+        });
 
 
         if (REDIS_ENABLED)

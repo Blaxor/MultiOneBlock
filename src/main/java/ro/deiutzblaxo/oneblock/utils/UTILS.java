@@ -7,8 +7,11 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 import ro.deiutzblaxo.oneblock.player.RANK;
 
 import java.io.*;
@@ -119,10 +122,17 @@ public class UTILS {
     }
 
     public static Location roundLocation(Location location) {
-        location.setX(Math.round(location.getX())-1);
+        location.setX(Math.round(location.getX()) - 1);
         location.setY(Math.round(location.getY()));
-        location.setZ(Math.round(location.getZ())-1);
+        location.setZ(Math.round(location.getZ()) - 1);
         return location;
+    }
+
+    public static ItemStack getEffectArrow(ItemStack itemStack, PotionType potionType) {
+        PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
+        meta.setBasePotionData(new PotionData(potionType));
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 
 

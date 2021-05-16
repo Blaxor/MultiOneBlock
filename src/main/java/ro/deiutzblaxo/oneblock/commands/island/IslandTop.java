@@ -32,7 +32,7 @@ public class IslandTop implements SubCommand {
     @Override
     public void execute(CommandSender sender, List<String> args) {
 
-        ((Player) sender).openInventory(plugin.getMenuManager().getTopMenu().getInterface());
+        ((Player) sender).openInventory(plugin.getMenuManager().getTopMenu(null).getInterface());
 
     }
 

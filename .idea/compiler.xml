@@ -8,7 +8,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="schematicsave" />
         <module name="OneBlock" />
+        <module name="ConnectionManager" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
