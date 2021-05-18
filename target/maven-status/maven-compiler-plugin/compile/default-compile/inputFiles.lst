@@ -143,6 +143,7 @@ D:\Java\IntelliJ\OneBlock\src\main\java\me\stefan923\playerdatastorage\util\NBTU
 D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\Responses.java
 D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\communication\action\invite\ChannelInviteListenerRedis.java
 D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\island\protection\DecayListener.java
+D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\utils\otherexceptions\NotSafeLocationException.java
 D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\addons\PAPIAddon.java
 D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\commands\admin\SetCountCommand.java
 D:\Java\IntelliJ\OneBlock\src\main\java\ro\deiutzblaxo\oneblock\OneBlock.java

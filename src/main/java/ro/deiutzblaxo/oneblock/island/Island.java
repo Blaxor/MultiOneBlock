@@ -24,6 +24,7 @@ import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
 import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
 import ro.deiutzblaxo.oneblock.utils.Location;
 import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.deiutzblaxo.oneblock.utils.otherexceptions.NotSafeLocationException;
 import ro.nexs.db.manager.exception.DifferentArgLengthException;
 
 import java.util.UUID;
@@ -147,12 +148,19 @@ public class Island {
 
 
     public void teleportHere(Player player) {
-        if (Location.isSafeLocation(meta.getSpawn().toBukkitLocation(bukkitWorld)))
+        try {
+            player.teleport(Location.getSafeLocation(meta.getSpawn().toBukkitLocation(bukkitWorld)));
+        } catch (NotSafeLocationException e) {
+            player.teleport(plugin.getSpawnLocation());
+            player.sendMessage(plugin.getLangManager().get(player, MESSAGE.LOCATION_NOT_SAFE));
+
+        }
+/*        if (Location.isSafeLocation(meta.getSpawn().toBukkitLocation(bukkitWorld)))
             player.teleport(meta.getSpawn().toBukkitLocation(bukkitWorld));
         else {
             player.teleport(plugin.getSpawnLocation());
             player.sendMessage(plugin.getLangManager().get(player, MESSAGE.LOCATION_NOT_SAFE));
-        }
+        }*/
     }
 
     public Block getBlock(org.bukkit.Location location) {

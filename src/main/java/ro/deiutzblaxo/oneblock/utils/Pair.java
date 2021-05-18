@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Pair<F, L> {
-    //facts : FL is from fuck my life...
+    //facts : FL is from fuck life...
 
     private F first;
 
@@ -17,13 +17,5 @@ public class Pair<F, L> {
         first = f;
 
         last = l;
-    }
-
-    @Override
-    public String toString() {
-        return "Triplet{" +
-                "first=" + first +
-                ", last=" + last +
-                '}';
     }
 }

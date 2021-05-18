@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import ro.deiutzblaxo.oneblock.utils.otherexceptions.NotSafeLocationException;
 
 import java.util.Objects;
 
@@ -53,6 +54,22 @@ public class Location {
     public static Location toLocation(org.bukkit.Location location) {
         return new Location(location);
     }
+
+    public static org.bukkit.Location getSafeLocation(org.bukkit.Location location) throws NotSafeLocationException {
+        for (int y = 0; y <= 6; y++)
+        for (int x = -1; x <= 1; x++)
+            for (int z = -1; z <= 1; z++)
+                 {
+                    org.bukkit.Location locationNow = location.clone();
+                    locationNow.add(x, y, z);
+                    if (isSafeLocation(locationNow))
+                        return locationNow;
+
+                }
+
+        throw new NotSafeLocationException("No safe location found near " + location.toString());
+    }
+
 
     public static boolean isSafeLocation(org.bukkit.Location location) {
         try {

@@ -19,6 +19,7 @@ ro\deiutzblaxo\oneblock\player\PlayerManager.class
 me\stefan923\playerdatastorage\migration\Migration.class
 me\stefan923\playerdatastorage\mysql\SQLStatement.class
 me\stefan923\playerdatastorage\PlayerDataStorage.class
+ro\deiutzblaxo\oneblock\utils\otherexceptions\NotSafeLocationException.class
 ro\deiutzblaxo\oneblock\customenchants\enchants\LockEnchant.class
 ro\deiutzblaxo\oneblock\menu\objects\Button$1.class
 ro\deiutzblaxo\oneblock\phase\phaselock\PhaseLock.class
