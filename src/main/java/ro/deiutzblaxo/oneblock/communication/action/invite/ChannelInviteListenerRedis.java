@@ -70,12 +70,9 @@ public class ChannelInviteListenerRedis extends JedisPubSub {
                 break;
             case "oneblock:pm":
                 PM pm = new PM(message);
-                UUID uuidplayer = UUID.fromString(pm.getReciver());
-                System.out.println(uuidplayer);
-                Player player = plugin.getServer().getPlayer(uuidplayer);
-                System.out.println(player.getName());
-                System.out.println(pm.getMessage());
-                System.out.println(pm.getSender());
+                Player player = plugin.getServer().getPlayer(UUID.fromString(pm.getReciver()));
+                if (player == null)
+                    return;
                 player.sendMessage(pm.getMessage());
 
                 break;

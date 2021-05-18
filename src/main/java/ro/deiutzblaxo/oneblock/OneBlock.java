@@ -132,8 +132,6 @@ public final class OneBlock extends JavaPlugin {
         getLogger().log(Level.INFO, "Waiting max 5 seconds to terminate all tasks from pool.");
         generalPool.awaitTermination(5, TimeUnit.SECONDS);
 
-        this.getDbConnection().getConnection().close();
-        this.playerSaveConnection.getConnection().close();
 
     }
 

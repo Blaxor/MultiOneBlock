@@ -86,22 +86,22 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>com.github.Paul19988</groupId>
             <artifactId>Advanced-Slime-World-Manager</artifactId>
             <version>2.5.3</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
+        </dependency>-->
+<!--        <dependency>
             <groupId>com.grinderwolf</groupId>
             <artifactId>slimeworldmanager-api</artifactId>
             <version>2.2.1</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
-            <groupId>com.grinderwolf</groupId>
-            <artifactId>slimeworldmanager-plugin</artifactId>
-            <version>2.2.1</version>
+            <groupId>com.github.Paul19988</groupId>
+            <artifactId>Advanced-Slime-World-Manager</artifactId>
+            <version>2.6.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

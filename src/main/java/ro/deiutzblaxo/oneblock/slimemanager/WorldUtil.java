@@ -11,6 +11,7 @@ import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import com.grinderwolf.swm.nms.CraftSlimeWorld;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 
@@ -29,7 +30,6 @@ public class WorldUtil {
      * @param target the target destination to which files have to go
      */
     /*private static ExecutorService pool = Executors.newCachedThreadPool();*/
-
     public static void copyFileStructure(File source, File target) {
         try {
             ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.lock"));
@@ -77,14 +77,14 @@ public class WorldUtil {
 
     public static void saveSlimeWorld(OneBlock plugin, SlimeWorld world) {
         /*pool.submit(() -> {*/
-            SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
-            plugin.getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
-            try {
-                loader.saveWorld(world.getName(), convertToByte(world), true);
+        SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
+        plugin.getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
+        try {
+            loader.saveWorld(world.getName(), convertToByte(world), true);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         /*});*/
     }
 
@@ -100,9 +100,9 @@ public class WorldUtil {
         }, 3);
     }
 
-    public static void unloadSlimeWorld(OneBlock plugin, SlimeWorld world) {
+    public static void unloadSlimeWorld(OneBlock plugin, World world) {
 
-      Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm unload " + world.getName());
+        Bukkit.unloadWorld(world, false);
     }
 
     /**

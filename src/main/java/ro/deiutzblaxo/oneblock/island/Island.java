@@ -95,7 +95,7 @@ public class Island {
                 WorldUtil.saveSlimeWorld(plugin, this.getWorld());
             });
             if (unload)
-                WorldUtil.unloadSlimeWorld(plugin, this.getWorld());
+                WorldUtil.unloadSlimeWorld(plugin, this.getBukkitWorld());
             plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
 
         } catch (Exception e) {

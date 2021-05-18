@@ -30,6 +30,10 @@ public class RedisManager {
         subscribe = new Jedis(host, port);
 
         publish = new Jedis(host, port);
+        if (password != "") {
+            subscribe.auth(password);
+            publish.auth(password);
+        }
     }
 
     public void send(String channel, String message) {
@@ -40,7 +44,7 @@ public class RedisManager {
 
     @SneakyThrows
     public void registerListener(String[] channels, JedisPubSub listener) {
-         BukkitTask task;
+        BukkitTask task;
         try {
             task = Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 subscribe.subscribe(listener, channels);
@@ -61,6 +65,7 @@ public class RedisManager {
     }
 
     public void onDisable() {
+
         publish.close();
         publish.disconnect();
         subscribe.close();

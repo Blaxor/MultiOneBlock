@@ -54,6 +54,7 @@ public class IslandManager {
             island.changeBorder();
 
         }
+        island.getBukkitWorld().setAutoSave(false);
         return island;
     }
 
@@ -79,7 +80,7 @@ public class IslandManager {
         islands.remove(island.getUuidIsland());
         plugin.getIslandLevelManager().getIslandLevelCalculateManager().cancelCalculation(island);
         island.getAutosave().cancel();
-        WorldUtil.unloadSlimeWorld(plugin, island.getWorld());
+        WorldUtil.unloadSlimeWorld(plugin, island.getBukkitWorld());
     }
 
     public Island getIsland(String island) {
