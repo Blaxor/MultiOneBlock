@@ -1,0 +1,17 @@
+name: OneBlock
+version: ${project.version}
+main: ro.deiutzblaxo.oneblock.OneBlock
+author: JDeiutz
+api-version: 1.16
+softdepend:
+  - RoyaleEconomy
+depend:
+  - Playersave
+commands:
+  island:
+    aliases: [ is ]
+  message:
+    aliases: [ msg,pm ]
+  global:
+  islandadmin:
+

@@ -3,9 +3,11 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/ConnectionManager/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ConnectionManager/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PlayerDataStorage/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PlayerDataStorage/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SchematicSave/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SchematicSave/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>

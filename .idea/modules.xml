@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ConnectionManager/ConnectionManager.iml" filepath="$PROJECT_DIR$/ConnectionManager/ConnectionManager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/OneBlock.iml" filepath="$PROJECT_DIR$/OneBlock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Core/Core.iml" filepath="$PROJECT_DIR$/Core/Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PlayerDataStorage/PlayerDataStorage.iml" filepath="$PROJECT_DIR$/PlayerDataStorage/PlayerDataStorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/SchematicSave/schematicsave.iml" filepath="$PROJECT_DIR$/SchematicSave/schematicsave.iml" />
     </modules>
   </component>
