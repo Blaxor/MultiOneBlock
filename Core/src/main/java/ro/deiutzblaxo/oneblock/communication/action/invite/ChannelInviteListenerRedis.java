@@ -11,11 +11,11 @@ import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.SCOPE_CONFIRMATION;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.ChatListener;
 import ro.deiutzblaxo.oneblock.player.events.PlayerJoinIslandEvent;
-import ro.deiutzblaxo.oneblock.utils.TableType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ChannelInviteListenerRedis extends JedisPubSub {
@@ -34,28 +34,47 @@ public class ChannelInviteListenerRedis extends JedisPubSub {
             case "oneblock:invite:request":
                 RequestInvite requestInvite = new RequestInvite(message);
                 PlayerOB invited = plugin.getPlayerManager().getPlayer(UUID.fromString(requestInvite.getInvited()));
+                if (invited == null) {
+                    if (OneBlock.LOG_REDIS)
+                        plugin.getLogger().log(Level.INFO, "[request] " + invited + " is null as PlayerOB");
+                    return;
+                }
                 invited.getTimers().put(SCOPE_CONFIRMATION.INVITE, 10);
                 ArrayList<Object> a = new ArrayList<>();
                 a.add(0, requestInvite);
                 invited.getParticipant().put(SCOPE_CONFIRMATION.INVITE, a);
                 Bukkit.getPlayer(invited.getPlayer()).sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_RECEIVER).replace("{name}",
-                        plugin.getDbManager().getLikeString(TableType.NAME.table, "UUID", requestInvite.inviter, "NAME")));
+                        /*plugin.getDbManager().getLikeString(TableType.NAME.table, "UUID", requestInvite.inviter, "NAME")*/
+                        plugin.getPlayerManager().getNameByUUID(UUID.fromString(requestInvite.inviter))));
                 break;
             case "oneblock:invite:response":
                 ResponseInvite responseInvite = new ResponseInvite(message);
                 Player inviter = Bukkit.getPlayer(UUID.fromString(responseInvite.getInviter()));
+                if (inviter == null) {
+                    if (OneBlock.LOG_REDIS)
+                        plugin.getLogger().log(Level.INFO, "[response] " + responseInvite.getInviter() + " is null as Player");
+                    return;
+                }
                 PlayerOB inviterOB = plugin.getPlayerManager().getPlayer(inviter.getUniqueId());
+                if (inviterOB == null) {
+                    if (OneBlock.LOG_REDIS)
+                        plugin.getLogger().log(Level.INFO, "[response] " + responseInvite.getInviter() + " is null as PlayerOB");
+                    return;
+                }
+
                 switch (responseInvite.getError()) {
                     case ACCEPT:
                         Bukkit.getPluginManager().callEvent(new PlayerJoinIslandEvent(plugin, responseInvite.getInvited(),
                                 inviterOB, inviterOB.getIsland(false), false, true));
                         inviter.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_ACCEPT).replace("{name}",
-                                plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())));
+                                plugin.getNameUUIDManager().getNameByUUID(UUID.fromString(responseInvite.getInvited()))
+                                /*plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())*/));
                         break;
                     case REJECT:
                         responseInvite.getInvited();
                         inviter.sendMessage(plugin.getLangManager().get(MESSAGE.ISLAND_INVITE_REJECT).replace("{name}",
-                                plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())));
+                                /*plugin.getDbManager().getString(TableType.NAME.table, "NAME", "UUID", responseInvite.getInvited())*/
+                                plugin.getNameUUIDManager().getNameByUUID(UUID.fromString(responseInvite.getInvited()))));
                         break;
                 }
             case "oneblock:global":

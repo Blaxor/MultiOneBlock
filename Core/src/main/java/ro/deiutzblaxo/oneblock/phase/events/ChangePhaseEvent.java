@@ -25,6 +25,7 @@ public class ChangePhaseEvent extends Event {
         island.setPhase(newPhase);
         island.getMeta().setCount(island.getPhase().getBlockNumber());
         ChunkUtils.changeBiome(plugin, island);
+        island.getPhaseObjectsQueue().clear();
 
     }
 

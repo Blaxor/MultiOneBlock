@@ -6,7 +6,7 @@
 
     <groupId>ro.deiutzblaxo</groupId>
     <artifactId>OneBlock</artifactId>
-    <version>BETA-0.2.4</version>
+    <version>BETA-0.2.5</version>
     <packaging>jar</packaging>
 
     <name>OneBlock</name>
@@ -39,6 +39,14 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>redis.clients</pattern>
+                                    <shadedPattern>
+                                        redis.${project.name}.clients
+                                    </shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -69,6 +77,11 @@
             <id>glaremasters</id>
             <url>https://repo.glaremasters.me/repository/concuncan/</url>
         </repository>
+        <!-- HeadDatabase-API -->
+        <repository>
+            <id>headdatabase-api</id>
+            <url>https://mvn.intellectualsites.com/content/repositories/thirdparty/</url>
+        </repository>
 
 
     </repositories>
@@ -86,18 +99,18 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>
-            <groupId>com.github.Paul19988</groupId>
-            <artifactId>Advanced-Slime-World-Manager</artifactId>
-            <version>2.5.3</version>
-            <scope>provided</scope>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>com.grinderwolf</groupId>
-            <artifactId>slimeworldmanager-api</artifactId>
-            <version>2.2.1</version>
-            <scope>provided</scope>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>com.github.Paul19988</groupId>
+                    <artifactId>Advanced-Slime-World-Manager</artifactId>
+                    <version>2.5.3</version>
+                    <scope>provided</scope>
+                </dependency>-->
+        <!--        <dependency>
+                    <groupId>com.grinderwolf</groupId>
+                    <artifactId>slimeworldmanager-api</artifactId>
+                    <version>2.2.1</version>
+                    <scope>provided</scope>
+                </dependency>-->
         <dependency>
             <groupId>com.github.Paul19988</groupId>
             <artifactId>Advanced-Slime-World-Manager</artifactId>
@@ -111,8 +124,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.nexs-ro</groupId>
-            <artifactId>NexsDBManager</artifactId>
+            <groupId>ro.deiutzblaxo</groupId>
+            <artifactId>Cloud</artifactId>
             <version>1.1</version>
             <scope>compile</scope>
         </dependency>
@@ -120,6 +133,7 @@
             <groupId>com.github.PlaceholderAPI</groupId>
             <artifactId>PlaceholderAPI</artifactId>
             <version>2.10.9</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>spigot</groupId>
@@ -137,7 +151,7 @@
         <dependency>
             <groupId>ro.deiutzblaxo</groupId>
             <artifactId>playersave</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- QUESTS BY LMB -->
@@ -170,6 +184,12 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>3.6.0</version>
+        </dependency>
+        <!-- HeadDatabase-API -->
+        <dependency>
+            <groupId>me.arcaniax</groupId>
+            <artifactId>HeadDatabase-API</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

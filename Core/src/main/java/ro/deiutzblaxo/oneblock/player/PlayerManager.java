@@ -2,16 +2,15 @@ package ro.deiutzblaxo.oneblock.player;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import ro.deiutzblaxo.cloud.expcetions.NoFoundException;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.player.events.PlayerLoadEvent;
 import ro.deiutzblaxo.oneblock.player.events.PlayerUnLoadEvent;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerOfflineException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
-import ro.nexs.db.manager.exception.NoDataFoundException;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -43,7 +42,7 @@ public class PlayerManager {
     public String getServerByPlayerUUID(String uuid) {
         try {
             return plugin.getDbManager().getString(TableType.PLAYERS.table, "SERVER", "UUID", uuid);
-        } catch (NoDataFoundException e) {
+        } catch (NoFoundException e) {
             throw new PlayerOfflineException("Player is offline");
         }
     }
@@ -57,7 +56,7 @@ public class PlayerManager {
     }
 
     public String getUUIDByName(String name) throws PlayerNoExistException {
-        name = name.toLowerCase(Locale.ROOT);
+/*        name = name.toLowerCase(Locale.ROOT);
         if (plugin.getNameUUIDLocal().getCache().containsKey(name)) {
             return plugin.getNameUUIDLocal().getCache().get(name);
         }
@@ -65,23 +64,34 @@ public class PlayerManager {
             String str = plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", name, "UUID");
             plugin.getNameUUIDLocal().getCache().put(name, str);
             return str;
-        } catch (NoDataFoundException e) {
+        } catch (NoFoundException e) {
             throw new PlayerNoExistException("Player " + name + " don`t exist in database!");
+        }*/
+        try {
+            return plugin.getNameUUIDManager().getUUIDByName(name).toString();
+        } catch (NoFoundException e) {
+            throw new PlayerNoExistException("player no exists!");
         }
     }
 
     public String getNameByUUID(UUID uuid) throws PlayerNoExistException {
-        if (plugin.getNameUUIDLocal().getCache().containsKey(uuid.toString())) {
+        try {
+            return plugin.getNameUUIDManager().getNameByUUID(uuid);
+        } catch (NoFoundException e) {
+            throw new PlayerNoExistException("player no exists!");
+        }
+
+        /*        if (plugin.getNameUUIDLocal().getCache().containsKey(uuid.toString())) {
             return plugin.getNameUUIDLocal().getCache().get(uuid.toString());
         }
         try {
             String str = plugin.getDbManager().getLikeString(TableType.NAME.table, "UUID", uuid.toString(), "NAME");
             plugin.getNameUUIDLocal().getCache().put(uuid.toString(), str);
             return str;
-        } catch (NoDataFoundException e) {
+        } catch (NoFoundException e) {
             throw new PlayerNoExistException("Player " + uuid + " don`t exist in database!");
 
-        }
+        }*/
 
     }
 }

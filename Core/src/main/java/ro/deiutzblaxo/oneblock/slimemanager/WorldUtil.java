@@ -92,17 +92,13 @@ public class WorldUtil {
         SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
         plugin.getLogger().log(Level.INFO, "deleting THE SLIME WORLD : " + world.getName());
 
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm delete " + world.getName());
-            }
-        }, 3);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm delete " + world.getName()), 3);
+    
     }
 
     public static void unloadSlimeWorld(OneBlock plugin, World world) {
 
-        Bukkit.unloadWorld(world, true);
+        plugin.getLogger().log(Level.INFO, world.getName() + "has been unloaded : " + Bukkit.unloadWorld(world, true));
     }
 
     /**
@@ -150,6 +146,7 @@ public class WorldUtil {
 
         slimePropertyMap.setString(SlimeProperties.ENVIRONMENT, "normal");
         slimePropertyMap.setString(SlimeProperties.DEFAULT_BIOME, island.getPhase().getPhaseBiome().name().toLowerCase(Locale.ROOT));
+
 
 
         return slimePropertyMap;

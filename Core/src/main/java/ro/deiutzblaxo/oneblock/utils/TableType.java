@@ -2,7 +2,7 @@ package ro.deiutzblaxo.oneblock.utils;
 
 public enum TableType {
 
-    PLAYERS("PLAYERS"), ISLANDS("ISLANDS"), NAME("NAME"), LEVEL("LEVEL");
+    PLAYERS("PLAYERS"), ISLANDS("ISLANDS"), LEVEL("LEVEL");
 
     public final String table;
 

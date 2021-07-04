@@ -9,7 +9,7 @@ import ro.deiutzblaxo.oneblock.menu.objects.Menu;
 import java.util.HashMap;
 
 @Data
-public class PrefabMenu implements Menu {
+public  class PrefabMenu implements Menu {
 
     private HashMap<Integer, Button> buttons = new HashMap<>();
     private final String id;
@@ -64,5 +64,4 @@ public class PrefabMenu implements Menu {
         getButtons().forEach((integer, button) -> inv.setItem(integer, button.getItem()));
         return inv;
     }
-
 }

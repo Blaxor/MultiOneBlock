@@ -1,5 +1,6 @@
 package ro.deiutzblaxo.oneblock.commands.island;
 
+import lombok.SneakyThrows;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
@@ -29,10 +30,13 @@ public class IslandTop implements SubCommand {
 
     }
 
+    @SneakyThrows
     @Override
     public void execute(CommandSender sender, List<String> args) {
 
+
         ((Player) sender).openInventory(plugin.getMenuManager().getTopMenu(null).getInterface());
+
 
     }
 

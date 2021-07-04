@@ -1,0 +1,25 @@
+name: RedisSocial
+version: ${project.version}
+main: ro.deiutzblaxo.redissocial.RedisSocial
+author: JDeiutz
+api-version: 1.16
+commands:
+  pm:
+    aliases:
+      - msg
+      - whisper
+  r:
+    aliases:
+      - replay
+  socialspy:
+    aliases:
+      - sp
+  rsreload:
+    permission: redissocial.reload
+permissions:
+  redissocial.spy:
+    default: op
+  redissocial.spy.auto:
+    default: op
+  redissocial.reload:
+    default: op

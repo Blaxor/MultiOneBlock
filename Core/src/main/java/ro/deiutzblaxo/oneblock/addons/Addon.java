@@ -13,7 +13,6 @@ import ro.deiutzblaxo.oneblock.player.events.PlayerLeaveIslandEvent;
 public class Addon implements Listener {
     private OneBlock plugin;
     private Quests quests;
-
     private EnderContainers enderContainers;
 
     public Addon(OneBlock plugin) {
@@ -46,13 +45,7 @@ public class Addon implements Listener {
         }
         if (enderContainers != null) {
             EnderChestManager manager = Managers.get(EnderChestManager.class);
-            manager.loadPlayerContext(event.getPlayerOBUUID(), playerContext -> {
-                int chests = playerContext.getAccessibleChestCount();
-                for (int i = 0; i < 9; i++) {
-                    playerContext.getChest(i).get().getContents().clear();
-                }
-                playerContext.save();
-            });
+            manager.savePlayerContext(event.getPlayerOBUUID(), true);
         }
 
 

@@ -3,6 +3,7 @@ package ro.deiutzblaxo.oneblock.island;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandLoadedException;
@@ -55,6 +56,7 @@ public class IslandManager {
 
         }
         island.getBukkitWorld().setAutoSave(false);
+        island.getBukkitWorld().setGameRule(GameRule.KEEP_INVENTORY, plugin.getConfig().getBoolean("keep-inventory"));
         return island;
     }
 
@@ -93,6 +95,8 @@ public class IslandManager {
     }
 
 
+
+
     private class loadIslandCallback implements Callable<Pair<Island, Boolean>> {
         @Getter
         private String uuid;
@@ -108,12 +112,12 @@ public class IslandManager {
         @Override
         public Pair<Island, Boolean> call() {
 
-            if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuid)) {
+            if (plugin.getDbManager().exists(TableType.ISLANDS.table, "UUID", uuid)) {
                 String data = plugin.getDbManager().getString(TableType.ISLANDS.table, "META", "UUID", uuid);
                 IslandMeta meta = IslandMeta.deserialize(data);
                 Island island = new Island(plugin, uuid, meta);
-                if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
-                    island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
+                if (plugin.getDbManager().exists(TableType.LEVEL.table, "UUID", uuid)) {
+                    island.setLevel(plugin.getDbManager().get(TableType.LEVEL.table, "LEVEL", "UUID", uuid, Integer.class));
                 } else
                     island.setLevel(0);
 
@@ -121,8 +125,8 @@ public class IslandManager {
             }
 
             Island island = new Island(plugin, uuid, new IslandMeta(plugin.getPlayerManager().getNameByUUID(UUID.fromString(uuid.split("_")[1]))));
-            if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuid)) {
-                island.setLevel(plugin.getDbManager().getInt(TableType.LEVEL.table, "LEVEL", "UUID", uuid));
+            if (plugin.getDbManager().exists(TableType.LEVEL.table, "UUID", uuid)) {
+                island.setLevel(plugin.getDbManager().get(TableType.LEVEL.table, "LEVEL", "UUID", uuid, Integer.class));
             } else
                 island.setLevel(0);
 

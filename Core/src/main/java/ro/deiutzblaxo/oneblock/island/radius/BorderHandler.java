@@ -8,13 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ro.deiutzblaxo.oneblock.OneBlock;
-import ro.deiutzblaxo.oneblock.customenchants.EnchantsManager;
-import ro.deiutzblaxo.oneblock.customenchants.enchants.IslandTireEnchant;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.radius.exceptions.BorderHighestTireException;
 import ro.deiutzblaxo.oneblock.island.radius.exceptions.BorderLowestTireException;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.langs.MESSAGELIST;
+import ro.deiutzblaxo.playersave.enchants.Enchantments;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,6 @@ public class BorderHandler {
 
             permission.put(s, plugin.getConfig().getString("radius." + s + ".permission"));
         });
-        EnchantsManager.registerEnchantment(new IslandTireEnchant(plugin, "tier", radius.values().stream().max(Comparator.comparingInt(ArrayList::size)).get().size()));
     }
 
     public static ItemStack getItem() {
@@ -45,7 +43,7 @@ public class BorderHandler {
         meta.setDisplayName(OneBlock.getInstance().getLangManager().get(MESSAGE.UPGRADE_TIER_ITEM_DISPLAY_NAME));
         meta.setLore(OneBlock.getInstance().getLangManager().getList(MESSAGELIST.UPGRADE_TIER_ITEM_LORE));
         item.setItemMeta(meta);
-        item.addUnsafeEnchantment(EnchantsManager.ENCHANTMENTS.get("tier"), 1);
+        item.addUnsafeEnchantment(Enchantments.TIER.getEnchantment(), 1);
         return item;
     }
 

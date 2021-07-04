@@ -15,7 +15,6 @@ import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 import ro.deiutzblaxo.oneblock.player.SCOPE_CONFIRMATION;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
-import ro.deiutzblaxo.oneblock.utils.TableType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +69,9 @@ public class IslandTeamInvite implements SubCommand {
                         RequestInvite invite = new RequestInvite(uuidInvited, player.getPlayer().toString(), player.getIsland());
                         Invite.sendInvite(plugin, ((Player) sender).getPlayer(), invite);
                         sender.sendMessage(plugin.getLangManager().get((Player) sender, MESSAGE.ISLAND_INVITE_SENDER).
-                                replace("{name}", plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args.get(0), "NAME")));
+                                replace("{name}",
+                                        plugin.getNameUUIDManager().getRealName(args.get(0))
+                                        /*plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args.get(0), "NAME")*/));
                         return;
                     }
                 } catch (PlayerNoExistException e) {
@@ -98,7 +99,7 @@ public class IslandTeamInvite implements SubCommand {
             invited.getParticipant().put(SCOPE_CONFIRMATION.INVITE, data);
             invited.getTimers().put(SCOPE_CONFIRMATION.INVITE, 10);
             sender.sendMessage(plugin.getLangManager().get((Player) sender, MESSAGE.ISLAND_INVITE_SENDER).
-                    replace("{name}", plugin.getDbManager().getLikeString(TableType.NAME.table, "NAME", args.get(0), "NAME")));
+                    replace("{name}", plugin.getNameUUIDManager().getRealName(args.get(0))));
             invitedPlayer.sendMessage(plugin.getLangManager().get((Player) sender, MESSAGE.ISLAND_INVITE_RECEIVER).replace("{name}", sender.getName()));
 
 

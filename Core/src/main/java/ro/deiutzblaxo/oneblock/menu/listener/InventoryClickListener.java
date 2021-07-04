@@ -27,7 +27,7 @@ public class InventoryClickListener implements Listener {
                     return;
                 }
                 Menu menu = plugin.getMenuManager().getMenu(NBTItem116.getNBTTag(event.getCurrentItem(), "menu"));
-                menu.getButton(event.getSlot()).onClick((Player) event.getWhoClicked());
+                menu.getButton(event.getSlot()).onClick((Player) event.getWhoClicked(),event.getClick());
                 event.setCancelled(true);
                 return;
             }

@@ -90,14 +90,13 @@ public class PlayerOB {
     public void save() {
         plugin.getLogger().log(Level.INFO, "Saving player " + player.toString());
         if (player != null) {
-            if (!plugin.getDbManager().existString(TableType.PLAYERS.table, "UUID", player.toString())) {
+            if (!plugin.getDbManager().exists(TableType.PLAYERS.table, "UUID", player.toString())) {
                 plugin.getDbManager().insert(TableType.PLAYERS.table, new String[]{"UUID", "SERVER"}, new Object[]{player.toString(), server});
-
             } else {
-                plugin.getDbManager().set(TableType.PLAYERS.table, "SERVER", "UUID", server, player.toString());
+                plugin.getDbManager().update(TableType.PLAYERS.table, "UUID", player.toString(), new String[]{"SERVER"}, new String[]{server});
             }
             if (island != null) {
-                plugin.getDbManager().set(TableType.PLAYERS.table, "ISLAND", "UUID", island, player.toString());
+                plugin.getDbManager().update(TableType.PLAYERS.table, "UUID", player.toString(), new String[]{"ISLAND"}, new String[]{island});
             } else {
                 plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", player.toString(), "ISLAND");
             }

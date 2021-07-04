@@ -7,21 +7,22 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import me.stefan923.playerdatastorage.PlayerDataStorage;
 import me.stefan923.playerdatastorage.mysql.MySQLConnection;
-import me.stefan923.playerdatastorage.mysql.MySQLPlayerDataStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
+import ro.deiutzblaxo.cloud.data.mysql.MySQLManager;
+import ro.deiutzblaxo.cloud.nus.NameUUIDManager;
+import ro.deiutzblaxo.cloud.nus.prefab.NameUUIDStorageMySQL;
+import ro.deiutzblaxo.cloud.nus.prefab.NameUUIDStorageYaml;
 import ro.deiutzblaxo.oneblock.addons.Addon;
 import ro.deiutzblaxo.oneblock.addons.PAPIAddon;
 import ro.deiutzblaxo.oneblock.commands.admin.AdminCommand;
 import ro.deiutzblaxo.oneblock.commands.chat.GlobalCommand;
-import ro.deiutzblaxo.oneblock.commands.chat.PmCommand;
 import ro.deiutzblaxo.oneblock.commands.island.IslandCommand;
 import ro.deiutzblaxo.oneblock.communication.action.chat.ChannelChatListenerPluginMessage;
 import ro.deiutzblaxo.oneblock.communication.action.invite.ChannelInviteListener;
 import ro.deiutzblaxo.oneblock.communication.action.invite.ChannelInviteListenerRedis;
 import ro.deiutzblaxo.oneblock.communication.redis.RedisManager;
-import ro.deiutzblaxo.oneblock.customenchants.EnchantsManager;
 import ro.deiutzblaxo.oneblock.island.IslandManager;
 import ro.deiutzblaxo.oneblock.island.level.IslandLevelManager;
 import ro.deiutzblaxo.oneblock.island.protection.*;
@@ -34,10 +35,7 @@ import ro.deiutzblaxo.oneblock.phase.PhaseManager;
 import ro.deiutzblaxo.oneblock.player.PlayerManager;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.*;
 import ro.deiutzblaxo.oneblock.utils.TableType;
-import ro.deiutzblaxo.oneblock.utils.database.DBManager;
-import ro.deiutzblaxo.oneblock.utils.database.NameUUIDLocal;
-import ro.deiutzblaxo.playersave.Playersave;
-import ro.nexs.db.manager.connection.DBConnection;
+import ro.deiutzblaxo.playersave.PlayerSave;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,8 +44,8 @@ import java.util.logging.Level;
 
 @Getter
 public final class OneBlock extends JavaPlugin {
-    private DBConnection dbConnection;
-    private DBManager dbManager;
+    private ro.deiutzblaxo.cloud.data.mysql.MySQLConnection dbConnection;
+    private MySQLManager dbManager;
     private IslandManager islandManager;
     private PlayerManager playerManager;
     private SlimePlugin slimePlugin;
@@ -57,10 +55,10 @@ public final class OneBlock extends JavaPlugin {
     private MessagesManager langManager;
     private IslandLevelManager islandLevelManager;
     private MenuManager menuManager;
-    private NameUUIDLocal nameUUIDLocal;
     private MySQLConnection playerSaveConnection;
     private PlayerDataStorage playerSaveStorage;
     private RedisManager redisManager;
+    private NameUUIDManager nameUUIDManager;
     public static String SERVER;
     public static int THREADS_NUMBER;
     public static boolean REDIS_ENABLED = false;
@@ -74,15 +72,16 @@ public final class OneBlock extends JavaPlugin {
         reloadConfig();
         THREADS_NUMBER = getConfig().getInt("threads_level");
         SERVER = getConfig().getString("server-name");
-        this.dbConnection = new DBConnection(getConfig().getString("hostname"), getConfig().getInt("port"), getConfig().getString("database") + "?autoReconnect=true", getConfig().getString("username"), getConfig().getString("password"));
-        this.dbManager = new DBManager(this.dbConnection);
-        playerSaveConnection = Playersave.playerSaveConnection;
-        playerSaveStorage = Playersave.playerSaveStorage;
+        this.dbConnection = new ro.deiutzblaxo.cloud.data.mysql.MySQLConnection(getConfig().getString("hostname"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"), "autoReconnect=true");
+        this.dbManager = new MySQLManager(this.dbConnection,4);
+        nameUUIDManager = new NameUUIDManager(new NameUUIDStorageYaml(getDataFolder()),new NameUUIDStorageMySQL(dbManager,"NAME"));
+        playerSaveConnection = PlayerSave.playerSaveConnection;
+        playerSaveStorage = PlayerSave.playerSaveStorage;
 
         getDbManager().createTable(TableType.PLAYERS.table, new String[]{"UUID varchar(256)", "ISLAND varchar(256)", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.ISLANDS.table, new String[]{"UUID varchar(256)", "META JSON", "SERVER varchar(256)"});
-        getDbManager().createTable(TableType.NAME.table, new String[]{"NAME varchar(256)", "UUID varchar(256)"});
         getDbManager().createTable(TableType.LEVEL.table, new String[]{"UUID varchar(256)", "LEVEL INT"});
+
         this.playerManager = new PlayerManager(this);
         this.islandManager = new IslandManager(this);
         this.slimePlugin = (SlimePlugin) getServer().getPluginManager().getPlugin("SlimeWorldManager");
@@ -92,16 +91,14 @@ public final class OneBlock extends JavaPlugin {
         this.langManager = new MessagesManager(this);
         this.islandLevelManager = new IslandLevelManager(this);
         this.menuManager = new MenuManager(this);
-        this.nameUUIDLocal = new NameUUIDLocal(this);
 
-        new EnchantsManager(this);
+
         new BorderHandler(this);
 
 
         registerListeners();
 
         new IslandCommand(this, new String[]{"is"}, "island");
-        new PmCommand(this, new String[]{"message"}, "pm");
         new GlobalCommand(this, new String[]{"global"}, "global");
         new AdminCommand(this, new String[]{"isa"}, "admin");
         OneBlock.REDIS_ENABLED = getConfig().getBoolean("redis.enabled");
@@ -119,6 +116,8 @@ public final class OneBlock extends JavaPlugin {
         }
 
         registerAddons();
+
+
     }
 
     @SneakyThrows
@@ -143,11 +142,11 @@ public final class OneBlock extends JavaPlugin {
         return instance;
     }
 
-    public DBManager getDbManager() {
+    public MySQLManager getDbManager() {
         return this.dbManager;
     }
 
-    public DBConnection getDbConnection() {
+    public ro.deiutzblaxo.cloud.data.mysql.MySQLConnection getDbConnection() {
         return this.dbConnection;
     }
 

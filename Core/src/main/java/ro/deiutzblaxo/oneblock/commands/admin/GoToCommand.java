@@ -3,6 +3,7 @@ package ro.deiutzblaxo.oneblock.commands.admin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ro.deiutzblaxo.cloud.expcetions.NoFoundException;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
@@ -11,7 +12,6 @@ import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
-import ro.nexs.db.manager.exception.NoDataFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +57,7 @@ public class GoToCommand implements SubCommand {
         String uuidIsland = null;
         try {
             uuidIsland = plugin.getDbManager().getString(TableType.PLAYERS.table, "ISLAND", "UUID", uuidTarget);
-        } catch (NoDataFoundException e) {
+        } catch (NoFoundException e) {
             sender.sendMessage(ChatColor.RED + "Player don`t have an island!");
             return;
         }

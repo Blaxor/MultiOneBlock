@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
@@ -19,19 +18,22 @@ public class PhaseObject {
     @Setter
     private int prob;
 
-    public PhaseObject(EntityType type , int prob){
+    public PhaseObject(EntityType type, int prob) {
         this.entityType = type;
-        this.prob=prob;
+        this.prob = prob;
     }
-    public PhaseObject(Material material , int prob){
+
+    public PhaseObject(Material material, int prob) {
         this.material = material;
         this.prob = prob;
     }
-    public PhaseObject(Map<Integer,ItemStack> chest , RARITY rarity){
+
+    public PhaseObject(Map<Integer, ItemStack> chest, RARITY rarity) {
         this.chest = chest;
         this.rarity = rarity;
     }
-    public PhaseObject(PhaseObject phase){
+
+    public PhaseObject(PhaseObject phase) {
         this.prob = phase.prob;
         this.chest = phase.chest;
         this.rarity = phase.rarity;
@@ -39,14 +41,21 @@ public class PhaseObject {
         this.entityType = phase.entityType;
 
     }
-    public boolean isEntity(){
+
+    public boolean isEntity() {
         return entityType != null;
     }
-    public boolean isChest(){
+
+    public boolean isChest() {
         return chest != null;
     }
-    public boolean isBlock(){
+
+    public boolean isBlock() {
         return material != null;
     }
 
+    @Override
+    public String toString() {
+        return "entityType=" + entityType;
+    }
 }

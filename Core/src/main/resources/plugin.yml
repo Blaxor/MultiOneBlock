@@ -10,8 +10,7 @@ depend:
 commands:
   island:
     aliases: [ is ]
-  message:
-    aliases: [ msg,pm ]
   global:
   islandadmin:
+    aliases: [ isa ]
 

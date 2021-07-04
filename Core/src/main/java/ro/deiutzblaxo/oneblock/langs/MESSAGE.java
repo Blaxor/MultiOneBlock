@@ -8,7 +8,7 @@ public enum MESSAGE {
     ISLAND_TEAM_MENU_TITLE("team.menu.title", "&e&lTEAM MENU"),
     ISLAND_INVITE_ALREADY_IN_ISLAND("team.invite.isInIsland", "&cThis player is already in your island!"),
     ISLAND_INVITE_SENDER("team.invite.sender", "&7You invited {name} in your island!"),
-    ISLAND_INVITE_RECEIVER("team.invite.receiver", "anbc"),
+    ISLAND_INVITE_RECEIVER("team.invite.receiver", "&7{name} invited you on his island. /is team accept to accept!"),
     ISLAND_INVITE_ACCEPT("team.invite.accept", "&e{name} &7accepted your invite!"),
     ISLAND_INVITE_ACCEPTED("team.invite.accepted", "&eYou accepted the invitation!"),
     ISLAND_INVITE_REJECT("team.invite.reject", "&e{name} &7rejected your invitation!"),
@@ -85,7 +85,11 @@ public enum MESSAGE {
     UPGRADE_TIER_ACCESS_DENY("error.island.upgrade.tier.allow", "&cYou can`t upgrade the tier of this island!"),
     UPGRADE_TIER_MAX("error.island.upgrade.tier.max", "&cThis island is already at max tier!"),
     UPGRADE_TIER_SUCCES("upgrade.tier.succes", "&eYou have been upgraded your tier!"),
-    UPGRADE_TIER_ITEM_DISPLAY_NAME("upgrade.tier.item.display", "&EMore Space!");
+    UPGRADE_TIER_ITEM_DISPLAY_NAME("upgrade.tier.item.display", "&EMore Space!"),
+    UPGRADE_TIER_DROPPED("upgrade.tier.dropped", "&e%player_name% &7got an upgrade for his island!"),
+    MENU_INFO_TITLE("menu.info.title", "&eInfo Player"),
+    MENU_BANNED("menu.banned.title", "&eBanned players"),
+    MENU_BACK("menu.item.back", "&cBack!");
 
 
     //--------------------------------------------------------------------------------------------------

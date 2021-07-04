@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="BUILD_PROCESS_HEAP_SIZE" value="1400" />
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ConnectionManager" />
-        <module name="schematicsave" />
+        <module name="RedisSocial" />
         <module name="PlayerDataStorage" />
+        <module name="schematicsave" />
         <module name="Core" />
+        <module name="Cloud" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Cloud" target="1.8" />
       <module name="ConnectionManager" target="1.8" />
       <module name="Core" target="9" />
-      <module name="CustomEnderChest" target="1.8" />
-      <module name="OneBlock" target="9" />
       <module name="PlayerDataStorage" target="1.8" />
+      <module name="RedisSocial" target="1.8" />
       <module name="schematicsave" target="1.8" />
     </bytecodeTargetLevel>
   </component>

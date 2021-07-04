@@ -9,9 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
 import ro.deiutzblaxo.oneblock.OneBlock;
-import ro.deiutzblaxo.oneblock.customenchants.EnchantsManager;
 import ro.deiutzblaxo.oneblock.island.Island;
-import ro.deiutzblaxo.oneblock.island.IslandMeta;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.langs.MESSAGELIST;
 import ro.deiutzblaxo.oneblock.langs.MessagesManager;
@@ -23,14 +21,12 @@ import ro.deiutzblaxo.oneblock.menu.objects.buttons.ButtonObject;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.PrefabButton;
 import ro.deiutzblaxo.oneblock.menu.objects.menus.PrefabMenu;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
-import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
-import ro.deiutzblaxo.oneblock.utils.Triplet;
 import ro.deiutzblaxo.oneblock.utils.UTILS;
+import ro.deiutzblaxo.playersave.enchants.EnchantManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,8 +41,8 @@ public class MenuManager {
         addMenu(new PrefabMenu("phase", "test", plugin.getLangManager().get(MESSAGE.GUI_TITLE_PHASES), 9));
         addMenu(new PrefabMenu("members", "test", plugin.getLangManager().get(MESSAGE.ISLAND_TEAM_MENU_TITLE), 9));
         addMenu(new PrefabMenu("top", "test", plugin.getLangManager().get(MESSAGE.ISLAND_TOP_MENU), 9));
-        addMenu(new PrefabMenu("info", "test", ChatColor.GREEN + "Info Island", 18));
-        addMenu(new PrefabMenu("banned", "test", ChatColor.RED + "Jucatorii banati!", 54));//TODO MESSAGE
+        addMenu(new PrefabMenu("info", "test", plugin.getLangManager().get(MESSAGE.MENU_INFO_TITLE), 18));
+        addMenu(new PrefabMenu("banned", "test", plugin.getLangManager().get(MESSAGE.MENU_BANNED), 54));
     }
 
     public Menu getMenu(String id) {
@@ -67,6 +63,7 @@ public class MenuManager {
     }
 
     public Menu getPhaseMenu(Island island, Menu previous) {
+
         Menu menu = getMenu("phase");
         menu.getButtons().clear();
         menu.setSize(plugin.getPhaseManager().getPhaseHashMap().size());
@@ -86,9 +83,9 @@ public class MenuManager {
             pos++;
         }
         if (previous != null) {
-            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, plugin.getLangManager().get(MESSAGE.MENU_BACK), new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));
         } else {
-            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, plugin.getLangManager().get(MESSAGE.MENU_BACK), new ArrayList<>(), Action.CLOSE, null, menu));
         }
         return menu;
     }
@@ -121,34 +118,11 @@ public class MenuManager {
     @SneakyThrows
     public Menu getTopMenu(Menu previous) {
 
-        ArrayList<Triplet<String, Integer, IslandMeta>> triplets = plugin.getIslandLevelManager().getTopIslands();
         Menu menu = getMenu("top");
-        menu.getButtons().clear();
-        int i = 0;
-        List<String> lore;
-
-        for (Triplet<String, Integer, IslandMeta> trip : triplets) {
-            lore = new ArrayList<>();
-            lore.add(ChatColor.AQUA + "Level: " + trip.getMiddle());
-            lore.add(" ");
-            lore.add(ChatColor.GREEN + "Membrii");
-            UUID owner = null;
-            for (UUID uuid : trip.getLast().getMembers().keySet()) {
-                if (trip.getLast().getMembers().get(uuid).equals(RANK.OWNER)) {
-                    owner = uuid;
-                }
-                lore.add(ChatColor.GRAY + plugin.getPlayerManager().getNameByUUID(uuid));
-            }
-            menu.addButton(i, new PrefabButton(UTILS.getSkull(owner), ChatColor.GREEN + plugin.getPlayerManager().getNameByUUID(owner), lore, Action.CLOSE, null, menu));
-            i++;
-            if (i == 9)
-                return menu;
-
-        }
         if (previous != null) {
-            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null && !menu.getButton(menu.getSize() - 1).getName().equalsIgnoreCase(ChatColor.RED + "Inapoi!") ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(previous), menu));//TODO MESSAGE
         } else {
-            menu.addButton(menu.getButton(menu.getSize() - 1) != null ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
+            menu.addButton(menu.getButton(menu.getSize() - 1) != null && !menu.getButton(menu.getSize() - 1).getName().equalsIgnoreCase(ChatColor.RED + "Inapoi!") ? menu.getSize() + 8 : menu.getSize() - 1, new PrefabButton(Material.BARRIER, ChatColor.RED + "Inapoi!", new ArrayList<>(), Action.CLOSE, null, menu));//TODO MESSAGE
         }
         return menu;
     }
@@ -156,12 +130,7 @@ public class MenuManager {
     public Menu getInfoIslandMenu(Island island) {
         Menu menu = getMenu("info");
         menu.getButtons().clear();
-/*        UUID owner = null;
-        for (UUID uuid : island.getMeta().getMembers().keySet()) {
-            if (island.getMeta().getMembers().get(uuid).equals(RANK.OWNER)) {
-                owner = uuid;
-            }
-        }*/
+
         Button members = new PrefabButton(UTILS.getEffectArrow(new ItemStack(Material.TIPPED_ARROW), PotionType.INSTANT_HEAL),
                 ChatColor.GREEN + "Membrii" + ChatColor.DARK_GRAY + "(" + ChatColor.GRAY + island.getMeta().getMembers().size() + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + island.getMeta().getMaxMembers() + ChatColor.DARK_GRAY + ")"
                 , new ArrayList<>(), Action.OPEN_MENU, new ButtonObject(getMembersMenu(island, menu)), menu);
@@ -177,7 +146,7 @@ public class MenuManager {
             add(ChatColor.GRAY + "Blocuri sparte: " + ChatColor.WHITE + island.getMeta().getCount());
         }}, Action.OPEN_MENU, new ButtonObject(getPhaseMenu(island, menu)), menu);
 
-        Button radius = new PrefabButton(EnchantsManager.addGlow(new ItemStack(Material.TRIPWIRE_HOOK)), ChatColor.GREEN + "Tier: " + island.getMeta().getRadiusTire(), new ArrayList<>(), Action.NONE, null, menu);
+        Button radius = new PrefabButton(EnchantManager.addGlow(new ItemStack(Material.TRIPWIRE_HOOK)), ChatColor.GREEN + "Tier: " + island.getMeta().getRadiusTire(), new ArrayList<>(), Action.NONE, null, menu);
 
         Button name = new PrefabButton(Material.NAME_TAG, island.getMeta().getName(), new ArrayList<>(), Action.NONE, null, menu);
 

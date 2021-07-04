@@ -1,6 +1,7 @@
 package ro.deiutzblaxo.oneblock.island.level;
 
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,13 +10,23 @@ import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.IslandMeta;
 import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculateManager;
 import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculator;
+import ro.deiutzblaxo.oneblock.menu.objects.Menu;
+import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
+import ro.deiutzblaxo.oneblock.menu.objects.buttons.PrefabButton;
+import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 import ro.deiutzblaxo.oneblock.utils.Triplet;
+import ro.deiutzblaxo.oneblock.utils.UTILS;
 
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class IslandLevelManager {
     @Getter
@@ -35,15 +46,16 @@ public class IslandLevelManager {
                 e.printStackTrace();
             }
 
-        }, 15, 20 * 5 * 60);
+        }, 15, 20 * 60 * 5);
         updateBlockValue();
     }
 
     private void updateTOP() throws Exception {
         ResultSet set;
         PreparedStatement statement = plugin.getDbManager().getPreparedStatement("SELECT UUID,LEVEL FROM LEVEL ORDER BY LEVEL DESC LIMIT 10");
-        set = plugin.getDbManager().executeQuery(statement);
+        set = statement.executeQuery();
         topIslands.clear();
+
         while (set.next()) {
             String uuid = set.getString("UUID");
             int level = set.getInt("LEVEL");
@@ -51,6 +63,41 @@ public class IslandLevelManager {
             topIslands.add(new Triplet(uuid, level, meta));
         }
         set.close();
+        CompletableFuture.runAsync(() -> {
+
+            Menu menu = plugin.getMenuManager().getMenu("top");
+            menu.getButtons().clear();
+            int i = 0;
+            List<String> lore;
+
+            for (Triplet<String, Integer, IslandMeta> trip : topIslands) {
+                lore = new ArrayList<>();
+                lore.add(ChatColor.AQUA + "Level: " + trip.getMiddle());
+                lore.add(" ");
+                lore.add(ChatColor.GREEN + "Membrii");
+                UUID owner = null;
+                for (UUID uuid : trip.getLast().getMembers().keySet()) {
+                    if (trip.getLast().getMembers().get(uuid).equals(RANK.OWNER)) {
+                        owner = uuid;
+                    }
+                    try {
+                        lore.add(ChatColor.GRAY + plugin.getPlayerManager().getNameByUUID(uuid));
+                    } catch (PlayerNoExistException e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    menu.addButton(i, new PrefabButton(UTILS.getSkull(owner), ChatColor.GREEN + plugin.getPlayerManager().getNameByUUID(owner), lore, Action.CLOSE, null, menu));
+                } catch (PlayerNoExistException e) {
+                    e.printStackTrace();
+                }
+                i++;
+                if (i == 9)
+                    return;
+            }
+
+        }, plugin.generalPool);
+        plugin.getLogger().log(Level.INFO, "Top menu updated!");
     }
 
     private void updateBlockValue() {

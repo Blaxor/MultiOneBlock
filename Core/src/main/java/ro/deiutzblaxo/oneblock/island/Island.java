@@ -8,8 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import ro.deiutzblaxo.cloud.expcetions.ToManyArgs;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
 import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
@@ -17,6 +19,8 @@ import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
+import ro.deiutzblaxo.oneblock.phase.objects.PhaseObject;
+import ro.deiutzblaxo.oneblock.phase.objects.RARITY;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.events.PlayerBanIslandEvent;
 import ro.deiutzblaxo.oneblock.player.events.PlayerUnBanIslandEvent;
@@ -25,9 +29,10 @@ import ro.deiutzblaxo.oneblock.utils.ChunkUtils;
 import ro.deiutzblaxo.oneblock.utils.Location;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 import ro.deiutzblaxo.oneblock.utils.otherexceptions.NotSafeLocationException;
-import ro.nexs.db.manager.exception.DifferentArgLengthException;
 
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -44,9 +49,11 @@ public class Island {
     private BukkitTask autosave;
     private Phase phase;
     private int level;
+    private Queue<PhaseObject> phaseObjectsQueue = new ConcurrentLinkedQueue<>();
 
 
     public Island(OneBlock plugin, String uuid, IslandMeta meta) {
+
         this.meta = meta;
         this.plugin = plugin;
         this.uuidIsland = uuid;
@@ -55,7 +62,7 @@ public class Island {
 
 
         autosave = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            plugin.getLogger().log(Level.INFO, "Auto-Saving island ", uuidIsland);
+            plugin.getLogger().log(Level.INFO, "Auto-Saving island " + uuidIsland);
             if (bukkitWorld.getPlayers().isEmpty() && !Bukkit.getOnlinePlayers().stream().filter(player -> meta.getMembers().containsKey(player.getUniqueId())).findAny().isPresent()) {
                 try {
                     plugin.getIslandManager().unloadIsland(this, true);
@@ -78,9 +85,12 @@ public class Island {
                 meta.setTime(getBukkitWorld().getTime());
                 String seril = meta.serialize();
 
-                if (plugin.getDbManager().existString(TableType.ISLANDS.table, "UUID", uuidIsland)) {
-                    plugin.getDbManager().set(TableType.ISLANDS.table, "META", "UUID", seril, uuidIsland);
-                    plugin.getDbManager().setString(TableType.ISLANDS.table, "SERVER", "UUID", server, uuidIsland);
+                if (plugin.getDbManager().exists(TableType.ISLANDS.table, "UUID", uuidIsland)) {
+                    try {
+                        plugin.getDbManager().update(TableType.ISLANDS.table, "UUID", uuidIsland, new String[]{"META", "SERVER"}, new String[]{seril, server});
+                    } catch (ToManyArgs toManyArgs) {
+                        toManyArgs.printStackTrace();
+                    }
                     saveLevel();
                     WorldUtil.saveSlimeWorld(plugin, this.getWorld());
                     plugin.getLogger().log(Level.INFO, "Saved island " + uuidIsland);
@@ -88,7 +98,7 @@ public class Island {
                 }
                 try {
                     plugin.getDbManager().insert(TableType.ISLANDS.table, new String[]{"UUID", "META", "SERVER"}, new Object[]{uuidIsland, seril, server});
-                } catch (DifferentArgLengthException e) {
+                } catch (ToManyArgs e) {
                     e.printStackTrace();
                 }
 
@@ -106,8 +116,8 @@ public class Island {
 
     @SneakyThrows
     public void saveLevel() {
-        if (plugin.getDbManager().existString(TableType.LEVEL.table, "UUID", uuidIsland))
-            plugin.getDbManager().setInt(TableType.LEVEL.table, "LEVEL", "UUID", level, uuidIsland);
+        if (plugin.getDbManager().exists(TableType.ISLANDS.table, "UUID", uuidIsland))
+            plugin.getDbManager().update(TableType.LEVEL.table, "UUID", uuidIsland, new String[]{"LEVEL"}, new Object[]{level});
         else
             plugin.getDbManager().insert(TableType.LEVEL.table, new String[]{"UUID", "LEVEL"}, new Object[]{uuidIsland, level});
     }
@@ -118,6 +128,7 @@ public class Island {
         plugin.getSlimePlugin().generateWorld(world);
 
         bukkitWorld = Bukkit.getWorld(world.getName());
+
         meta.getBlock().forEach(location -> {
             Block block = bukkitWorld.getBlockAt(location.toBukkitLocation(bukkitWorld));
             if (block == null)
@@ -131,6 +142,7 @@ public class Island {
         changeBorder();
         ChunkUtils.changeBiome(plugin, this);
         bukkitWorld.setTime(meta.getTime());
+
 
     }
 
@@ -238,6 +250,16 @@ public class Island {
         return meta.getSettings().getOrDefault(setting, setting.isAllowDefault());
 
     }
+
+    public EntityType getNearestMob() {
+        if (phaseObjectsQueue.stream().anyMatch(PhaseObject::isEntity))
+            return phaseObjectsQueue.stream().filter(PhaseObject::isEntity).findFirst().get().getEntityType();
+        else return null;
+    }
+
+    public RARITY getNearestRarity() {
+        return phaseObjectsQueue.stream().filter(PhaseObject::isChest).findFirst().get().getRarity();
+    }
+
+
 }
-//199
-//200

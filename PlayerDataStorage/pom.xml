@@ -6,10 +6,10 @@
 
     <groupId>ro.deiutzblaxo</groupId>
     <artifactId>playersave</artifactId>
-    <version>1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
-    <name>Playersave</name>
+    <name>PlayerSave</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -23,8 +23,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>ro.deiutzblaxo</groupId>
             <artifactId>OneBlock</artifactId>
-            <version>BETA-0.2.3</version>
+            <version>BETA-0.2.4.1</version>
             <scope>provided</scope>
         </dependency>
 

@@ -1,7 +1,6 @@
 package ro.deiutzblaxo.oneblock.commands.admin;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ro.deiutzblaxo.oneblock.OneBlock;
@@ -9,7 +8,6 @@ import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
-import ro.deiutzblaxo.oneblock.langs.MessagesManager;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
 import java.util.HashMap;
@@ -41,8 +39,9 @@ public class RadiusGiveCommand implements SubCommand {
             noPermission(sender);
             return;
         }
-        Player player = (Player) sender;
+
         if (args.isEmpty()) {
+            Player player = (Player) sender;
             player.getInventory().addItem(BorderHandler.getItem());
             return;
         }
@@ -50,12 +49,12 @@ public class RadiusGiveCommand implements SubCommand {
         try {
             uuid = UUID.fromString(plugin.getPlayerManager().getUUIDByName(args.get(0)));
         } catch (PlayerNoExistException e) {
-            player.sendMessage(plugin.getLangManager().get(MESSAGE.PLAYER_NO_EXISTS));
+            sender.sendMessage(plugin.getLangManager().get(MESSAGE.PLAYER_NO_EXISTS));
             return;
         }
         Player target = Bukkit.getPlayer(uuid);
         if (target == null) {
-            player.sendMessage(plugin.getLangManager().get(MESSAGE.PLAYER_OFFLINE));
+            sender.sendMessage(plugin.getLangManager().get(MESSAGE.PLAYER_OFFLINE));
             return;
         }
         target.getInventory().addItem(BorderHandler.getItem());

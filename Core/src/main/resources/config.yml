@@ -6,6 +6,7 @@ username: username
 password: password
 cooldown-confirmation: 10
 spawn-world: world
+keep-inventory: false
 redis:
   enabled: false
   hostname: 192.168.1.102

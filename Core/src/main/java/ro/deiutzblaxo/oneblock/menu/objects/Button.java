@@ -4,20 +4,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ro.deiutzblaxo.oneblock.customenchants.EnchantsManager;
 import ro.deiutzblaxo.oneblock.menu.events.PlayerOpenMenuEvent;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.ButtonObject;
 import ro.deiutzblaxo.oneblock.utils.nbt.item.NBTItem116;
+import ro.deiutzblaxo.playersave.enchants.EnchantManager;
 
 import java.util.List;
 import java.util.logging.Level;
 
 public interface Button {
 
-    default void onClick(Player player) {
+    default void onClick(Player player, ClickType clickType) {
         Bukkit.getLogger().log(Level.INFO, "MenuManager: " + player.getName() + " clicked on the button " + ChatColor.stripColor(getName()) + " in the menu " + getParent().getID());
         switch (getAction()) {
             case CONSOLE_COMMAND:
@@ -76,7 +77,7 @@ public interface Button {
         meta.setLore(getLore());
         item.setItemMeta(meta);
         if (isGlow()) {
-            item = EnchantsManager.addGlow(item);
+            item = EnchantManager.addGlow(item);
         }
 
         return NBTItem116.addNBTTag(item, "menu", getParent().getID());
