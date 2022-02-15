@@ -6,21 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ConnectionManager" />
-        <module name="RedisSocial" />
-        <module name="PlayerDataStorage" />
-        <module name="schematicsave" />
-        <module name="Core" />
-        <module name="Cloud" />
+        <module name="oneblock" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Cloud" target="1.8" />
-      <module name="ConnectionManager" target="1.8" />
-      <module name="Core" target="9" />
-      <module name="PlayerDataStorage" target="1.8" />
-      <module name="RedisSocial" target="1.8" />
-      <module name="schematicsave" target="1.8" />
+      <module name="Core" target="1.5" />
+      <module name="oneblock" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -5,8 +5,6 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import me.stefan923.playerdatastorage.PlayerDataStorage;
-import me.stefan923.playerdatastorage.mysql.MySQLConnection;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +33,6 @@ import ro.deiutzblaxo.oneblock.phase.PhaseManager;
 import ro.deiutzblaxo.oneblock.player.PlayerManager;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.*;
 import ro.deiutzblaxo.oneblock.utils.TableType;
-import ro.deiutzblaxo.playersave.PlayerSave;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

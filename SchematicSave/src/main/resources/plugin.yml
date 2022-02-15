@@ -1,9 +1,0 @@
-name: Schematicsave
-version: ${project.version}
-main: ro.deiutzblaxo.schematicsave.Schematicsave
-depend: [FastAsyncWorldEdit , BentoBox]
-api-version: 1.16
-commands:
-  saveschematics:
-    aliases:
-      - savess

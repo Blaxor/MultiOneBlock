@@ -1,5 +1,0 @@
-name: Playersave
-version: ${project.version}
-main: ro.deiutzblaxo.playersave.PlayerSave
-api-version: 1.16
-authors: [ JDeiutz, Stefan923 ]

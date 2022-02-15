@@ -9,15 +9,12 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/SchematicSave/pom.xml" />
-        <option value="$PROJECT_DIR$/ConnectionManager/pom.xml" />
-        <option value="$PROJECT_DIR$/PlayerDataStorage/pom.xml" />
         <option value="$PROJECT_DIR$/Core/pom.xml" />
-        <option value="$PROJECT_DIR$/../Cloud/pom.xml" />
-        <option value="$PROJECT_DIR$/RedisSocial/pom.xml" />
+        <option value="$PROJECT_DIR$/ConnecionManagment/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="corretto-11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="openjdk-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
 </project>

@@ -2,7 +2,7 @@ name: OneBlock
 version: ${project.version}
 main: ro.deiutzblaxo.oneblock.OneBlock
 author: JDeiutz
-api-version: 1.16
+api-version: 1.18
 softdepend:
   - RoyaleEconomy
 depend:
@@ -13,4 +13,3 @@ commands:
   global:
   islandadmin:
     aliases: [ isa ]
-
