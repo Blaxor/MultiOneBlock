@@ -1,7 +1,6 @@
 package ro.deiutzblaxo.oneblock.player.events;
 
 import lombok.Getter;
-import me.stefan923.playerdatastorage.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -50,9 +49,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         if (this.playerOB == null) {
             plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", playerOBUUID.toString(), "ISLAND");
 
-            PlayerData data = new PlayerData(/*new ItemStack[0],*/ new ItemStack[0], new PotionEffect[0], 0);
-            data.setUuid(playerOBUUID);
-            plugin.getPlayerSaveStorage().savePlayerData(data);
+            plugin.getPSIRepo().removePlayer(player);
         } else {
             this.playerOB.setIsland(null);
             this.player.teleport(plugin.getSpawnLocation());

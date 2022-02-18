@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.menu.events;
+package ro.deiutzblaxo.oneblock.menu.listener;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -6,10 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import ro.deiutzblaxo.menucontroller.objects.Menu;
 import ro.deiutzblaxo.oneblock.island.level.calculate.Results;
 import ro.deiutzblaxo.oneblock.menu.MenuManager;
-import ro.deiutzblaxo.oneblock.menu.objects.Menu;
-
 import java.util.logging.Level;
 
 public class PlayerOpenMenuEvent extends Event implements Cancellable {

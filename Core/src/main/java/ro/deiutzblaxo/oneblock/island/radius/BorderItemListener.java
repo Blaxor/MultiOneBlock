@@ -5,12 +5,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import ro.deiutzblaxo.enchants.EnchantManager;
+import ro.deiutzblaxo.enchants.Enchantments;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
-import ro.deiutzblaxo.playersave.enchants.EnchantManager;
-import ro.deiutzblaxo.playersave.enchants.Enchantments;
 
 public class BorderItemListener implements Listener {
     private final OneBlock plugin;

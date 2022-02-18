@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.menu.objects;
+package ro.deiutzblaxo.menucontroller.objects;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

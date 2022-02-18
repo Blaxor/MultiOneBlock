@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ConnecionManagment/ConnecionManagment.iml" filepath="$PROJECT_DIR$/ConnecionManagment/ConnecionManagment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Enchants/Enchants.iml" filepath="$PROJECT_DIR$/Enchants/Enchants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MenuController/MenuController.iml" filepath="$PROJECT_DIR$/MenuController/MenuController.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PSI/PSI.iml" filepath="$PROJECT_DIR$/PSI/PSI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Core/oneblock.iml" filepath="$PROJECT_DIR$/Core/oneblock.iml" />
     </modules>
   </component>

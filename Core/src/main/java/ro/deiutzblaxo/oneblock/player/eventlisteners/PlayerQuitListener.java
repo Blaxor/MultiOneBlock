@@ -1,19 +1,17 @@
 package ro.deiutzblaxo.oneblock.player.eventlisteners;
 
-import me.stefan923.playerdatastorage.playerdata.PlayerData;
-import me.stefan923.playerdatastorage.util.ExperienceUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.potion.PotionEffect;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
+import ro.deiutzblaxo.psi.PlayerRepo;
 
-import java.util.Collection;
 import java.util.logging.Level;
+
+//TOOD SAVE INV
 
 public class PlayerQuitListener implements Listener {
     private final OneBlock plugin;
@@ -27,6 +25,7 @@ public class PlayerQuitListener implements Listener {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             PlayerOB playerOB = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             playerOB.save();
+            plugin.getPSIRepo().savePlayer(event.getPlayer());
 
             if (plugin.getIslandManager().getIsland(playerOB.getIsland()) != null) {
                 try {

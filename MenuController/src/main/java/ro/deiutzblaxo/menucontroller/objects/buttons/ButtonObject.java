@@ -1,8 +1,8 @@
-package ro.deiutzblaxo.oneblock.menu.objects.buttons;
+package ro.deiutzblaxo.menucontroller.objects.buttons;
 
 import lombok.Data;
 import org.bukkit.inventory.ItemStack;
-import ro.deiutzblaxo.oneblock.menu.objects.Menu;
+import ro.deiutzblaxo.menucontroller.objects.Menu;
 
 
 @Data

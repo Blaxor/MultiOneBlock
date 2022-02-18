@@ -1,24 +1,26 @@
-package ro.deiutzblaxo.oneblock.menu.objects;
+package ro.deiutzblaxo.menucontroller.objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ro.deiutzblaxo.oneblock.menu.events.PlayerOpenMenuEvent;
-import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
-import ro.deiutzblaxo.oneblock.menu.objects.buttons.ButtonObject;
-import ro.deiutzblaxo.oneblock.utils.nbt.item.NBTItem116;
-import ro.deiutzblaxo.playersave.enchants.EnchantManager;
+import ro.deiutzblaxo.enchants.EnchantManager;
+import ro.deiutzblaxo.enchants.tags.ItemTags;
+import ro.deiutzblaxo.menucontroller.objects.buttons.Action;
+import ro.deiutzblaxo.menucontroller.objects.buttons.ButtonObject;
 
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Level;
 
 public interface Button {
 
-    default void onClick(Player player, ClickType clickType) {
+    default void onClick(Player player, ClickType clickType, Class openMenuEvent) {
         Bukkit.getLogger().log(Level.INFO, "MenuManager: " + player.getName() + " clicked on the button " + ChatColor.stripColor(getName()) + " in the menu " + getParent().getID());
         switch (getAction()) {
             case CONSOLE_COMMAND:
@@ -28,7 +30,17 @@ public interface Button {
                 player.getInventory().addItem(getButtonObject().getItem());
                 break;
             case OPEN_MENU:
-                Bukkit.getPluginManager().callEvent(new PlayerOpenMenuEvent(getButtonObject().getMenu(), player));
+                try {
+                    Bukkit.getPluginManager().callEvent((Event) openMenuEvent.getConstructor(Menu.class, Player.class).newInstance(getButtonObject().getMenu(), player));
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
                 break;
             case SEND_MESSAGE:
                 player.sendMessage(getButtonObject().getMessage());
@@ -43,7 +55,7 @@ public interface Button {
                 break;
         }
     }
-
+    
     Material getMaterial();
 
     ItemStack getItemDefault();
@@ -80,7 +92,7 @@ public interface Button {
             item = EnchantManager.addGlow(item);
         }
 
-        return NBTItem116.addNBTTag(item, "menu", getParent().getID());
+        return ItemTags.addNBTTag(item, "menu", getParent().getID());
 
 
     }

@@ -11,8 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ro.deiutzblaxo.cloud.data.mysql.MySQLManager;
 import ro.deiutzblaxo.cloud.nus.NameUUIDManager;
 import ro.deiutzblaxo.cloud.nus.prefab.NameUUIDStorageMySQL;
-import ro.deiutzblaxo.cloud.nus.prefab.NameUUIDStorageYaml;
-import ro.deiutzblaxo.oneblock.addons.Addon;
+import ro.deiutzblaxo.enchants.EnchantManager;
 import ro.deiutzblaxo.oneblock.addons.PAPIAddon;
 import ro.deiutzblaxo.oneblock.commands.admin.AdminCommand;
 import ro.deiutzblaxo.oneblock.commands.chat.GlobalCommand;
@@ -33,6 +32,7 @@ import ro.deiutzblaxo.oneblock.phase.PhaseManager;
 import ro.deiutzblaxo.oneblock.player.PlayerManager;
 import ro.deiutzblaxo.oneblock.player.eventlisteners.*;
 import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.deiutzblaxo.psi.PlayerRepo;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,8 +52,7 @@ public final class OneBlock extends JavaPlugin {
     private MessagesManager langManager;
     private IslandLevelManager islandLevelManager;
     private MenuManager menuManager;
-    private MySQLConnection playerSaveConnection;
-    private PlayerDataStorage playerSaveStorage;
+    private PlayerRepo PSIRepo;
     private RedisManager redisManager;
     private NameUUIDManager nameUUIDManager;
     public static String SERVER;
@@ -69,16 +68,16 @@ public final class OneBlock extends JavaPlugin {
         reloadConfig();
         THREADS_NUMBER = getConfig().getInt("threads_level");
         SERVER = getConfig().getString("server-name");
+
         this.dbConnection = new ro.deiutzblaxo.cloud.data.mysql.MySQLConnection(getConfig().getString("hostname"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"), "autoReconnect=true");
-        this.dbManager = new MySQLManager(this.dbConnection,4);
-        nameUUIDManager = new NameUUIDManager(new NameUUIDStorageYaml(getDataFolder()),new NameUUIDStorageMySQL(dbManager,"NAME"));
-        playerSaveConnection = PlayerSave.playerSaveConnection;
-        playerSaveStorage = PlayerSave.playerSaveStorage;
+        this.dbManager = new MySQLManager(this.dbConnection, 4);
+        nameUUIDManager = new NameUUIDManager(/*new NameUUIDStorageYaml(getDataFolder(), 1000, PriorityNUS.HIGH),*/ new NameUUIDStorageMySQL(dbManager, "NAME"));
+        PSIRepo = new PlayerRepo(dbConnection, 2, "PSI_TABLE");
 
         getDbManager().createTable(TableType.PLAYERS.table, new String[]{"UUID varchar(256)", "ISLAND varchar(256)", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.ISLANDS.table, new String[]{"UUID varchar(256)", "META JSON", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.LEVEL.table, new String[]{"UUID varchar(256)", "LEVEL INT"});
-
+        EnchantManager.registerEnchantments();
         this.playerManager = new PlayerManager(this);
         this.islandManager = new IslandManager(this);
         this.slimePlugin = (SlimePlugin) getServer().getPluginManager().getPlugin("SlimeWorldManager");
@@ -130,7 +129,7 @@ public final class OneBlock extends JavaPlugin {
         if (REDIS_ENABLED)
             redisManager.onDisable();
         getLogger().log(Level.INFO, "Waiting max 15 seconds to terminate all tasks from pool.");
-        generalPool.awaitTermination(15, TimeUnit.SECONDS);
+        generalPool.awaitTermination(5, TimeUnit.SECONDS);
 
 
     }
@@ -199,7 +198,6 @@ public final class OneBlock extends JavaPlugin {
     private void registerAddons() {
         if (getServer().getPluginManager().isPluginEnabled("PlaceHolderAPI")) {
             new PAPIAddon(this).register();
-            getServer().getPluginManager().registerEvents(new Addon(this), this);
             getLogger().log(Level.INFO, ChatColor.GREEN + "PlaceHolderAPI have been hooked!");
         }
     }

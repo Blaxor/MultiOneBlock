@@ -7,13 +7,13 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import ro.deiutzblaxo.enchants.Enchantments;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.radius.exceptions.BorderHighestTireException;
 import ro.deiutzblaxo.oneblock.island.radius.exceptions.BorderLowestTireException;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.langs.MESSAGELIST;
-import ro.deiutzblaxo.playersave.enchants.Enchantments;
 
 import java.util.ArrayList;
 import java.util.Arrays;

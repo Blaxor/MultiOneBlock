@@ -3,10 +3,6 @@ version: ${project.version}
 main: ro.deiutzblaxo.oneblock.OneBlock
 author: JDeiutz
 api-version: 1.18
-softdepend:
-  - RoyaleEconomy
-depend:
-  - Playersave
 commands:
   island:
     aliases: [ is ]

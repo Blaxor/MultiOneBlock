@@ -1,16 +1,18 @@
-package ro.deiutzblaxo.oneblock.menu.objects.buttons;
+package ro.deiutzblaxo.oneblock.menu;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import ro.deiutzblaxo.menucontroller.objects.Button;
+import ro.deiutzblaxo.menucontroller.objects.Menu;
+import ro.deiutzblaxo.menucontroller.objects.buttons.Action;
+import ro.deiutzblaxo.menucontroller.objects.buttons.ButtonObject;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.ISLANDSETTINGS;
 import ro.deiutzblaxo.oneblock.island.permissions.IslandSettingsManager;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
-import ro.deiutzblaxo.oneblock.menu.objects.Button;
-import ro.deiutzblaxo.oneblock.menu.objects.Menu;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -20,11 +22,11 @@ public class SettingButton implements Button {
     private Object permissionOrSetting;
 
     @Override
-    public void onClick(Player player, ClickType type) {
+    public void onClick(Player player, ClickType clickType, Class openMenuEvent) {
 
 
         if (permissionOrSetting instanceof PERMISSIONS) {
-            switch (type) {
+            switch (clickType) {
                 case RIGHT:
                     IslandSettingsManager.downgradePermission(island, (PERMISSIONS) permissionOrSetting);
                     return;

@@ -1,10 +1,10 @@
-package ro.deiutzblaxo.oneblock.menu.objects.buttons;
+package ro.deiutzblaxo.menucontroller.objects.buttons;
 
 import lombok.Data;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import ro.deiutzblaxo.oneblock.menu.objects.Button;
-import ro.deiutzblaxo.oneblock.menu.objects.Menu;
+import ro.deiutzblaxo.menucontroller.objects.Button;
+import ro.deiutzblaxo.menucontroller.objects.Menu;
 
 import java.util.List;
 

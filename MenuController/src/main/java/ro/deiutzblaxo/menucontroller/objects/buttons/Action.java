@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.menu.objects.buttons;
+package ro.deiutzblaxo.menucontroller.objects.buttons;
 
 public enum Action {
 

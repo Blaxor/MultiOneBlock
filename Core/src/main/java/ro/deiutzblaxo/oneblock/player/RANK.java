@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public enum RANK {
+    GUEST(0), COOP(1), TRUSTED(2), MEMBER(3), CO_OWNER(4), OWNER(5);
+    private  int a;
 
+    RANK(int a) {
+        this.a = a;
+    }
 
-    GUEST, COOP, TRUSTED, MEMBER, CO_OWNER, OWNER;
-
-
-    private final ArrayList<RANK> ranksOrder = (ArrayList<RANK>) Arrays.asList(values());
-
-    public RANK getHigherRank(RANK rank) {
-        return ranksOrder.get(Math.min(ranksOrder.size()-1,ranksOrder.indexOf(rank)+1));
+    public RANK getHigherRank() {
+        return RANK.values()[a+1 > 5? 5:a+1];
 
     }
 
     public RANK getLowerRank(RANK rank) {
-        return ranksOrder.get(Math.max(ranksOrder.indexOf(rank) - 1,0));
-
+        return RANK.values()[a-1 < 0? 0:a-1];
     }
 }

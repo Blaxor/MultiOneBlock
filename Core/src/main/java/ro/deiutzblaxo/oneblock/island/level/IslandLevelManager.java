@@ -10,9 +10,9 @@ import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.IslandMeta;
 import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculateManager;
 import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculator;
-import ro.deiutzblaxo.oneblock.menu.objects.Menu;
-import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
-import ro.deiutzblaxo.oneblock.menu.objects.buttons.PrefabButton;
+import ro.deiutzblaxo.menucontroller.objects.Menu;
+import ro.deiutzblaxo.menucontroller.objects.buttons.Action;
+import ro.deiutzblaxo.menucontroller.objects.buttons.PrefabButton;
 import ro.deiutzblaxo.oneblock.player.RANK;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
@@ -106,12 +106,14 @@ public class IslandLevelManager {
             plugin.saveResource("blockconfig.yml", true);
             updateBlockValue();
             return;
-
         }
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection section = config.getConfigurationSection("blocks");
-        section.getKeys(true).forEach(s -> {
-            IslandLevelCalculator.blockValue.put(Material.matchMaterial(s), section.getInt(s));
+        section.getKeys(false).forEach(s -> {
+            if (Material.matchMaterial(s) == null) {
+                System.out.println("The material " + s + " is invalid!");
+            } else
+                IslandLevelCalculator.blockValue.put(Material.matchMaterial(s), section.getInt(s));
         });
     }
 

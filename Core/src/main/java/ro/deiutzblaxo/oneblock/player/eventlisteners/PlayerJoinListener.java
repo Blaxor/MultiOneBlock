@@ -1,7 +1,5 @@
 package ro.deiutzblaxo.oneblock.player.eventlisteners;
 
-import me.stefan923.playerdatastorage.playerdata.PlayerData;
-import me.stefan923.playerdatastorage.util.ExperienceUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,6 +23,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event) {
+        plugin.getPSIRepo().loadPlayer(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             PlayerOB playerOB = plugin.getPlayerManager().loadPlayer(event.getPlayer().getUniqueId());
             Island island = plugin.getIslandManager().getIsland(playerOB.getIsland());
@@ -41,7 +40,7 @@ public class PlayerJoinListener implements Listener {
                 island.getMeta().setRadiusType(BorderHandler.getTypeByPermission(Bukkit.getPlayer(island.getOwner())));
             playerOB.setIsland(island.getUuidIsland());
             island.changeBorder();
-
+            event.getPlayer().teleport(island.getSpawnLocation());
 
         }, 5);
 

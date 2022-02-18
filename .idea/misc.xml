@@ -11,6 +11,9 @@
       <list>
         <option value="$PROJECT_DIR$/Core/pom.xml" />
         <option value="$PROJECT_DIR$/ConnecionManagment/pom.xml" />
+        <option value="$PROJECT_DIR$/PSI/pom.xml" />
+        <option value="$PROJECT_DIR$/MenuController/pom.xml" />
+        <option value="$PROJECT_DIR$/Enchants/pom.xml" />
       </list>
     </option>
   </component>

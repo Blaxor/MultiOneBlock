@@ -1,4 +1,4 @@
-package ro.deiutzblaxo.oneblock.menu.objects.menus;
+package ro.deiutzblaxo.menucontroller.objects.menus;
 
 import org.bukkit.inventory.InventoryHolder;
 
