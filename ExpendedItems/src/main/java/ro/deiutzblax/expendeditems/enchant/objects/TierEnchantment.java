@@ -1,16 +1,18 @@
-package ro.deiutzblaxo.enchants.objects;
+package ro.deiutzblax.expendeditems.enchant.objects;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import ro.deiutzblaxo.enchants.EnchantManager;
-import ro.deiutzblaxo.oneblock.OneBlock;
+
 
 public class TierEnchantment extends CustomEnchantment {
 
     public TierEnchantment() {
-        super(OneBlock.getInstance(), "tier");
+        super("tier", null);
+    }
+
+    public TierEnchantment(String descriptioon) {
+        super("tier", descriptioon);
     }
 
     @Override

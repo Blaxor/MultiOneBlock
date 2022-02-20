@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ro.deiutzblaxo.cloud.data.mysql.MySQLConnection;
 import ro.deiutzblaxo.cloud.data.mysql.MySQLManager;
+import ro.deiutzblaxo.cloud.data.mysql.classic.MySQLManagerNormal;
 
 import java.sql.Blob;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class PlayerRepo {
     private String table;
 
     public PlayerRepo(MySQLConnection connection, int threads, String table) {
-        manager = new MySQLManager(connection, threads);
+        manager = new MySQLManagerNormal(connection, threads);
         this.table = table;
         this.connection = connection;
         manager.createTable(table, "ID varchar(255)", "INVENTORY blob", "ENDERCHEST blob", "POTIONEFFECT blob"

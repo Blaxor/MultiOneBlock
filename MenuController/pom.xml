@@ -65,9 +65,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>ro.deiutzblaxo</groupId>
-            <artifactId>Enchants</artifactId>
-            <version>1.1.1</version>
+            <groupId>ro.deiutzblax</groupId>
+            <artifactId>expendedItems</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
 
         </dependency>
         <dependency>

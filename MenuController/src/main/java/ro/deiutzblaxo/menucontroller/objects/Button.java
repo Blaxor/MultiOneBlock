@@ -8,8 +8,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ro.deiutzblaxo.enchants.EnchantManager;
-import ro.deiutzblaxo.enchants.tags.ItemTags;
+import ro.deiutzblax.expendeditems.enchant.EnchantManager;
+import ro.deiutzblax.expendeditems.item.utill.tags.ItemTags;
 import ro.deiutzblaxo.menucontroller.objects.buttons.Action;
 import ro.deiutzblaxo.menucontroller.objects.buttons.ButtonObject;
 

@@ -6,23 +6,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="PlayerSaveInformation" />
-        <module name="MenuController" />
+        <module name="ExpendedItems" />
         <module name="ConnecionManagment" />
         <module name="oneblock" />
         <module name="PSI" />
-        <module name="Enchants" />
+        <module name="PlayerSaveInformation" />
+        <module name="MenuController" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ConnecionManagment" target="1.8" />
       <module name="Core" target="1.5" />
       <module name="Enchants" target="1.8" />
+      <module name="ExpendedItems" target="1.8" />
+      <module name="ItemNMS" target="1.8" />
       <module name="MenuController" target="17" />
       <module name="oneblock" target="17" />
       <module name="PlayerSaveInformation" target="1.8" />
       <module name="PlayerSaveInformationn" target="1.8" />
       <module name="PSI" target="17" />
+      <module name="simpleprivatechat" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

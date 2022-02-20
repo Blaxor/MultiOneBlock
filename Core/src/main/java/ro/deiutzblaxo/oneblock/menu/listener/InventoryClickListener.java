@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import ro.deiutzblaxo.enchants.tags.ItemTags;
+import ro.deiutzblax.expendeditems.item.utill.tags.ItemTags;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.menucontroller.objects.Menu;
 import ro.deiutzblaxo.menucontroller.objects.menus.InventoryTag;

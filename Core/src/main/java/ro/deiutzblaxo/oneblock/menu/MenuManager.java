@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
-import ro.deiutzblaxo.enchants.EnchantManager;
+import ro.deiutzblax.expendeditems.enchant.EnchantManager;
 import ro.deiutzblaxo.menucontroller.objects.Button;
 import ro.deiutzblaxo.menucontroller.objects.Menu;
 import ro.deiutzblaxo.menucontroller.objects.buttons.Action;

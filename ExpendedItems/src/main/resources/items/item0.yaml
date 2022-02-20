@@ -1,0 +1,15 @@
+{
+  "id_item":"this_is_id",
+  "material":"DIAMOND_CHESTPLATE",
+  "rarity":"EPIC",
+  "display_name":"&E&LNiceName",
+  "nbt":{
+    "rarity":"EPIC"
+  },
+  "lore":[
+    "&5&lEPIC"
+  ],
+  "enchantments":[
+    "mending,1"
+  ]
+}

@@ -7,9 +7,13 @@
     <file url="file://$PROJECT_DIR$/Core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Enchants/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Enchants/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ExpendedItems/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ExpendedItems/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MenuController/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MenuController/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PSI/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/PSI/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SPC/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SPC/src/main/resources" charset="UTF-8" />
   </component>
 </project>

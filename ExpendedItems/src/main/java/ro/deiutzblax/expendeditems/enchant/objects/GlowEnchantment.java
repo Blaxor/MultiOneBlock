@@ -1,17 +1,19 @@
-package ro.deiutzblaxo.enchants.objects;
+package ro.deiutzblax.expendeditems.enchant.objects;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import ro.deiutzblaxo.enchants.EnchantManager;
-import ro.deiutzblaxo.enchants.Enchantments;
-import ro.deiutzblaxo.oneblock.OneBlock;
 
 public class GlowEnchantment extends CustomEnchantment {
 
+    public String description;
+
     public GlowEnchantment() {
-        super(OneBlock.getInstance(), "glow");
+        super("glow", null);
+    }
+
+    public GlowEnchantment(String description) {
+        super("glow", description);
     }
 
     @Override

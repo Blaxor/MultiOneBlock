@@ -8,10 +8,12 @@ import lombok.SneakyThrows;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
+import ro.deiutzblax.expendeditems.enchant.EnchantManager;
 import ro.deiutzblaxo.cloud.data.mysql.MySQLManager;
+import ro.deiutzblaxo.cloud.data.mysql.classic.MySQLManagerNormal;
+import ro.deiutzblaxo.cloud.data.mysql.hikari.MySQLConnectionHikari;
 import ro.deiutzblaxo.cloud.nus.NameUUIDManager;
 import ro.deiutzblaxo.cloud.nus.prefab.NameUUIDStorageMySQL;
-import ro.deiutzblaxo.enchants.EnchantManager;
 import ro.deiutzblaxo.oneblock.addons.PAPIAddon;
 import ro.deiutzblaxo.oneblock.commands.admin.AdminCommand;
 import ro.deiutzblaxo.oneblock.commands.chat.GlobalCommand;
@@ -69,15 +71,14 @@ public final class OneBlock extends JavaPlugin {
         THREADS_NUMBER = getConfig().getInt("threads_level");
         SERVER = getConfig().getString("server-name");
 
-        this.dbConnection = new ro.deiutzblaxo.cloud.data.mysql.MySQLConnection(getConfig().getString("hostname"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"), "autoReconnect=true");
-        this.dbManager = new MySQLManager(this.dbConnection, 4);
+        this.dbConnection = new MySQLConnectionHikari(getConfig().getString("hostname"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"), "autoReconnect=true",10,1);
+        this.dbManager = new MySQLManagerNormal(this.dbConnection, 1);
         nameUUIDManager = new NameUUIDManager(/*new NameUUIDStorageYaml(getDataFolder(), 1000, PriorityNUS.HIGH),*/ new NameUUIDStorageMySQL(dbManager, "NAME"));
         PSIRepo = new PlayerRepo(dbConnection, 2, "PSI_TABLE");
 
         getDbManager().createTable(TableType.PLAYERS.table, new String[]{"UUID varchar(256)", "ISLAND varchar(256)", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.ISLANDS.table, new String[]{"UUID varchar(256)", "META JSON", "SERVER varchar(256)"});
         getDbManager().createTable(TableType.LEVEL.table, new String[]{"UUID varchar(256)", "LEVEL INT"});
-        EnchantManager.registerEnchantments();
         this.playerManager = new PlayerManager(this);
         this.islandManager = new IslandManager(this);
         this.slimePlugin = (SlimePlugin) getServer().getPluginManager().getPlugin("SlimeWorldManager");
@@ -130,6 +131,7 @@ public final class OneBlock extends JavaPlugin {
             redisManager.onDisable();
         getLogger().log(Level.INFO, "Waiting max 15 seconds to terminate all tasks from pool.");
         generalPool.awaitTermination(5, TimeUnit.SECONDS);
+        dbManager.close();
 
 
     }

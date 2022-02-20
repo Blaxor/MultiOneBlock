@@ -1,11 +1,10 @@
-package ro.deiutzblaxo.enchants;
+package ro.deiutzblax.expendeditems.enchant;
 
 
 import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
-import ro.deiutzblaxo.enchants.objects.CustomEnchantment;
-import ro.deiutzblaxo.enchants.objects.GlowEnchantment;
-import ro.deiutzblaxo.enchants.objects.TierEnchantment;
+import ro.deiutzblax.expendeditems.enchant.objects.CustomEnchantment;
+import ro.deiutzblax.expendeditems.enchant.objects.GlowEnchantment;
+import ro.deiutzblax.expendeditems.enchant.objects.TierEnchantment;
 
 public enum Enchantments {
 

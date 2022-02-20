@@ -1,7 +1,6 @@
-package ro.deiutzblaxo.enchants.tags;
+package ro.deiutzblax.expendeditems.item.utill.tags;
 
 
-import com.google.common.util.concurrent.ClosingFuture;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

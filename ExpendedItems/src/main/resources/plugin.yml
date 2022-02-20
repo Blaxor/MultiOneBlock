@@ -1,0 +1,7 @@
+name: ExpendedItems
+version: '${project.version}'
+main: ro.deiutzblax.expendeditems.ExpendedItems
+api-version: 1.18
+authors: [ JDeiutz ]
+commands:
+  test:

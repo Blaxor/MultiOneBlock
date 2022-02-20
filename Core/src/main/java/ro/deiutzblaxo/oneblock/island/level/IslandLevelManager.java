@@ -20,6 +20,7 @@ import ro.deiutzblaxo.oneblock.utils.Triplet;
 import ro.deiutzblaxo.oneblock.utils.UTILS;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -52,8 +53,10 @@ public class IslandLevelManager {
 
     private void updateTOP() throws Exception {
         ResultSet set;
-        PreparedStatement statement = plugin.getDbManager().getPreparedStatement("SELECT UUID,LEVEL FROM LEVEL ORDER BY LEVEL DESC LIMIT 10");
-        set = statement.executeQuery();
+        try (Connection connection = plugin.getDbManager().getConnection().getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT UUID,LEVEL FROM LEVEL ORDER BY LEVEL DESC LIMIT 10");
+            set = statement.executeQuery();
+
         topIslands.clear();
 
         while (set.next()) {
@@ -63,6 +66,7 @@ public class IslandLevelManager {
             topIslands.add(new Triplet(uuid, level, meta));
         }
         set.close();
+        }
         CompletableFuture.runAsync(() -> {
 
             Menu menu = plugin.getMenuManager().getMenu("top");

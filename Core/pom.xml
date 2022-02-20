@@ -128,7 +128,7 @@
         <dependency>
             <groupId>ro.deiutzblaxo</groupId>
             <artifactId>Cloud</artifactId>
-            <version>1.2.1.0</version>
+            <version>1.2.2.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -136,6 +136,12 @@
             <artifactId>PSI</artifactId>
             <version>1.1.0.1</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ro.deiutzblax</groupId>
+            <artifactId>expendedItems</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.PlaceholderAPI</groupId>
