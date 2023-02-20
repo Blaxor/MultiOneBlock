@@ -10,7 +10,7 @@ import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 import ro.deiutzblaxo.oneblock.player.events.PlayerKickIslandEvent;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
@@ -65,7 +65,7 @@ public class IslandKick implements SubCommand {
             sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.PLAYER_NO_EXISTS));
             return;
         }
-        HashMap<UUID, RANK> members = island.getMeta().getMembers();
+        HashMap<UUID, RankEnum> members = island.getMeta().getMembers();
 
         if (!members.containsKey(kicked)) {
             sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_KICK_PART).replace("{name}", args.get(0)));

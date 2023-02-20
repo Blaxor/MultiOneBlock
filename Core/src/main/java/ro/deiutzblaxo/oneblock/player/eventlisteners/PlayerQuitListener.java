@@ -1,18 +1,13 @@
 package ro.deiutzblaxo.oneblock.player.eventlisteners;
 
-import me.stefan923.playerdatastorage.playerdata.PlayerData;
-import me.stefan923.playerdatastorage.util.ExperienceUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.potion.PotionEffect;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.exceptions.IslandHasPlayersOnlineException;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
 
-import java.util.Collection;
 import java.util.logging.Level;
 
 public class PlayerQuitListener implements Listener {
@@ -30,7 +25,7 @@ public class PlayerQuitListener implements Listener {
 
             if (plugin.getIslandManager().getIsland(playerOB.getIsland()) != null) {
                 try {
-                    plugin.getIslandManager().unloadIsland(plugin.getIslandManager().getIsland(playerOB.getIsland()), true);
+                    plugin.getIslandManager().unloadIsland(plugin.getIslandManager().getIsland(playerOB.getIsland()));
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }

@@ -43,7 +43,7 @@ public class PlayerResetIslandEvent extends Event implements Cancellable {
         });
 
         try {
-            plugin.getIslandManager().unloadIsland(island, false);
+            plugin.getIslandManager().unloadIsland(island);
         } catch (IslandHasPlayersOnlineException e) {
             e.printStackTrace();
         }
@@ -80,7 +80,7 @@ public class PlayerResetIslandEvent extends Event implements Cancellable {
         player.teleport(teleport);
         if (island.getMeta().getMembers().size() <= 1) {
             try {
-                plugin.getIslandManager().unloadIsland(island, false);
+                plugin.getIslandManager().unloadIsland(island);
             } catch (IslandHasPlayersOnlineException e) {
                 e.printStackTrace();
             }
@@ -92,7 +92,7 @@ public class PlayerResetIslandEvent extends Event implements Cancellable {
         } else {
             if (island.getBukkitWorld().getPlayers().isEmpty()) {
                 try {
-                    plugin.getIslandManager().unloadIsland(island, true);
+                    plugin.getIslandManager().unloadIsland(island);
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }

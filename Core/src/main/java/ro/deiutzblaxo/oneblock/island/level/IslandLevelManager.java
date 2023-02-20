@@ -13,7 +13,7 @@ import ro.deiutzblaxo.oneblock.island.level.calculate.IslandLevelCalculator;
 import ro.deiutzblaxo.oneblock.menu.objects.Menu;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.PrefabButton;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
 import ro.deiutzblaxo.oneblock.utils.Triplet;
@@ -52,10 +52,9 @@ public class IslandLevelManager {
 
     private void updateTOP() throws Exception {
         ResultSet set;
-        PreparedStatement statement = plugin.getDbManager().getPreparedStatement("SELECT UUID,LEVEL FROM LEVEL ORDER BY LEVEL DESC LIMIT 10");
-        set = statement.executeQuery();
+        PreparedStatement statement = plugin.getDbManager().getPrepareStatement("SELECT UUID,LEVEL FROM LEVEL ORDER BY LEVEL DESC LIMIT 10");
         topIslands.clear();
-
+        set = statement.executeQuery();
         while (set.next()) {
             String uuid = set.getString("UUID");
             int level = set.getInt("LEVEL");
@@ -63,6 +62,7 @@ public class IslandLevelManager {
             topIslands.add(new Triplet(uuid, level, meta));
         }
         set.close();
+        statement.getConnection().close();
         CompletableFuture.runAsync(() -> {
 
             Menu menu = plugin.getMenuManager().getMenu("top");
@@ -77,7 +77,7 @@ public class IslandLevelManager {
                 lore.add(ChatColor.GREEN + "Membrii");
                 UUID owner = null;
                 for (UUID uuid : trip.getLast().getMembers().keySet()) {
-                    if (trip.getLast().getMembers().get(uuid).equals(RANK.OWNER)) {
+                    if (trip.getLast().getMembers().get(uuid).equals(Rank.RankEnum.OWNER)) {
                         owner = uuid;
                     }
                     try {

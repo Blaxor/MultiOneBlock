@@ -1,6 +1,7 @@
 package ro.deiutzblaxo.oneblock.utils;
 
-import org.apache.commons.lang.StringUtils;
+
+import com.mysql.cj.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,26 +13,28 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.OneBlock;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 
 public class UTILS {
 
-    public static HashMap<UUID, RANK> fromStringToHashMap(String string) {
+    public static HashMap<UUID, RankEnum> fromStringToHashMap(String string) {
         String[] players = string.split(";");
-        HashMap<UUID, RANK> rank = new HashMap<>();
+        HashMap<UUID, RankEnum> rank = new HashMap<>();
         for (String player : players) {
             String[] ranks = player.split(",");
-            rank.put(UUID.fromString(ranks[0]), RANK.valueOf(ranks[1]));
+            rank.put(UUID.fromString(ranks[0]), RankEnum.valueOf(ranks[1]));
         }
         return rank;
     }
 
-    public static String fromHashMapToString(HashMap<UUID, RANK> hmap) {
+    public static String fromHashMapToString(HashMap<UUID, RankEnum> hmap) {
 
         AtomicReference<String> str = new AtomicReference<>("");
         AtomicInteger i = new AtomicInteger();
@@ -51,7 +54,8 @@ public class UTILS {
         for (Enchantment t : en.keySet()) {
             e.add(t.getName() + ":" + en.get(t));
         }
-        return StringUtils.join(e, ",");
+
+        return String.join(",", e);
     }
 
     public static String deserialize(ItemStack i) {
@@ -62,7 +66,8 @@ public class UTILS {
         parts[3] = i.getItemMeta().getDisplayName();
         parts[4] = String.valueOf(i.getData().getData());
         parts[5] = getEnchants(i);
-        return StringUtils.join(parts, ";");
+        return String.join(",", ";");
+
     }
 
     public static ItemStack deserial(String p) {
@@ -135,5 +140,8 @@ public class UTILS {
         return itemStack;
     }
 
+    public static void log(String message) {
+        OneBlock.getInstance().getLogger().log(Level.ALL, message);
+    }
 
 }

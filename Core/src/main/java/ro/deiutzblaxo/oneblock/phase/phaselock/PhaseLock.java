@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.langs.MESSAGELIST;
-import ro.deiutzblaxo.playersave.enchants.EnchantManager;
+import ro.deiutzblaxo.oneblock.utils.item.EnchantManager;
 
 public class PhaseLock {
 

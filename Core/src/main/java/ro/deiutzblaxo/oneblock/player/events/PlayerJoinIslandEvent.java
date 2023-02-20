@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 import ro.deiutzblaxo.oneblock.OneBlock;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class PlayerJoinIslandEvent extends Event implements Cancellable {
             return;
         if (callLeaveEvent)
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveIslandEvent(plugin, this.invited, inviterIsland.getSpawnLocation()));
-        inviterIsland.getMeta().getMembers().put(UUID.fromString(invited), RANK.MEMBER);
+        inviterIsland.getMeta().getMembers().put(UUID.fromString(invited), RankEnum.MEMBER);
         inviterIsland.save(false);
         if (!far) {
             this.invited.setIsland(inviterIsland.getUuidIsland());

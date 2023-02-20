@@ -9,7 +9,7 @@ import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 import ro.deiutzblaxo.oneblock.player.events.PlayerLeaveIslandEvent;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class IslandLeave implements SubCommand {
             sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
             return;
         }
-        if (island.getMeta().getMembers().get(player.getUniqueId()) == RANK.OWNER) {
+        if (island.getMeta().getMembers().get(player.getUniqueId()) == RankEnum.OWNER) {
             if (island.getMeta().getMembers().size() > 1) {
                 sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_ERROR_LEAVE));
                 return;

@@ -13,7 +13,7 @@ import ro.deiutzblaxo.oneblock.island.radius.exceptions.BorderHighestTireExcepti
 import ro.deiutzblaxo.oneblock.island.radius.exceptions.BorderLowestTireException;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.langs.MESSAGELIST;
-import ro.deiutzblaxo.playersave.enchants.Enchantments;
+import ro.deiutzblaxo.oneblock.utils.item.Enchantments;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -14,7 +14,7 @@ import ro.deiutzblaxo.oneblock.communication.action.invite.ResponseInvite;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 import ro.deiutzblaxo.oneblock.player.SCOPE_CONFIRMATION;
 import ro.deiutzblaxo.oneblock.player.events.PlayerJoinIslandEvent;
 import ro.deiutzblaxo.oneblock.player.events.PlayerLeaveIslandEvent;
@@ -55,7 +55,7 @@ public class IslandTeamConfirm implements SubCommand {
 
                 RequestInvite requestInvite = (RequestInvite) invited.getParticipant().get(SCOPE_CONFIRMATION.INVITE).get(0);
                 String oldIsland = invited.getIsland();
-                if (plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().get(invited.getPlayer()).equals(RANK.OWNER) && plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().size() > 1) {
+                if (plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().get(invited.getPlayer()).equals(RankEnum.OWNER) && plugin.getIslandManager().getIsland(oldIsland).getMeta().getMembers().size() > 1) {
 
                     sender.sendMessage(plugin.getLangManager().get(player, MESSAGE.ISLAND_ERROR_TEAM_CONFIRM));
                     return;

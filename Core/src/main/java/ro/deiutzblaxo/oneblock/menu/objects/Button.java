@@ -7,11 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import ro.deiutzblaxo.nbtapi.de.tr7zw.changeme.NBTContainer;
+import ro.deiutzblaxo.nbtapi.de.tr7zw.changeme.NBTItem;
 import ro.deiutzblaxo.oneblock.menu.events.PlayerOpenMenuEvent;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.Action;
 import ro.deiutzblaxo.oneblock.menu.objects.buttons.ButtonObject;
-import ro.deiutzblaxo.oneblock.utils.nbt.item.NBTItem116;
-import ro.deiutzblaxo.playersave.enchants.EnchantManager;
+import ro.deiutzblaxo.oneblock.utils.item.EnchantManager;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -80,7 +81,9 @@ public interface Button {
             item = EnchantManager.addGlow(item);
         }
 
-        return NBTItem116.addNBTTag(item, "menu", getParent().getID());
+        NBTContainer Nbtitem = NBTItem.convertItemtoNBT(item);
+        Nbtitem.setString("menu", getParent().getID());
+        return NBTItem.convertNBTtoItem(Nbtitem);
 
 
     }

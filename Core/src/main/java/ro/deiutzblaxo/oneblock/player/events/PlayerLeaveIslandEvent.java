@@ -50,7 +50,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         if (this.playerOB == null) {
             plugin.getDbManager().setNull(TableType.PLAYERS.table, "UUID", playerOBUUID.toString(), "ISLAND");
 
-            PlayerData data = new PlayerData(/*new ItemStack[0],*/ new ItemStack[0], new PotionEffect[0], 0);
+            PlayerData data = new PlayerData(new ItemStack[0], new ItemStack[0], new PotionEffect[0], 0);
             data.setUuid(playerOBUUID);
             plugin.getPlayerSaveStorage().savePlayerData(data);
         } else {
@@ -58,8 +58,9 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
             this.player.teleport(plugin.getSpawnLocation());
         }
         if (island.getMeta().getMembers().size() <= 0) {
+            island.getBukkitWorld().getPlayers().forEach(player1 -> player1.teleport(plugin.getSpawnLocation()));
             try {
-                plugin.getIslandManager().unloadIsland(island, false);
+                plugin.getIslandManager().unloadIsland(island);
             } catch (IslandHasPlayersOnlineException e) {
                 e.printStackTrace();
             }
@@ -71,7 +72,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         } else {
             if (island.getBukkitWorld().getPlayers().isEmpty()) {
                 try {
-                    plugin.getIslandManager().unloadIsland(island, true);
+                    plugin.getIslandManager().unloadIsland(island);
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }
@@ -99,8 +100,10 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         playerOB.setIsland(null);
         this.player.teleport(plugin.getSpawnLocation());
         if (island.getMeta().getMembers().size() <= 0) {
+            island.getBukkitWorld().getPlayers().forEach(player1 -> player1.teleport(plugin.getSpawnLocation()));
+
             try {
-                plugin.getIslandManager().unloadIsland(island, false);
+                plugin.getIslandManager().unloadIsland(island);
             } catch (IslandHasPlayersOnlineException e) {
                 e.printStackTrace();
             }
@@ -112,7 +115,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         } else {
             if (island.getBukkitWorld().getPlayers().isEmpty()) {
                 try {
-                    plugin.getIslandManager().unloadIsland(island, true);
+                    plugin.getIslandManager().unloadIsland(island);
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }
@@ -149,7 +152,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         this.player.teleport(plugin.getSpawnLocation());
         if (island.getMeta().getMembers().size() <= 0) {
             try {
-                plugin.getIslandManager().unloadIsland(island, false);
+                plugin.getIslandManager().unloadIsland(island);
             } catch (IslandHasPlayersOnlineException e) {
                 e.printStackTrace();
             }
@@ -161,7 +164,7 @@ public class PlayerLeaveIslandEvent extends Event implements Cancellable {
         } else {
             if (island.getBukkitWorld().getPlayers().isEmpty()) {
                 try {
-                    plugin.getIslandManager().unloadIsland(island, true);
+                    plugin.getIslandManager().unloadIsland(island);
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }

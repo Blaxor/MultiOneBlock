@@ -11,7 +11,7 @@ import ro.deiutzblaxo.oneblock.island.IslandMeta;
 import ro.deiutzblaxo.oneblock.island.radius.BorderHandler;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.PlayerOB;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +45,11 @@ public class IslandTeleportCommand implements SubCommand {
             PlayerOB playerOB = plugin.getPlayerManager().getPlayer(player.getUniqueId());
             Island island = plugin.getIslandManager().getIsland(playerOB.getIsland());
             if (island == null) {
-                island = plugin.getIslandManager().loadIsland(playerOB.getIsland() == null ? "WORLD_" + playerOB.getPlayer() : playerOB.getIsland());
+                island = plugin.getIslandManager().
+                        loadIsland(playerOB.getIsland());
                 IslandMeta meta = island.getMeta();
                 if (!meta.getMembers().containsKey(player.getUniqueId())) {
-                    meta.getMembers().put(player.getUniqueId(), RANK.OWNER);
+                    meta.getMembers().put(player.getUniqueId(), RankEnum.OWNER);
 
                     island.setMeta(meta);
                 }
@@ -60,7 +61,7 @@ public class IslandTeleportCommand implements SubCommand {
 
             playerOB.setIsland(island.getUuidIsland());
             island.teleportHere(((Player) sender).getPlayer());
-            sender.sendMessage(plugin.getLangManager().get((Player) sender,MESSAGE.TELEPORTED_TO_ISLAND));
+            sender.sendMessage(plugin.getLangManager().get((Player) sender, MESSAGE.TELEPORTED_TO_ISLAND));
         }
 
     }

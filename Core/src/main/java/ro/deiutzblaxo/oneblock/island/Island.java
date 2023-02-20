@@ -1,6 +1,6 @@
 package ro.deiutzblaxo.oneblock.island;
 
-import com.grinderwolf.swm.api.world.SlimeWorld;
+import com.infernalsuite.aswm.api.world.SlimeWorld;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -21,7 +21,7 @@ import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.phase.objects.PhaseObject;
 import ro.deiutzblaxo.oneblock.phase.objects.RARITY;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank;
 import ro.deiutzblaxo.oneblock.player.events.PlayerBanIslandEvent;
 import ro.deiutzblaxo.oneblock.player.events.PlayerUnBanIslandEvent;
 import ro.deiutzblaxo.oneblock.slimemanager.WorldUtil;
@@ -65,7 +65,7 @@ public class Island {
             plugin.getLogger().log(Level.INFO, "Auto-Saving island " + uuidIsland);
             if (bukkitWorld.getPlayers().isEmpty() && !Bukkit.getOnlinePlayers().stream().filter(player -> meta.getMembers().containsKey(player.getUniqueId())).findAny().isPresent()) {
                 try {
-                    plugin.getIslandManager().unloadIsland(this, true);
+                    plugin.getIslandManager().unloadIsland(this);
                 } catch (IslandHasPlayersOnlineException e) {
                     e.printStackTrace();
                 }
@@ -83,8 +83,12 @@ public class Island {
 
                 plugin.getLogger().log(Level.INFO, "Saving island " + uuidIsland);
                 meta.setTime(getBukkitWorld().getTime());
-                String seril = meta.serialize();
-
+                String seril = "";
+                try {
+                    seril = meta.serialize();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
                 if (plugin.getDbManager().exists(TableType.ISLANDS.table, "UUID", uuidIsland)) {
                     try {
                         plugin.getDbManager().update(TableType.ISLANDS.table, "UUID", uuidIsland, new String[]{"META", "SERVER"}, new String[]{seril, server});
@@ -125,7 +129,7 @@ public class Island {
     public void loadWorld() {
 
         plugin.getLogger().log(Level.INFO, "Loading world" + world.getName());
-        plugin.getSlimePlugin().generateWorld(world);
+        plugin.getSlimePlugin().loadWorld(world);
 
         bukkitWorld = Bukkit.getWorld(world.getName());
 
@@ -149,7 +153,7 @@ public class Island {
     public UUID getOwner() {
         AtomicReference<UUID> owner = new AtomicReference<>();
         getMeta().getMembers().forEach((uuid, rank) -> {
-            if (rank == RANK.OWNER) {
+            if (rank == Rank.RankEnum.OWNER) {
                 owner.set(uuid);
                 return;
             }
@@ -241,8 +245,8 @@ public class Island {
 
 
     public boolean isAllow(UUID uuid, PERMISSIONS permission) {
-        RANK target = meta.getMembers().get(uuid) == null ? RANK.GUEST : meta.getMembers().get(uuid);
-        RANK permissionlowest = meta.getPermissions().get(permission) == null ? permission.getLowestRankDefault() : meta.getPermissions().get(permission);
+        Rank.RankEnum target = meta.getMembers().get(uuid) == null ? Rank.RankEnum.GUEST : meta.getMembers().get(uuid);
+        Rank.RankEnum permissionlowest = meta.getPermissions().get(permission) == null ? permission.getLowestRankDefault() : meta.getPermissions().get(permission);
         return PERMISSIONS.isAllow(target, permissionlowest);
     }
 

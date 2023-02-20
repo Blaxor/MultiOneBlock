@@ -9,7 +9,7 @@ import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.island.permissions.PERMISSIONS;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class IslandBan implements SubCommand {
             return;
         }
         if (island.getMeta().getMembers().get(uuid) != null) {
-            if (island.getMeta().getMembers().get(uuid).equals(RANK.OWNER)) {
+            if (island.getMeta().getMembers().get(uuid).equals(RankEnum.OWNER)) {
                 sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_BAN_OWNER));
                 return;
             }

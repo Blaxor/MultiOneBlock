@@ -23,7 +23,7 @@ import ro.deiutzblaxo.oneblock.menu.objects.menus.PrefabMenu;
 import ro.deiutzblaxo.oneblock.phase.objects.Phase;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.UTILS;
-import ro.deiutzblaxo.playersave.enchants.EnchantManager;
+import ro.deiutzblaxo.oneblock.utils.item.EnchantManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -190,7 +190,7 @@ public class MenuManager {
 /*        plugin.getIslandLevelManager().getTopIslands().forEach(triplet -> {
         AtomicReference<String> abc = new AtomicReference<>("");
         triplet.getLast().getMembers().forEach((uuid, rank) -> {
-            if (rank == RANK.OWNER) {
+            if (rank == RankEnum.OWNER) {
                 try {
                     abc.set(plugin.getPlayerManager().getNameByUUID(uuid));
                 } catch (PlayerNoExistException e) {

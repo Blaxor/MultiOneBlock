@@ -12,6 +12,11 @@
       <option name="url" value="https://jitpack.io" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="is-releases" />
+      <option name="name" value="is-releases" />
+      <option name="url" value="https://repo.infernalsuite.com/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="sonatype" />
       <option name="name" value="sonatype" />
       <option name="url" value="https://oss.sonatype.org/content/groups/public/" />
@@ -35,6 +40,11 @@
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="is-snapshots" />
+      <option name="name" value="is-snapshots" />
+      <option name="url" value="https://repo.infernalsuite.com/repository/maven-snapshots/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="headdatabase-api" />

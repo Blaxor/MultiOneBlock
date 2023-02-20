@@ -7,6 +7,7 @@ import ro.deiutzblaxo.oneblock.commands.Command;
 import ro.deiutzblaxo.oneblock.commands.SubCommand;
 import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
+import ro.deiutzblaxo.oneblock.utils.otherexceptions.NotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,8 @@ public class IslandLevel implements SubCommand {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Island island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
+            Island island = null;
+            island = plugin.getPlayerManager().getPlayer(player.getUniqueId()).getIsland(false);
             if (island == null) {
                 sender.sendMessage(plugin.getLangManager().get(player,MESSAGE.ISLAND_NOT_LOADED));
                 return;

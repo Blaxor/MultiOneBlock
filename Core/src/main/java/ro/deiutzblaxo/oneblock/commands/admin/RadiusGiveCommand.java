@@ -42,7 +42,7 @@ public class RadiusGiveCommand implements SubCommand {
 
         if (args.isEmpty()) {
             Player player = (Player) sender;
-            player.getInventory().addItem(BorderHandler.getItem());
+            player.getInventory().addItem(BorderHandler.getItem());//TODO ERROR ad BorderHandler.GetItem() Caused by: java.lang.IllegalArgumentException: Enchantment cannot be null
             return;
         }
         UUID uuid;

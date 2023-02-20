@@ -1,36 +1,36 @@
 package ro.deiutzblaxo.oneblock.island.permissions;
 
 import lombok.Getter;
-import ro.deiutzblaxo.oneblock.player.RANK;
+import ro.deiutzblaxo.oneblock.player.Rank.RankEnum;
 
 public enum PERMISSIONS {
 
-    BAN(RANK.CO_OWNER),
-    KICK(RANK.CO_OWNER),
-    UNBAN(RANK.CO_OWNER),
-    BANLIST(RANK.MEMBER),
-    EXPEL(RANK.CO_OWNER),
-    CHANGENAME(RANK.CO_OWNER),
-    TELEPORT(RANK.GUEST),
-    SETSPAWN(RANK.CO_OWNER),
-    BREAK(RANK.MEMBER),
-    PLACE(RANK.MEMBER),
-    PVE(RANK.MEMBER),
-    INTERACT(RANK.MEMBER),
-    UPGRADE_RADIUS(RANK.MEMBER);
+    BAN(RankEnum.CO_OWNER),
+    KICK(RankEnum.CO_OWNER),
+    UNBAN(RankEnum.CO_OWNER),
+    BANLIST(RankEnum.MEMBER),
+    EXPEL(RankEnum.CO_OWNER),
+    CHANGENAME(RankEnum.CO_OWNER),
+    TELEPORT(RankEnum.GUEST),
+    SETSPAWN(RankEnum.CO_OWNER),
+    BREAK(RankEnum.MEMBER),
+    PLACE(RankEnum.MEMBER),
+    PVE(RankEnum.MEMBER),
+    INTERACT(RankEnum.MEMBER),
+    UPGRADE_RADIUS(RankEnum.MEMBER);
 
     @Getter
-    private final RANK lowestRankDefault;
+    private final RankEnum lowestRankDefault;
 
-    PERMISSIONS(RANK lowestRankDefault) {
+    PERMISSIONS(RankEnum lowestRankDefault) {
         this.lowestRankDefault = lowestRankDefault;
     }
 
-    public boolean isAllow(RANK rank) {
+    public boolean isAllow(RankEnum rank) {
         return PERMISSIONS.isAllow(rank, lowestRankDefault);
     }
 
-    public static boolean isAllow(RANK rank1, RANK rank2) {
+    public static boolean isAllow(RankEnum rank1, RankEnum rank2) {
         if (rank1 == null || rank2 == null) {
             return false;
         }

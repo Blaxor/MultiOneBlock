@@ -12,6 +12,7 @@ import ro.deiutzblaxo.oneblock.island.Island;
 import ro.deiutzblaxo.oneblock.langs.MESSAGE;
 import ro.deiutzblaxo.oneblock.player.expcetions.PlayerNoExistException;
 import ro.deiutzblaxo.oneblock.utils.TableType;
+import ro.deiutzblaxo.oneblock.utils.otherexceptions.NotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +72,7 @@ public class GoToCommand implements SubCommand {
             }
         else {
             sender.sendMessage("Island is not loaded anywhere. It will be loaded on this server!");
-            Island island = plugin.getIslandManager().loadIsland(uuidIsland);
+            Island island  = plugin.getIslandManager().loadIsland(uuidIsland);
             player.teleport(island.getSpawnLocation());
             sender.sendMessage("Done");
         }

@@ -1,14 +1,14 @@
 package ro.deiutzblaxo.oneblock.slimemanager;
 
-import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
-import com.grinderwolf.swm.api.exceptions.NewerFormatException;
-import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
-import com.grinderwolf.swm.api.exceptions.WorldInUseException;
-import com.grinderwolf.swm.api.loaders.SlimeLoader;
-import com.grinderwolf.swm.api.world.SlimeWorld;
-import com.grinderwolf.swm.api.world.properties.SlimeProperties;
-import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-import com.grinderwolf.swm.nms.CraftSlimeWorld;
+
+import com.infernalsuite.aswm.api.exceptions.CorruptedWorldException;
+import com.infernalsuite.aswm.api.exceptions.NewerFormatException;
+import com.infernalsuite.aswm.api.exceptions.UnknownWorldException;
+import com.infernalsuite.aswm.api.exceptions.WorldLockedException;
+import com.infernalsuite.aswm.api.loaders.SlimeLoader;
+import com.infernalsuite.aswm.api.world.SlimeWorld;
+import com.infernalsuite.aswm.api.world.properties.SlimeProperties;
+import com.infernalsuite.aswm.api.world.properties.SlimePropertyMap;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -80,7 +80,8 @@ public class WorldUtil {
         SlimeLoader loader = plugin.getSlimePlugin().getLoader("mysql");
         plugin.getLogger().log(Level.INFO, "saving THE SLIME WORLD : " + world.getName());
         try {
-            loader.saveWorld(world.getName(), convertToByte(world), true);
+            loader.saveWorld(world.getName(), convertToByte(world));
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,7 +94,7 @@ public class WorldUtil {
         plugin.getLogger().log(Level.INFO, "deleting THE SLIME WORLD : " + world.getName());
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "swm delete " + world.getName()), 3);
-    
+
     }
 
     public static void unloadSlimeWorld(OneBlock plugin, World world) {
@@ -111,7 +112,7 @@ public class WorldUtil {
         try {
 
             SlimeWorld world = plugin.getSlimePlugin().loadWorld(plugin.getLoader(), name, true, getSlimePropertyMap(island));
-            plugin.getSlimePlugin().generateWorld(world);
+            plugin.getSlimePlugin().loadWorld(world);
             return world;
         } catch (UnknownWorldException exception) {
             exception.printStackTrace();
@@ -121,8 +122,8 @@ public class WorldUtil {
             e.printStackTrace();
         } catch (NewerFormatException e) {
             e.printStackTrace();
-        } catch (WorldInUseException e) {
-            e.printStackTrace();
+        } catch (WorldLockedException e) {
+            throw new RuntimeException(e);
         }
         return null;
 
@@ -148,23 +149,30 @@ public class WorldUtil {
         slimePropertyMap.setString(SlimeProperties.DEFAULT_BIOME, island.getPhase().getPhaseBiome().name().toLowerCase(Locale.ROOT));
 
 
-
         return slimePropertyMap;
     }
 
     public static byte[] convertToByte(SlimeWorld world) {
 
-        CraftSlimeWorld worlds = (CraftSlimeWorld) world;
-        return worlds.serialize();
+        SlimeWorld worlds = world;
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(worlds);
+            return bos.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public static CraftSlimeWorld convertToSlimeworld(byte[] world) throws IOException {
+    public static SlimeWorld convertToSlimeworld(byte[] world) throws IOException {
 
 
         ByteArrayInputStream out = new ByteArrayInputStream(world);
         ObjectInputStream obj = new ObjectInputStream(out); // aici <-----------
         try {
-            return (CraftSlimeWorld) obj.readObject();
+            return (SlimeWorld) obj.readObject();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;

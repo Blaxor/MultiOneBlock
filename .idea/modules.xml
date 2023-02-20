@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ConnecionManagment/ConnecionManagment.iml" filepath="$PROJECT_DIR$/ConnecionManagment/ConnecionManagment.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Core/oneblock.iml" filepath="$PROJECT_DIR$/Core/oneblock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ConnecionManagment/ConnectionManager.iml" filepath="$PROJECT_DIR$/ConnecionManagment/ConnectionManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Core/OneBlock.iml" filepath="$PROJECT_DIR$/Core/OneBlock.iml" />
     </modules>
   </component>
 </project>
